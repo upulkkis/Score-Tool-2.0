@@ -1,1 +1,0 @@
-window.music21 = window.music21 = require('./music21.debug.js')

@@ -31,7 +31,7 @@ export default function InstModify(props){
         let item = {...scoreNames[idx]}
         item = event.target.value
         scoreNames[idx] = item
-        */
+        */ 
         setState(state=> ({...state, scoreNames:event.target.value}))
         //setState(state => state.scoreNames[idx] = event.target.value)
       }

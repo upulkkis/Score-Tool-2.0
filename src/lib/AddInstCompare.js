@@ -147,10 +147,12 @@ export default function AddInstCompare(props){
           noteRange={{ first: range[0], last: range[1] }}
           activeNotes={[state.scorePitch]}
           playNote={(midiNumber) => {
+          }}
+          onPlayNoteInput={(midiNumber) => {
             setState(state=>({...state, scorePitch:midiNumber}))
           }}
           stopNote={(midiNumber) => {
-            return
+            return null
           }}
           width={400}
         />

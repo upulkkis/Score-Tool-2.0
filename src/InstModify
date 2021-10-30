@@ -1,0 +1,76 @@
+import React, { useState } from 'react';
+import { DBinstruments } from './../instruments';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Switch from '@mui/material/Switch';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+
+export default function InstModify(props){
+/*
+    const [state, setState] = useState({
+        idx:props.idx, 
+        instName:props.row[0], 
+        scoreNames: props.row[1], 
+        scoreTechs: props.row[2], 
+        scoreDyns: props.row[3], 
+        scoreTgt: props.row[4], 
+        scoreOnoff: props.row[5], 
+        scoreModify: 0,
+    })
+
+    props.onChange({
+            idx: state.idx, 
+            row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scoreTgt, state.scoreOnoff, state.scoreModify]
+    })
+    */
+   console.log(props.row)
+    return(props.row)
+/*
+    const instChange = (idx, event) => {
+        /*
+        let scoreNames = {...state.scoreNames}
+        let item = {...scoreNames[idx]}
+        item = event.target.value
+        scoreNames[idx] = item
+        
+        setState(state=> ({...state, scoreNames:event.target.value}))
+        //setState(state => state.scoreNames[idx] = event.target.value)
+      }
+      const techChange = (idx, event) => {
+        setState(state => ({...state, scoreTechs:event.target.value}))
+      }
+      const dynChange = (idx, event) => {
+        setState(state => ({...state, scoreDyns:event.target.value}))
+      }
+      const modChange = (idx, event) => {
+        setState(state => ({...state, scoreModify:event.target.value}))
+      }
+      const tgtChange = (idx, event) => {
+        event.persist();
+        //console.log(event)
+        setState(state => ({...state, scoreTgt:event.target.checked}))
+      }
+      const onoffChange = (idx, event) => {
+        event.persist();
+        //console.log(event)
+        setState(state => ({...state, scoreOnoff:event.target.checked}))
+      }
+  
+return(
+    <tr>
+    <td key={"nam"+state.idx}>{state.instName}</td>
+    <td key={"scor"+state.idx}>{state.scoreNames}</td>
+    <td key={"tec"+state.idx}>{state.scoreTechs}</td>
+    <td key={"dy"+state.idx}>{state.scoreDyns}</td>
+    <td key={"tg"+state.idx}>{state.scoreTgt}</td>
+    <td key={"onof"+state.idx} >{state.scoreOnoff}</td>
+        
+          <td key={"mo"+state.idx}>{state.scoreModify}</td>
+    </tr>
+)
+*/
+
+}

@@ -1,0 +1,71 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: 
+      App-logo-spin 3s linear,
+      App-logo-spin 3s ease;
+  height: 80px;
+}
+
+.App-shake{
+  animation: shake 1s;
+}
+
+.App-header {
+  background-color: #dcc4ac;
+  background-image: url("./waves.png");
+  background-size: 100% 100%;
+  height: 150px;
+  padding: 20px;
+  color: #fffef0;
+  text-shadow:
+  -1px -1px 0 #000,  
+   1px -1px 0 #000,
+   -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.Upload {
+  color: #fffef0;
+  background-color: #dcc4ac;
+/*
+  background-image: url("./banner.png");
+  background-size: cover;
+  */
+  font-size: large;
+  font-weight: bold;
+  text-shadow:
+  -1px -1px 0 #000,  
+   1px -1px 0 #000,
+   -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+   from { transform: rotateY(0deg); }
+   to { transform: rotateY(360deg); }
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}

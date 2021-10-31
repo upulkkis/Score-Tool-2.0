@@ -16,6 +16,8 @@ import Dragdrop from './dragdrop';
 import SaveOrch from './SaveOrch';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TableBody, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import { Savings } from '@mui/icons-material';
 const theme = createTheme({
   palette: {
@@ -36,6 +38,7 @@ export default function ChordEditor(props) {
       data:[],
       selected:null,
       saved:false,
+      audibilityPercent:0,
       textFieldValue:"Chord Editor orchestration "+JSON.parse(localStorage.getItem("orchestrations")).length
     })
     
@@ -60,7 +63,7 @@ export default function ChordEditor(props) {
       axios.post(baseURL+"modalSlice", analyseList).then((response) => {
         //console.log(response)
         var result = response.data
-        setState(state => ({...state, data: result.data, listenList: analyseList}))
+        setState(state => ({...state, data: result.data, listenList: analyseList, audibilityPercent: 100-result.data[2].masking_percent}))
       })
     }
 
@@ -214,6 +217,40 @@ export default function ChordEditor(props) {
       {state.instList.map((elem, i)=> <AddInst key={elem[0]+i} data={elem} onChange={e=>onChange(i, e)} onDelete={onDelete} idx={"fgfg"+i} />)}
       </table>
       </div>
+      <br/>
+      <div style={{margin:"auto", textAlign:"center"}}>
+      <Typography variant="caption" component="div" color="text.secondary">
+            Target audibility: 
+          </Typography>
+          <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" value={state.audibilityPercent} color={(() => {
+                      if(state.audibilityPercent<=30){
+                        return "error"
+                      }else if(state.audibilityPercent<=50){
+                        return "warning"
+                      } else {
+                        return "success"
+                      }
+                  })()}/>
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(state.audibilityPercent)}%`}
+        </Typography>
+      </Box>
+    </Box>
+    </div>
+    <br/>
       <ThemeProvider theme={theme}>
       <Button variant="contained" color="neutral" onClick={updateGraphs} style={{display:"none"}}> Click to update graphs </Button>
       <SaveOrch text={state.textFieldValue} orchestration={state.instList}/>

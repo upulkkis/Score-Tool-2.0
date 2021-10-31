@@ -233,6 +233,7 @@ export default function SearchDialog(props) {
     }
 
     const makeSearch = () => {
+      setState(state=>({...state, result:""}))
       let miniList = []
       state.instList.map((elem, i)=>{
         elem[3].map(arrNote=>{
@@ -243,7 +244,7 @@ export default function SearchDialog(props) {
       axios.post(baseURL+"search", axiosData).then((response) => {
         //console.log(response)
         const result = response.data
-        const resultRender = <div> 
+        const resultRender = <div id={result[0]}> 
                 <Typography style={{textAlign:"center", margin:"auto"}}> Search result: {result[0][0]} {result[0][1]} {result[0][2]} {mid2note(result[0][3])}</Typography>
           <div style={{textAlign:"center", margin:"auto"}}><Orchestration
         notes={ [ mid2note(result[0][3]) ] }
@@ -257,11 +258,11 @@ export default function SearchDialog(props) {
         text_space={100}/>
         </div> 
         <Typography style={{textAlign:"center", margin:"auto"}}> Play search result, {result[0][0]}: </Typography>
-        <div><audio controls> <source src={result[1]} autoPlay="true" type="audio/x-wav"/> </audio></div>
+        <div><audio controls id={"yks"+result[0]}> <source src={result[1]} autoPlay="true" type="audio/x-wav"/> </audio></div>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play search source: </Typography>
-        <div><audio controls> <source src={result[2]} type="audio/x-wav"/> </audio></div>
+        <div><audio controls id={"kaks"+result[0]}> <source src={result[2]} type="audio/x-wav"/> </audio></div>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play both together: </Typography>
-        <div><audio controls> <source src={result[3]} type="audio/x-wav"/> </audio></div>
+        <div><audio controls id={"kol"+result[0]}>  <source src={result[3]} type="audio/x-wav"/> </audio></div>
         <Button onClick={e=>addToTarget(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Add search result to search source </Button>
         <Button onClick={e=>addToSaved(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Update your saved orchestration with search result </Button>
         </div>

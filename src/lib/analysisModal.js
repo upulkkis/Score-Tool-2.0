@@ -16,6 +16,8 @@ import Dragdrop from './dragdrop';
 import SaveOrch from './SaveOrch';
 import InstModify from './InstModify';
 import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 //const baseURL = "http://127.0.0.1:5000/"; // http://127.0.0.1:5000/databaseInstruments
 const baseURL = "https://rest.score-tool.com/";
@@ -31,9 +33,12 @@ export default function AnalysisDialog(props) {
   const [modList, setModList] = React.useState([]);
   const [data, setData] = React.useState([]);
   const [color, setColor] = React.useState([]);
+  const [description, setDescription] = React.useState([]);
   const [saved, setSaved] = React.useState(false);
   const [state, setState] = React.useState({textFieldValue: "orchestration"});
+  const [maskingperc, setMaskingperc] = React.useState(0);
   let instColors=[]
+  let instDescr=[]
   React.useEffect(() => {
     setOpen(state => state = props.open)
     if (props.data.length>1){
@@ -41,14 +46,31 @@ export default function AnalysisDialog(props) {
       setModList([])
     }
     if (props.data.length>1){
+      //console.log(props.data[0].data[2].masking_percent)
+      setMaskingperc(data => data = 100-props.data[0].data[2].masking_percent)
       setData(data => data = props.data[0].data)
       setState(state=>({...state, textFieldValue: JSON.parse(localStorage.getItem("orchestrations")).length+": "+props.data[2]}))
-      props.data[1].map(m=>instColors.push('')) //MAKE SLOT FOR EVERY INST, EVEN FOR TARGET
+      props.data[1].map(m=>{
+        instColors.push('')
+        instDescr.push('')
+      }) //MAKE SLOT FOR EVERY INST, EVEN FOR TARGET
       props.data[0].data[3].map((val,i)=>{
-        if(i===0){instColors[val]='red'}else if(i===1){instColors[val]='magenta'}else if(i===2){instColors[val]='yellow'}else{instColors[val]=''}
+        if(i===0){
+          instColors[val]='red'
+          instDescr[val]='strongest masker'
+        }else if(i===1){
+          instColors[val]='magenta'
+          instDescr[val]='2nd masker'
+        }else if(i===2){
+          instColors[val]='yellow'
+          instDescr[val]='3rd masker'
+        }else{
+          instColors[val]=''
+          instDescr[val]=''
+        }
       })
       setColor(instColors)
-
+      setDescription(instDescr)
     }
   }, [props]);
 
@@ -73,8 +95,15 @@ export default function AnalysisDialog(props) {
       //console.log(response)
       var result = response.data
       setData(state => state.data = result.data)
+      setMaskingperc(data => data = 100-result.data[2].masking_percent)
       let Colors=[]
-      props.data[1].map(m=>Colors.push(''))
+      let descriptions=[]
+      props.data[1].map(m=>{
+        Colors.push('')
+        descriptions.push('')
+      })
+
+      
 
       // Rather complex pattern no fetch right index for color when an instrument is turned off
       result.data[3].map((val,i)=>{
@@ -83,6 +112,7 @@ export default function AnalysisDialog(props) {
           props.data[1].map((r,indx)=>{
             if(r[6]===indx0){    //compare the index to the original list of instruments (props.data[1])
               Colors[indx]='red'
+              descriptions[indx]='strongest masker'
             }
           })
 
@@ -91,6 +121,7 @@ export default function AnalysisDialog(props) {
           props.data[1].map((r,indx)=>{
             if(r[6]===indx0){
               Colors[indx]='magenta'
+              descriptions[indx]='2nd masker'
             }
           })
         }else if(i===2){
@@ -98,11 +129,14 @@ export default function AnalysisDialog(props) {
           props.data[1].map((r,indx)=>{
             if(r[6]===indx0){
               Colors[indx]='yellow'
+              descriptions[indx]='3rd masker'
             }
           })
         }
       })
+
       setColor(state=>state=Colors)
+      setDescription(descriptions)
     })
   }
 
@@ -209,9 +243,40 @@ export default function AnalysisDialog(props) {
           <table style={{margin: "auto",display: 'inline'}}>
             <tbody>
             <tr><td>maskers</td></tr>
-          {color.map((col,i)=><tr><td style={{backgroundColor:col, borderRadius: 10, padding: 4, textAlign: "center", margin:4}}>{list[i][0]}{" "}{mid2note(list[i][3])}</td></tr>)}
+          {color.map((col,i)=><tr><td style={{backgroundColor:col, borderRadius: 10, padding: 4, textAlign: "center", margin:4}}>{list[i][0]}{" "}{mid2note(list[i][3])}{" "+description[i]}</td></tr>)}
           </tbody>
           </table>
+          <br/>
+          <Typography variant="caption" component="div" color="text.secondary">
+            Target audibility: 
+          </Typography>
+          <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" value={maskingperc} color={(() => {
+                      if(maskingperc<=30){
+                        return "error"
+                      }else if(maskingperc<=50){
+                        return "warning"
+                      } else {
+                        return "success"
+                      }
+                  })()}/>
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(maskingperc)}%`}
+        </Typography>
+      </Box>
+    </Box>
           <br/>
           <SaveOrch text={state.textFieldValue} orchestration={list}/>
             <Graphs data={data}/>

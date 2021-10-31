@@ -1,3 +1,6 @@
+git_token
+github_ssh
+github_ssh.pub
 node_modules
 package-lock.json
 ignore

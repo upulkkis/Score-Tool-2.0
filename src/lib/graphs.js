@@ -55,8 +55,8 @@ export default function Graphs(props) {
         </Typography>
         <div style={{backgroundColor: "rgba(0,255,0,0.3)", display:"inline"}}>Target</div> 
   <div style={{backgroundColor: "rgba(255,0,0,0.5)", display:"inline"}}> Heaviest masker</div>
-  <div style={{backgroundColor: "rgba(255,255,0,0.5)", display:"inline"}}> 2nd masker</div>
-  <div style={{backgroundColor: "rgba(255,0,255,0.5)", display:"inline"}}> 3rd masker </div>
+  <div style={{backgroundColor: "rgba(255,0,255,0.5)", display:"inline"}}> 2nd masker</div>
+  <div style={{backgroundColor: "rgba(255,255,0,0.5)", display:"inline"}}> 3rd masker </div>
     <Orchestration 
             notes={props.data[4].notes}
             instruments={props.data[4].instruments}

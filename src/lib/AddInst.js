@@ -119,7 +119,7 @@ export default function AddInst(props){
           </div>
         );
       }
-      const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B' ]
+      const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ]
       function mid2note (midi) {
         var name = CHROMATIC[midi % 12]
         var oct = Math.floor(midi / 12) - 1
@@ -142,7 +142,7 @@ export default function AddInst(props){
         return(
           <div>
           <div aria-describedby={idx} onClick={popperClick}>
-          <SelectedNote note={state.scorePitch.map(note=>mid2note(note))}/>
+          <SelectedNote note={state.scorePitch.sort().map(note=>mid2note(note))}/>
           </div>
           <Popover id={idx} open={state.popOpen} 
           anchorEl={state.anchorEl} 

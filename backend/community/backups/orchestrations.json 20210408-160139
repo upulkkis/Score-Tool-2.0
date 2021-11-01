@@ -1,0 +1,45 @@
+[
+    {
+        "title": "String quartett simple chord",
+        "description": "Simple four part chord orchestrated for string quartet",
+        "orchestration": [
+            {
+                "inst": "violin",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 72,
+                "target": false
+            },
+            {
+                "inst": "violin",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 64,
+                "target": false
+            },
+            {
+                "inst": "viola",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 60,
+                "target": false
+            },
+            {
+                "inst": "cello",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 52,
+                "target": false
+            }
+        ]
+    },
+    [
+        {
+            "inst": "flute",
+            "tech": "normal",
+            "dynamic": "mf",
+            "note": 60,
+            "target": false
+        }
+    ]
+]

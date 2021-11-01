@@ -1,0 +1,83 @@
+[
+    {
+        "title": "yksi",
+        "description": "Two trumpets and trombone",
+        "orchestration": [
+            {
+                "inst": "flute",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 72,
+                "target": true
+            },
+            {
+                "inst": "trumpet",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 64,
+                "target": false
+            },
+            {
+                "inst": "trumpet",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 60,
+                "target": false
+            },
+            {
+                "inst": "tenor_trombone",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 52,
+                "target": false
+            }
+        ]
+    },
+    {
+        "title": "kaksi",
+        "description": "Two trumpets and trombone",
+        "orchestration": [
+            {
+                "inst": "flute",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 72,
+                "target": true
+            },
+            {
+                "inst": "trumpet",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 64,
+                "target": false
+            },
+            {
+                "inst": "trumpet",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 60,
+                "target": false
+            },
+            {
+                "inst": "tenor_trombone",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 52,
+                "target": false
+            }
+        ]
+    },
+    {
+        "title": "jopo",
+        "description": "t\u00e4nnet\u00e4nne!",
+        "orchestration": [
+            {
+                "inst": "flute",
+                "tech": "normal",
+                "dynamic": "mf",
+                "note": 72,
+                "target": true
+            }
+        ]
+    }
+]

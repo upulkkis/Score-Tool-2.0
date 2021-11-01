@@ -192,7 +192,7 @@ orc=[
      ['trumpet', 'normal', 'mf', 72, False, True],
      ['tenor_trombone', 'normal', 'mf', 52, False, True]
  ]
-def calculate(ensemble, positions, listening_point):
+def calculate(ensemble, positions, listening_point, tune=0):
     point=listening_point
     i = 0
     sr = 44100

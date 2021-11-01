@@ -10,11 +10,14 @@ import Popper from '@mui/material/Popper';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { noteNumbers } from './noteNumbers';
 import Piano from './piano/Piano';
 import './piano/styles.css';
 import SelectedNote from './selectedNote';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 export default function AddInst(props){
 
@@ -27,6 +30,7 @@ export default function AddInst(props){
         scoreTgt: props.data[4],
         scoreOnoff: props.data[5],
         scoreIdx: props.data[6],
+        scoreMicro: 0,
         scoreModify: 0,
         popOpen: false,
         anchorEl: null
@@ -223,6 +227,24 @@ export default function AddInst(props){
           </div>
         );
       }
+
+      const handleMicro  = (event, newValue) => {
+        setState(state => ({...state, scoreMicro:newValue}))
+      }
+
+      const selectMicrotone = (name, idx) => {
+        return (
+          <Box sx={{ width: 70 }}>
+            <Typography variant="caption" style={{textAlign:"center"}}> tune (not yet working) </Typography>
+            <Stack spacing={1} direction="row" sx={{ mb: 1 }} alignItems="center">
+            <img src={"/flat.png"} height="20"/>
+              <Slider valueLabelDisplay="auto" aria-label="tune"  size="small" min={-50} step={1} max={50} value={state.scoreMicro} onChange={handleMicro} />
+              <img src={"/sharp.png"} height="20"/>
+            </Stack>
+          </Box>
+        );
+      }
+
       const selectMods = (name, idx) => {
         const dyns = [0, 12, -12, 24, -24]
         return (
@@ -250,6 +272,7 @@ return(
     <td key={"scor"+state.idx}>{selectInstruments(state.scoreNames, state.idx)}</td>
     <td key={"tec"+state.idx}>{selectTechs(state.scoreTechs, state.idx)}</td>
     <td key={"dy"+state.idx}>{selectDyns(state.scoreDyns, state.idx)}</td>
+    <td key={"mi"+state.idx}>{selectMicrotone(state.scoreMicro, state.idx)}</td>
     <td key={"pi"+state.idx}>{selectPitch(state.scorePitch, "pi"+state.idx)}</td>
 
     <td> <Button variant="outlined" color="warning" onClick={clearClick} size="small"> clear notes </Button></td>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ColoringModes, OpenSheetMusicDisplay as OSMD, PointF2D } from 'opensheetmusicdisplay';
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
+import RespSlider from './RespSlider';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -680,16 +681,7 @@ const rowChange = (i, event) => {
 </table>
 </div>
 <Typography>Select bar range with slider</Typography>
-<Slider
-        value={this.state.measureRange}
-        min={1}
-        max={this.state.maxMeasure}
-        step={1}
-        marks={true}
-        onChange={this.measureHandleChange}
-        valueLabelDisplay="auto"
-        disableSwap
-      />
+<RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
             <Button
             style = {{display: showScore}}
             variant="contained"

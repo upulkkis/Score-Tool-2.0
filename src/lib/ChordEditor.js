@@ -114,6 +114,7 @@ export default function ChordEditor(props) {
       sessionStorage.setItem("LastChord", JSON.stringify(newList))
       fetchAnalysisData(newList)
     }
+    
     const handleSave = () => {
       if(state.instList.length>0){
         let newOrch = JSON.parse(localStorage.getItem("orchestrations"))

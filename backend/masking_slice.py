@@ -99,7 +99,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         original_osmd_indexes=[]
         orchestration_instrument_names=[]
         for instrument in list_of_instruments:
-            print(instrument)
+            #print(instrument)
             if instrument[5]==1: #If instrument is set "on"
                 if instrument[4]==0: #if orchestration
                     try:
@@ -344,9 +344,6 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     # print(peaks_above_masking)
     # Function to calculate masking percent. Takes into account how afr peaks are from masking threshold
     def calculate_masking_percent(peaks_above):
-        print("peaks above:")
-        print(peaks_above)
-        print(np.count_nonzero(peaks_above_masking > 0))
         percent = 100
         if np.count_nonzero(idx_above == True) == 0:
             return 100
@@ -421,19 +418,30 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                         if orch_msking[idx - 2] > highest:
                             highest = orch_msking[idx - 2]
                 if orch_msking[idx+1]>highest:
-                    highest = orch_msking[idx - 1]
+                    highest = orch_msking[idx + 1]
             difference = highest-tgt_msking[idx]
             sum = sum+difference
         return sum
+
+    def find_nearest(array, value): # FInd nearest value of numpy array
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return idx
 
     #if tgt and indexes_above < len(target['peaks']/2): ## HERE calculate strongest maskers only if half of the target is inaudible, changed to all
     if True:
         for i in range(len(masking_lists[0])):
             #!! Find the 15 (changed to 30) loudest peaks for target, subtract them from orchestration:
             tgt_peaks = heapq.nlargest(30, range(len(target['masking_threshold'])), key=target['masking_threshold'].__getitem__)
-            pks = find_peaks(target['masking_threshold'], 20) #
+            pks = find_peaks(target['masking_threshold'], 15) #
+            min_idx=0
+            if min_notes[1]<120:
+                min_herz = pretty_midi.note_number_to_hz(min_notes[1])*0.9 # Take tenth off to make sure it finds all
+                min_idx = find_nearest(constants.threshold[:,0], min_herz)
             #print(target['masking_threshold'])
-            tgt_peaks = list(pks[0])
+            tgt_peaks = [pk for pk in list(pks[0]) if pk>=min_idx]
+            if not tgt_peaks:
+                tgt_peaks = list(pks[0])
             if not tgt:
                 target['masking_threshold'] = constants.threshold[:,2]
                 tgt_peaks = [v for v in range(45)]
@@ -665,8 +673,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     masking_percent = calculate_masking_percent(peaks_above_masking)
     #effect of centroid
     if target['centroid']<2000 and masking_percent<85:
-        print("ACTIVATED!")
-        print(masking_percent)
+
         masking_add = 2000/(target['centroid']/5) #add masking by certain factor if centroid is under 2khz
         masking_percent += masking_add
         if masking_percent>100: #can't go over 100 percent

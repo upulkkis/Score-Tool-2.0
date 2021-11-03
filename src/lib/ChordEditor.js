@@ -60,8 +60,10 @@ export default function ChordEditor(props) {
           if(typeof(elem[7])==='number'){
             micro = elem[7]
           }
-          analyseList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index, micro])
-          listenList.push([elem[0], elem[1], elem[2], arrNote+micro, elem[4], elem[5], index])
+          if (elem[5]){
+            analyseList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index, micro])
+            listenList.push([elem[0], elem[1], elem[2], arrNote+micro, elem[4], elem[5], index])
+          }
           index += 1
         })
       } )

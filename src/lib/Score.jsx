@@ -338,6 +338,22 @@ class Score extends Component {
           } else return false
         })
         //console.log(data)
+
+        const tgtColor = (val) => {
+          let col = "rgba(0,255,0,0.3)"
+          if(val>=75){
+            const mod= 1 - ((val-74.9)/50)
+            col = `rgba(${Math.round(255*mod)},0,0,0.7)`
+          } else if (val>=50){
+            const mod= 1 - ((val-54.9)/25)
+            col = `rgba(255,${Math.round(255*mod)},0,0.5)`
+          }else if (val>=25){
+            const mod= (val-24.9)/25
+            col = `rgba(${Math.round(255*mod)},255,0,0.5)`
+          }
+          return col
+        }
+
         axios.post(baseURL+"maskingSlice", data).then((response) => {
           //console.log(response)
           var result = response.data
@@ -354,14 +370,8 @@ class Score extends Component {
             var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[tgt].boundingBox.absolutePosition.y+2
             const startPointF2D = new PointF2D(xposition, StaffY); //{x: xpos, y: ypos};
             const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
-            let col = []
-            if(result[0]>=75){
-              col = "rgba(255,0,0,0.7)"
-            } else if (result[0]>=55){
-              col = "rgba(255,255,0,0.5)"
-            }else{
-              col = "rgba(0,255,0,0.3)"
-            }
+            let col = tgtColor(result[0])
+
             // console.log(result[0])
             this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
               col, 4)    
@@ -694,9 +704,9 @@ const rowChange = (i, event) => {
 {showMasking}
 </Item>
 {this.state.calculIndications && <Typography style={{display:"inline"}}>Color indications: 
-  <div style={{backgroundColor: "rgba(255,0,0,0.7)", display:"inline"}}> Target masked</div> 
-  <div style={{backgroundColor: "rgba(255,255,0,0.5)", display:"inline"}}> Target nearly masked</div> 
-  <div style={{backgroundColor: "rgba(0,255,0,0.3)", display:"inline"}}> Target audible</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Target masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> Target nearly masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> Target audible</div> 
   <div style={{backgroundColor: "rgba(255,51,255,0.5)", display:"inline"}}> Orchestration heaviest masker</div>
   <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> Orchestration second heaviest masker</div>
   <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> Orchestration third heaviest masker </div>

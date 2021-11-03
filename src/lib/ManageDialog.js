@@ -17,10 +17,25 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ManageDialog(props) {
-  const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B' ]
+  const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'B#', 'B' ]
   function mid2note (midi) {
-    var name = CHROMATIC[midi % 12]
-    var oct = Math.floor(midi / 12) - 1
+    var decimal = midi - Math.floor(midi) // get the decimal part
+    let tone = Math.round(midi)
+    let name = CHROMATIC[tone % 12]
+    if(decimal>=0.2 && decimal<0.5){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone+1) % 12]+"d"  //note without sharp + 1/4 lower
+      } else {
+        name = name+"+"
+      }
+    } else if(decimal>=0.5 && decimal<=0.8){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone-1) % 12]+"+"  //earlier note + 1/4 sharp
+      } else {
+        name = name+"d"
+      } 
+    }
+    var oct = Math.floor(tone / 12) - 1
     return name + oct
   }
 
@@ -107,7 +122,11 @@ const handleListen=(i, ODATA,e)=>{
   let miniList = []
   ODATA.map((elem, i)=>{
         elem[3].map(arrNote=>{
-          miniList.push(elem[0]+","+elem[1]+","+elem[2]+","+arrNote)
+          let micro = 0
+          if(typeof(elem[7])==='number'){
+            micro = elem[7]
+          }
+          miniList.push(elem[0]+","+elem[1]+","+elem[2]+","+(arrNote+micro))
         })
       } )
       axios.post(baseURL+"listen", {orchestration: miniList, positions:Array(miniList.length).fill(17), listeningPosition: "audience"}, {
@@ -130,7 +149,11 @@ const selectedSource=(lista)=>{
     let index = 0
     lista.map((elem, i)=>{
       elem[3].map(arrNote=>{
-        miniList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index])
+        let micro = 0
+        if(typeof(elem[7])==='number'){
+          micro = elem[7]
+        }
+        miniList.push([elem[0], elem[1], elem[2], arrNote+micro, elem[4], elem[5], index])
         index += 1
       })
     } )
@@ -143,9 +166,9 @@ const selectedSource=(lista)=>{
     target={[]}
     scale={0.3}
     width={150}
-    height={80}
-    t_score_y={20}
-    b_score_y={110}
+    height={90}
+    t_score_y={110}
+    b_score_y={170}
     text_space={30}/></div>
   }
 }

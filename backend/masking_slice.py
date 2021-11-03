@@ -100,8 +100,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         orchestration_instrument_names=[]
         for instrument in list_of_instruments:
             print(instrument)
-            if instrument[-2]==1: #If instrument is set "on"
-                if instrument[-3]==0: #if orchestration
+            if instrument[5]==1: #If instrument is set "on"
+                if instrument[4]==0: #if orchestration
                     try:
                         #odata=orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
                         #orchestration_sum = orchestration_sum+orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
@@ -123,7 +123,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                              min_orch_note=instrument[3]
                     except:
                         print("Out of range orchestration notes found!")
-                if instrument[-3] == 1: #if target
+                if instrument[4]: #if target
                     try:
                         #tdata=orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
                         #target_sum = target_sum+orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
@@ -850,6 +850,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                                  [list[3] for list in lista],
                                  [list[4] for list in lista],
                                  [list[5] for list in lista],
+                                 [list[7] if len(list)>=8 else 0 for list in lista], ##This is for microtones
                                 output_masking_order_idx
                                  )
     orchestration['spectrum']=[0]

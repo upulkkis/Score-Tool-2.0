@@ -28,7 +28,7 @@ const theme = createTheme({
 }
 })
 const baseURL = "https://rest.score-tool.com/";
-// const baseURL = "http://127.0.0.1:5000/";
+//const baseURL = "http://127.0.0.1:5000/";
 
 export default function ChordEditor(props) {
 
@@ -52,10 +52,16 @@ export default function ChordEditor(props) {
 
     const fetchAnalysisData = (list) => {
       let analyseList = []
+      let listenList = []
       let index = 0
       list.map((elem, i)=>{
         elem[3].map(arrNote=>{
-          analyseList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index])
+          let micro = 0
+          if(typeof(elem[7])==='number'){
+            micro = elem[7]
+          }
+          analyseList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index, micro])
+          listenList.push([elem[0], elem[1], elem[2], arrNote+micro, elem[4], elem[5], index])
           index += 1
         })
       } )
@@ -63,7 +69,7 @@ export default function ChordEditor(props) {
       axios.post(baseURL+"modalSlice", analyseList).then((response) => {
         //console.log(response)
         var result = response.data
-        setState(state => ({...state, data: result.data, listenList: analyseList, audibilityPercent: 100-result.data[2].masking_percent}))
+        setState(state => ({...state, data: result.data, listenList: listenList, audibilityPercent: 100-result.data[2].masking_percent}))
       })
     }
 
@@ -93,11 +99,11 @@ export default function ChordEditor(props) {
     }
 
     const onDelete= (e) => {
-
+      console.log(state.instList)
       var filtered = state.instList.filter(function(value, index, arr){ 
         return value[6] != e;
     });
-
+      console.log(filtered)
       setState(state=>({...state,
         instList: filtered
       }))
@@ -215,7 +221,7 @@ export default function ChordEditor(props) {
       </ThemeProvider>
       <div style={{zoom:1}}>
       <table>
-      {state.instList.map((elem, i)=> <AddInst key={elem[0]+i} data={elem} onChange={e=>onChange(i, e)} onDelete={onDelete} idx={"fgfg"+i} />)}
+      {state.instList.map((elem, i)=> <AddInst key={elem} data={elem} onChange={e=>onChange(i, e)} onDelete={onDelete} idx={"fgfg"+i} />)}
       </table>
       </div>
       <br/>

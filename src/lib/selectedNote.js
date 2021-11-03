@@ -32,13 +32,12 @@ const SelectedNote = ({note}) => {
     } 
 
     stave.setClef(clef);
-    
     let keys = []
     let accs = []
     note.map(n=>{
-      var key = n.slice(0,-1) + "/" + n.slice(-1)
+      var key = n.slice(0,1) + "/" + n.slice(-1)
       var acc = n.slice(-2,-1)
-      if (acc != "#") {
+      if (!/[#db+n]/.test(acc)) {
           acc = 'n'
       }
       keys.push(key)

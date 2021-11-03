@@ -18,8 +18,14 @@ import './piano/styles.css';
 import SelectedNote from './selectedNote';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { IconButton } from '@mui/material';
 
 export default function AddInst(props){
+    let micro = 0
+    if(typeof(props.data[7])==='number'){
+      micro = props.data[7]
+    }
 
     const [state, setState] = useState({
         idx:props.data[6], 
@@ -30,7 +36,7 @@ export default function AddInst(props){
         scoreTgt: props.data[4],
         scoreOnoff: props.data[5],
         scoreIdx: props.data[6],
-        scoreMicro: 0,
+        scoreMicro: micro,
         scoreModify: 0,
         popOpen: false,
         anchorEl: null
@@ -39,7 +45,8 @@ export default function AddInst(props){
     const clearClick = () =>{
       setState(state=>({...state, popOpen:false}))
       setState(state=>({...state, scorePitch:[]}))
-      props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, [], state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+      setState(state=>({...state, scoreMicro:0}))
+      props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, [], state.scoreTgt, state.scoreOnoff, state.scoreIdx, 0])
     }
     const instChange = (idx, event) => {
         const evt = event.target.value
@@ -51,18 +58,18 @@ export default function AddInst(props){
         */
         setState(state=>({...state, popOpen:false}))
         setState(state=> ({...state, scoreNames:evt, scoreTechs:"normal", scoreDyns:"mf"}))
-        props.onChange([evt, "normal", "mf", state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([evt, "normal", "mf", state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
         //setState(state => state.scoreNames[idx] = event.target.value)
       }
       const techChange = (idx, event) => {
         const evt = event.target.value
         setState(state => ({...state, scoreTechs:evt}))
-        props.onChange([state.scoreNames, evt, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([state.scoreNames, evt, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
       }
       const dynChange = (idx, event) => {
         const evt = event.target.value
         setState(state => ({...state, scoreDyns:evt}))
-        props.onChange([state.scoreNames, state.scoreTechs, evt, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([state.scoreNames, state.scoreTechs, evt, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
       }
       const modChange = (idx, event) => {
         const evt = event.target.value
@@ -76,19 +83,19 @@ export default function AddInst(props){
         transposed = transposed.filter((v,k,p)=>v!=null)
         console.log(transposed)
         setState(state => ({...state, scorePitch:transposed,scoreModify:0}))
-        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, transposed, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, transposed, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
       }
       const tgtChange = (idx, event) => {
         const evt = event.target.checked
         //console.log(event)
         setState(state => ({...state, scoreTgt:evt}))
-        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, evt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, evt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
       }
       const onoffChange = (idx, event) => {
         const evt = event.target.checked
         //console.log(event)
         setState(state => ({...state, scoreOnoff:evt}))
-        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, evt, state.scoreIdx])
+        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, evt, state.scoreIdx, state.scoreMicro])
       }
       /*
       static domToSvg(svg, point){
@@ -121,8 +128,24 @@ export default function AddInst(props){
       }
       const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ]
       function mid2note (midi) {
-        var name = CHROMATIC[midi % 12]
-        var oct = Math.floor(midi / 12) - 1
+        var decimal = midi - Math.floor(midi) // get the decimal part
+        let tone = Math.round(midi)
+        let name = CHROMATIC[tone % 12]
+        if(decimal>=0.2 && decimal<0.5){
+          if(/[#]/.test(name)){ // regex if note is sharp
+            name = CHROMATIC[(tone+1) % 12]+"d"  //note without sharp + 1/4 lower
+          } else {
+            name = name+"+"
+          }
+        } else if(decimal>=0.5 && decimal<=0.8){
+          if(/[#]/.test(name)){ // regex if note is sharp
+            name = CHROMATIC[(tone-1) % 12]+"+"  //earlier note + 1/4 sharp
+          } else {
+            name = name+"d"
+          } 
+        }
+
+        var oct = Math.floor(tone / 12) - 1
         return name + oct
       }
       const popperClick = (event) => {
@@ -133,7 +156,7 @@ export default function AddInst(props){
       };
       const handleClose = () => {
         setState(state => ({...state, anchorEl: null, popOpen: false }))
-        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
       }
       // temp button: <Button aria-describedby={idx} variant="outlined" onClick={popperClick} size="small"> </Button>
       const selectPitch = (pitch, idx) => {
@@ -142,7 +165,7 @@ export default function AddInst(props){
         return(
           <div>
           <div aria-describedby={idx} onClick={popperClick}>
-          <SelectedNote note={state.scorePitch.sort().map(note=>mid2note(note))}/>
+          <SelectedNote note={state.scorePitch.sort().map(note=>mid2note(note+state.scoreMicro))}/>
           </div>
           <Popover id={idx} open={state.popOpen} 
           anchorEl={state.anchorEl} 
@@ -231,14 +254,22 @@ export default function AddInst(props){
       const handleMicro  = (event, newValue) => {
         setState(state => ({...state, scoreMicro:newValue}))
       }
-
+      const handleCommit  = (event, newValue) => {
+        props.onChange([state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro])
+      }
+      const zeroClick = () => setState(state => ({...state, scoreMicro:0}))
       const selectMicrotone = (name, idx) => {
         return (
           <Box sx={{ width: 70 }}>
-            <Typography variant="caption" style={{textAlign:"center"}}> tune (not yet working) </Typography>
+            <Stack spacing={0} direction="row" sx={{ mb: 1 }} alignItems="center">
+            <Typography variant="caption" style={{textAlign:"center"}}> tune </Typography>
+            <IconButton aria-label="zero" size="small" onClick={zeroClick}>
+            <Typography variant="caption" style={{textAlign:"center"}}> (reset) </Typography>
+          </IconButton>
+            </Stack>
             <Stack spacing={1} direction="row" sx={{ mb: 1 }} alignItems="center">
             <img src={"/flat.png"} height="20"/>
-              <Slider valueLabelDisplay="auto" aria-label="tune"  size="small" min={-50} step={1} max={50} value={state.scoreMicro} onChange={handleMicro} />
+              <Slider valueLabelDisplay="auto" aria-label="tune"  size="small" min={-0.49} step={0.01} max={0.49} value={state.scoreMicro} onChangeCommitted={handleCommit} onChange={handleMicro} />
               <img src={"/sharp.png"} height="20"/>
             </Stack>
           </Box>

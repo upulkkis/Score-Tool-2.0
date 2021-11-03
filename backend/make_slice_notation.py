@@ -1,7 +1,7 @@
 import sort_for_vexflow
 import pretty_midi
 
-def notation(orchestra, inst, tech, dyn, note, tgt, onoff, masking_order_idx):
+def notation(orchestra, inst, tech, dyn, note, tgt, onoff, microtone,masking_order_idx):
     annotations=[]
     orchestration_slice=[]
     tgts=[]
@@ -25,17 +25,19 @@ def notation(orchestra, inst, tech, dyn, note, tgt, onoff, masking_order_idx):
         try:
             if i == 0:
                 highlights[masking_order_idx[i]] = 'red'
-                outer_style[masking_order_idx[i]]['backgroundColor'] = 'red'
+                # outer_style[masking_order_idx[i]]['backgroundColor'] = 'red'
             if i == 1:
                 highlights[masking_order_idx[i]] = 'magenta'
-                outer_style[masking_order_idx[i]]['backgroundColor'] = 'magenta'
+                # outer_style[masking_order_idx[i]]['backgroundColor'] = 'magenta'
             if i == 2:
                 highlights[masking_order_idx[i]] = 'yellow'
-                outer_style[masking_order_idx[i]]['backgroundColor'] = 'yellow'
+                # outer_style[masking_order_idx[i]]['backgroundColor'] = 'yellow'
         except:
             pass
-
+    for i in range(len(note)):
+        note[i]=int(note[i])+microtone[i]
     note, annotations, tgts, highlights, srt_idx = sort_for_vexflow.sort_notes(note, annotations, tgts, highlights)
-    notes = [pretty_midi.note_number_to_name(int(i)) for i in note]  # Change to note names
+    notes = [pretty_midi.note_number_to_name(int(round(i))) for i in note]  # Change to note names
     notes = [i.lower() for i in notes]
-    return {"notes":notes, "instruments":annotations, "target":tgts, "highlights":highlights}
+
+    return {"notes":notes, "notenumbers":note, "instruments":annotations, "target":tgts, "highlights":highlights}

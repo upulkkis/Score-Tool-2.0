@@ -804,7 +804,7 @@ const rowChange = (i, event) => {
               }else if(dynamic.length===0 && ["mf", "mp", "mfz"].includes(n.dynamic)){
                 dynamic = "mf"
                 }
-          data.push([this.orchestrationChords.databaseEntries.inst[idx], this.orchestrationChords.databaseEntries.tech[idx], dynamic, n.note+12+this.orchestrationChords.databaseEntries.modify[idx], this.orchestrationChords.databaseEntries.tgt[idx], this.orchestrationChords.databaseEntries.onoff[idx], idx])
+          data.push([this.orchestrationChords.databaseEntries.inst[idx], this.orchestrationChords.databaseEntries.tech[idx], dynamic, n.note+12+this.orchestrationChords.databaseEntries.modify[idx], this.orchestrationChords.databaseEntries.tgt[idx], this.orchestrationChords.databaseEntries.onoff[idx], idx, 0])
             })  
         }
         })

@@ -6,6 +6,7 @@ import base64
 import numpy as np
 from random import randint
 from scipy.signal import convolve
+from scipy.signal import resample_poly
 import json
 import datetime
 from flask_cors import CORS
@@ -147,6 +148,11 @@ def auto_assign_position(name):
         pos = pos_list[name]
     return pos
 
+def transpose(sample, semitones):
+    trans = 2 ** (semitones / 12)
+    newdata = resample_poly(sample, 44100 / 100, int(44100 * trans / 100))
+    return newdata
+
 def cutSample(data):
     fadeamount=300
     maxindex = np.argmax(data>0.01)
@@ -192,20 +198,22 @@ orc=[
      ['trumpet', 'normal', 'mf', 72, False, True],
      ['tenor_trombone', 'normal', 'mf', 52, False, True]
  ]
-def calculate(ensemble, positions, listening_point, tune=0):
+def calculate(ensemble, positions, listening_point):
     point=listening_point
     i = 0
     sr = 44100
     target_sound = [[], []]
     orchestration_sound = [[], []]
     is_target = False
-    print(ensemble)
+    # print(ensemble)
     for instrument in ensemble:
         instrument = instrument.split(',')
         name = instrument[0]
         tech = instrument[1]
         dyn = instrument[2]
-        note = int(instrument[3])
+        note = float(instrument[3])
+        fraction = note - round(note)
+        note = int(round(note))
         if instrument[-1] == 'False' or instrument[-1] == 'false':
             target = False
         else:
@@ -219,12 +227,14 @@ def calculate(ensemble, positions, listening_point, tune=0):
         data, sr = sf.read(instrument_data_path + '/{}/{}/{}/{}.wav'.format(name, tech, dyn, note))
         if len(np.shape(data)) == 2:
             data = data[:, 0]
+        if fraction!=0:
+            data = transpose(data, fraction)
         data = cutSample(data)
-        print(point)
+        #print(point)
         ir, sr = sf.read(ir_data_path + '/{}/{}.wav'.format(point, pos))
         ir = np.transpose(ir)
         if i == 0:
-            print('nolla')
+            #print('nolla')
             # convolved_left=np.convolve(data, ir[0])
             convolved_left = convolve(data, ir[0])
             print(convolved_left)
@@ -379,6 +389,46 @@ def view_method():
          return calculate(data['orchestration'], data['positions'], data['listeningPosition'])
      else:
          return ''
+
+@app.route('/works', methods=['GET'])
+def get_works():
+    try:
+        with open('./works/works.json') as json_file:
+            data = json.load(json_file)
+        return data
+    except:
+        return "Something went wrong"
+
+@app.route('/<piece>/<file>', methods=['GET'])
+def load_piece(piece, file):
+    def generate_audio():
+        with open("./works/{}/{}.mp3".format(piece, piece), "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+    if file == 'audio':
+        return Response(generate_audio(), mimetype="audio/x-mp3")
+    if file == 'pdf':
+        return send_from_directory(directory='./works/{}'.format(piece),
+                           filename='{}.pdf'.format(piece),
+                           mimetype='application/pdf')
+    if file == 'image':
+        try:
+            return send_from_directory(directory='./works/{}'.format(piece),
+                           filename='{}.jpg'.format(piece),
+                           mimetype='image/jpg')
+        except:
+            return send_from_directory(directory='./works',
+                               filename='dummy.jpg',
+                               mimetype='image/jpg')
+    if file == 'thumb':
+        try:
+            return send_from_directory(directory='./thumbnails',
+                            filename='{}.jpg'.format(piece), mimetype='image/jpg')
+        except:
+            return send_from_directory(directory='./thumbnails',filename='dummy.jpg',mimetype='image/jpg')
+    return ''
 
 @app.route('/maskingSlice', methods=['POST'])
 def calculate_masking_slice():

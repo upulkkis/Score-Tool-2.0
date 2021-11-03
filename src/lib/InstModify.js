@@ -7,6 +7,9 @@ import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Box } from '@mui/material';
+import { Slider } from '@mui/material';
+import { IconButton } from '@mui/material';
 
 export default function InstModify(props){
 
@@ -19,6 +22,7 @@ export default function InstModify(props){
         scoreTgt: props.row[4], 
         scoreOnoff: props.row[5], 
         scoreIdx: props.row[6], 
+        scoreMicro: 0,
         color: props.color,
         scoreModify: 0,
     })
@@ -44,7 +48,7 @@ export default function InstModify(props){
         setState(state => ({...state, scoreDyns:newDyn}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, newDyn, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx]
+          row: [state.scoreNames, state.scoreTechs, newDyn, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
   })
       }
       const modChange = (idx, event) => {
@@ -53,21 +57,21 @@ export default function InstModify(props){
         setState(state => ({...state, scoreModify:newMod, scorePitch:props.row[3]+newMod}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, props.row[3]+newMod, state.scoreTgt, state.scoreOnoff, state.scoreIdx]
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, props.row[3]+newMod, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
   })
       }
       const tgtChange = (idx, event) => {
         setState(state => ({...state, scoreTgt: !state.scoreTgt}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, !state.scoreTgt, state.scoreOnoff, state.scoreIdx]
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, !state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
   })
       }
       const onoffChange = (idx, event) => {
         setState(state => ({...state, scoreOnoff:!state.scoreOnoff}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, !state.scoreOnoff, state.scoreIdx]
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, !state.scoreOnoff, state.scoreIdx, state.scoreMicro]
   })
       }
       
@@ -80,11 +84,34 @@ export default function InstModify(props){
         modify = <div onClick={modChange} style={{backgroundColor: "rgba(30,30,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}>0</div>
       }
 
+      const handleMicro  = (event, newValue) => {
+        setState(state => ({...state, scoreMicro:newValue}))
+      }
+      const handleCommit  = (event, newValue) => {
+        props.onChange({
+          idx: state.idx, 
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
+                    })
+      }
+      const zeroClick = () => setState(state => ({...state, scoreMicro:0}))
+      const selectMicrotone = () => {
+        return (
+          <Box sx={{ width: 60, height: 15, verticalAlign: "top", marginTop: -2}}>
+            <Stack spacing={1} direction="row" sx={{ mb: 1 }} alignItems="center">
+            <img src={"/flat.png"} height="15"/>
+              <Slider valueLabelDisplay="auto" aria-label="tune"  size="small" min={-0.49} step={0.01} max={0.49} value={state.scoreMicro} onChangeCommitted={handleCommit} onChange={handleMicro} />
+              <img src={"/sharp.png"} height="15"/>
+            </Stack>
+          </Box>
+        );
+      }
+
 return(
     <tr>
     <td key={"scor"+state.idx} style={{backgroundColor:state.color}}>{state.scoreNames}</td>
     <td key={"tec"+state.idx}>{state.scoreTechs}</td>
     <td key={"dy"+state.idx}><div onClick={dynChange} style={{backgroundColor: "rgba(123,200,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}> {state.scoreDyns} </div></td>
+    <td key={"micro"+state.idx}>{selectMicrotone()}</td>
     <td key={"tg"+state.idx}><div onClick={tgtChange} style={{backgroundColor: "rgba(123,200,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}>{state.scoreTgt ? "target" : "orchestration"}</div></td>
     <td key={"onof"+state.idx}> <div onClick={onoffChange} style={{backgroundColor: state.scoreOnoff ? "rgba(123,200,30,0.3)" : "rgba(200,123,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}>{state.scoreOnoff ? "ON" : "OFF"} </div></td>
     <td key={"mo"+state.idx}>{modify}</td>

@@ -84,13 +84,14 @@ export default function AnalysisDialog(props) {
     tempList[e.idx] = e.row
 
     setModList(modlist=>modlist=tempList)
-
+    //console.log(tempList)
     let newData = []
     tempList.map(row=>{
       if(row[5]){
         newData.push(row)
       }
     })
+
     axios.post(baseURL+"modalSlice", newData).then((response) => {
       //console.log(response)
       var result = response.data
@@ -157,8 +158,8 @@ export default function AnalysisDialog(props) {
     if(list.length>0){
       let newOrch = JSON.parse(localStorage.getItem("orchestrations"))
       let newList = [...list]
-      newList = newList.map(itm=>[itm[0], itm[1], itm[2], [itm[3]], itm[4], itm[5] ])
-      //console.log(newList)
+      newList = newList.map(itm=>[itm[0], itm[1], itm[2], [itm[3]], itm[4], itm[5], itm[6], itm[7] ])
+      console.log(newList)
       let id = 0
       if(newOrch!=null){
         if(newOrch.length>0){
@@ -176,7 +177,7 @@ export default function AnalysisDialog(props) {
   } else {
     modList.map(row=>{
       if(row[5]){
-        listenList.push(row)
+        listenList.push([row[0], row[1], row[2], row[3]+row[7]])
       }
     })
   }
@@ -232,6 +233,7 @@ export default function AnalysisDialog(props) {
             <td>Instr.</td>
             <td>Tech.</td>
             <td>Dyn.</td>
+            <td>Tune</td>
             <td>Role</td>
             <td>On/Off</td>
             <td>Transpose +- oct.</td>

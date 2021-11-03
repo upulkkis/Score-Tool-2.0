@@ -15,6 +15,28 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 export default function Graphs(props) {
+  const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'B#', 'B' ]
+  function mid2note (midi) {
+    var decimal = midi - Math.floor(midi) // get the decimal part
+    let tone = Math.round(midi)
+    let name = CHROMATIC[tone % 12]
+    if(decimal>=0.2 && decimal<0.5){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone+1) % 12]+"d"  //note without sharp + 1/4 lower
+      } else {
+        name = name+"+"
+      }
+    } else if(decimal>=0.5 && decimal<=0.8){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone-1) % 12]+"+"  //earlier note + 1/4 sharp
+      } else {
+        name = name+"d"
+      } 
+    }
+    var oct = Math.floor(tone / 12) - 1
+    return name + oct
+  }
+
     if(props.data.length<2){
       return null
     }
@@ -32,7 +54,6 @@ export default function Graphs(props) {
       ];
     const gaugeLayout = { width:350, margin: { t: 0, b: 0 }, plot_bgcolor: "#fffef0",paper_bgcolor: "#fffef0" };
 
-    //console.log(props)
     const figConfig = props.data[2].fig_config
     const graphData = props.data[2].msking_graph.data
     const graphLay = props.data[2].msking_graph.layout
@@ -58,7 +79,7 @@ export default function Graphs(props) {
   <div style={{backgroundColor: "rgba(255,0,255,0.5)", display:"inline"}}> 2nd masker</div>
   <div style={{backgroundColor: "rgba(255,255,0,0.5)", display:"inline"}}> 3rd masker </div>
     <Orchestration 
-            notes={props.data[4].notes}
+            notes={props.data[4].notenumbers.map(nbr=>mid2note(nbr))}
             instruments={props.data[4].instruments}
             target={props.data[4].target}
             target_color="green"

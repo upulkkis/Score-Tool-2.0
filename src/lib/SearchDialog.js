@@ -40,11 +40,26 @@ export default function SearchDialog(props) {
   const DYN = ['p', 'mf', 'f']
   const METHOD = ['mfcc', 'centroid', 'masking_curve', 'peaks']
 
-  const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B' ]
+  const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ]
   const OCT = [1, 2, 3, 4, 5, 6, 7, 8]
   function mid2note (midi) {
-    var name = CHROMATIC[midi % 12]
-    var oct = Math.floor(midi / 12) - 1
+    var decimal = midi - Math.floor(midi) // get the decimal part
+    let tone = Math.round(midi)
+    let name = CHROMATIC[tone % 12]
+    if(decimal>=0.2 && decimal<0.5){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone+1) % 12]+"d"  //note without sharp + 1/4 lower
+      } else {
+        name = name+"+"
+      }
+    } else if(decimal>=0.5 && decimal<=0.8){
+      if(/[#]/.test(name)){ // regex if note is sharp
+        name = CHROMATIC[(tone-1) % 12]+"+"  //earlier note + 1/4 sharp
+      } else {
+        name = name+"d"
+      } 
+    }
+    var oct = Math.floor(tone / 12) - 1
     return name + oct
   }
 
@@ -184,7 +199,7 @@ export default function SearchDialog(props) {
     const handleOrch=(e)=>{
       const id = e.target.value
       const orch = JSON.parse(localStorage.getItem("orchestrations")).filter((v,i,a)=>(v.id===id))
-      const orchestration = orch[0].data.map((row, ind)=>[row[0], row[1], row[2], row[3], row[4], row[5], ind])
+      const orchestration = orch[0].data.map((row, ind)=>[row[0], row[1], row[2], row[3], row[4], row[5], ind, row[7]])
       setState(state=>({...state,
         instList: orchestration,
         selected: id
@@ -197,12 +212,18 @@ export default function SearchDialog(props) {
         let index = 0
         lista.map((elem, i)=>{
           elem[3].map(arrNote=>{
-            miniList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index])
+            let mic = 0
+            if(typeof(elem[7])==='number'){
+              mic = elem[7]
+            }
+            miniList.push([elem[0], elem[1], elem[2], arrNote, elem[4], elem[5], index, mic])
             index += 1
           })
         } )
         miniList.sort(function(a, b){return a[3]-b[3]})
-        let notes=miniList.map(l=>mid2note(l[3]))
+        let notes=miniList.map(l=>{
+          return mid2note(l[3]+l[7])
+        })
         let instruments=miniList.map(l=>l[0])
         return <div style={{textAlign:"center", margin:"auto"}}><Orchestration
         notes={notes}
@@ -211,21 +232,21 @@ export default function SearchDialog(props) {
         scale={0.8}
         width={200}
         height={250}
-        t_score_y={50}
-        b_score_y={140}
+        t_score_y={110}
+        b_score_y={170}
         text_space={100}/></div>
       }
     }
 
     const addToTarget = (res, e) =>{
       let LISTA = [...state.instList]
-      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1])
+      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1], 0)
       setState(state=>({...state, instList:LISTA}))
     }
 
     const addToSaved = (res, e) =>{
       let LISTA = [...state.instList]
-      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1])
+      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1], 0)
       setState(state=>({...state, instList:LISTA}))
       let saved = JSON.parse(localStorage.getItem("orchestrations"))
       saved[state.selected].data = LISTA
@@ -237,7 +258,7 @@ export default function SearchDialog(props) {
       let miniList = []
       state.instList.map((elem, i)=>{
         elem[3].map(arrNote=>{
-          miniList.push(elem[0]+","+elem[1]+","+elem[2]+","+arrNote)
+          miniList.push(elem[0]+","+elem[1]+","+elem[2]+","+Math.round(arrNote))   //Rounded note for search
         })
       } )
       const axiosData = [miniList, state.searchMethod, state.searchInstruments, state.searchTechs, state.searchDyn, state.searchPitch, state.searchOct, state.searchPeaks]

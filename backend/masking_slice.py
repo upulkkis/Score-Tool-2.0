@@ -270,17 +270,18 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         'font': {
             'color': 'black'
         },
-        'xaxis': {'title': 'Frequency in Hz', 'type': 'log',
-                  'rangeslider': {'visible': True},
-                  'rangeselector': {'visible':True,
-                                    'buttons':[{'step':'all'}, {'step':'day'}, {'step':'hour'}]},
+        'xaxis': {'title': {'text': 'Frequency in Hz', 'standoff':3}, 'type': 'log',
+                  # 'rangeslider': {'visible': True},
+                  # 'rangeselector': {'visible':True,
+                  #                  'buttons':[{'step':'all'}, {'step':'day'}, {'step':'hour'}]},
                   'showgrid': False,
                   #'range': [1, 1.5],
                   },
-        "title": "Masking curve",
+        "title": {'text': "Masking curve", 'xanchor':'left', 'x':0},
         'yaxis': {'title':  'dB (SPL)', 'showgrid': False, 'zeroline': False},
         'dragmode': 'pan',
-        'annotations':annotations
+        'annotations':annotations,
+        'legend': {'orientation': 'h', 'y':-0.15}
         #'grid': {'rows': 1, 'columns': 2},
         #"height": '99vh',  # view height
     }

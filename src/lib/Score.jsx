@@ -232,8 +232,8 @@ class Score extends Component {
                     sustainingDynamics[i] = partDyns[i][String(verticals.AbsoluteTimestamp.realValue)]
                   }
                   xpositions[String(verticals.AbsoluteTimestamp.realValue)] = verticals.StaffEntries[i].boundingBox.absolutePosition.x
-                  notesAtPoint[i].push({note: note.halfTone, dynamic: sustainingDynamics[i]})
-                  sustainingNotes[i] = {note: note.halfTone, start: verticals.AbsoluteTimestamp.realValue, duration: note.length.realValue}
+                  notesAtPoint[i].push({note: Math.round(note.halfTone), dynamic: sustainingDynamics[i]})
+                  sustainingNotes[i] = {note: Math.round(note.halfTone), start: verticals.AbsoluteTimestamp.realValue, duration: note.length.realValue}
                 }
               })
             }
@@ -735,7 +735,8 @@ const rowChange = (i, event) => {
         const absTimeStamp = Thnote.sourceNote.voiceEntry.parentSourceStaffEntry.AbsoluteTimestamp.realValue
         //console.log(absTimeStamp)
         //console.log(this.orchestrationChords.notes[String(absTimeStamp)])
-        //console.log(Thnote)
+        console.log("thnote")
+        console.log(Thnote)
         //console.log(Thnote.sourceNote.voiceEntry.timestamp.RealValue)
         
         /*

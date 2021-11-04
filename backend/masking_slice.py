@@ -715,8 +715,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #print(mfcc_vector_trace1)
     # mfcc_fig = go.Figure(data=[mfcc_vector_trace1, mfcc_vector_trace2], layout=fig_layout4)
 
-    if multisclice:
-        return [masking_percent, osmd_indexes]
+
     #Make individual orchestration glyph-data:
     orchestration_glyph_data=dict()
     orchestration_glyph_data['mfccs']=orch_mfcc_array
@@ -763,6 +762,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         masking_percent+=10 # if target has matching timbre, it hears less
         if masking_percent>100:
             masking_percent=100
+
+    if multisclice:
+        return [masking_percent, osmd_indexes]
 
     distance_graph = html.Div(className='bar2', children=[
          #html.Div([dcc.Graph(id='distance-graph', figure=distance, config=fig_config)]),

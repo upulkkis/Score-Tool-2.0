@@ -18,6 +18,7 @@ import InstModify from './InstModify';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import QuickListen from '../quickListen';
 
 //const baseURL = "http://127.0.0.1:5000/"; // http://127.0.0.1:5000/databaseInstruments
 const baseURL = "https://rest.score-tool.com/";
@@ -281,6 +282,7 @@ export default function AnalysisDialog(props) {
     </Box>
           <br/>
           <SaveOrch text={state.textFieldValue} orchestration={list}/>
+          <QuickListen instrumentList={listenList}/>
             <Graphs data={data}/>
             <Dragdrop instrumentList={listenList}/>
             

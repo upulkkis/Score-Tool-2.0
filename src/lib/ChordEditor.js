@@ -19,6 +19,7 @@ import { TableBody, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { Savings } from '@mui/icons-material';
+import QuickListen from '../quickListen';
 const theme = createTheme({
   palette: {
   neutral: {
@@ -264,6 +265,7 @@ export default function ChordEditor(props) {
       <Button variant="contained" color="neutral" onClick={updateGraphs} style={{display:"none"}}> Click to update graphs </Button>
       <SaveOrch text={state.textFieldValue} orchestration={state.instList}/>
       </ThemeProvider>
+      <div style={{textAlign:"center", margin:"auto"}}><QuickListen instrumentList={state.listenList}/></div>
       <Graphs data={state.data}/>
           <Dragdrop instrumentList={state.listenList}/>
         </>

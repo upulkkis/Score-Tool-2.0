@@ -179,7 +179,7 @@ export default function Graphs(props) {
         <Item>
         <Plot
             data={props.data[2].mfcc_graph.data}
-            layout={{...props.data[2].mfcc_graph.layout, width:(window.innerWidth/1.5)-50}}
+            layout={{...props.data[2].mfcc_graph.layout, width:(window.innerWidth/1.5)-50, margin:{l:0, r:0}, legend:{orientation:"h"}}}
             config={figConfig}
             width={200}
         />

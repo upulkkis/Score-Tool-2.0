@@ -121,7 +121,11 @@ class Score extends Component {
     renderScore() {
       this.osmd.setOptions({
       drawFromMeasureNumber: this.state.measureRange[0],
-    drawUpToMeasureNumber: this.state.measureRange[1]})
+    drawUpToMeasureNumber: this.state.measureRange[1],
+    backend: "svg",
+
+    //drawSlurs: false
+  })
       this.osmd.render()
       //console.log(this.osmd)
       this.setState(state => state.loaded=true)

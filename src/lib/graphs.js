@@ -69,7 +69,7 @@ export default function Graphs(props) {
           alignItems="center"
           spacing={0.5}>
 
-  <Grid item xs={6} md={6}>
+  <Grid item xs={12} md={6}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Orchestration at clicked point
@@ -89,7 +89,7 @@ export default function Graphs(props) {
             />
     </Item>
   </Grid>
-  <Grid item xs={6} md={6}>
+  <Grid item xs={12} md={6}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Spectral centroid at clicked point
@@ -112,7 +112,7 @@ export default function Graphs(props) {
           justifyContent="center"
           alignItems="center"
           spacing={0.5}>
-  <Grid item xs={6} md={6}>
+  <Grid item xs={12} md={6}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Timbre distance data
@@ -128,7 +128,7 @@ export default function Graphs(props) {
         />
     </Item>
   </Grid>
-  <Grid item xs={6} md={6}>
+  <Grid item xs={12} md={6}>
     <Item style={{height:452, backgroundColor:"#fffef0", verticalAlign: "center"}}>
     <Typography>
             Masking staff graph
@@ -148,7 +148,7 @@ export default function Graphs(props) {
   </Grid>
 
   <Grid
-          style={{marginTop:0.5}}
+          style={{marginTop:0.5, marginInline:0}}
           container
           direction="row"
           justifyContent="left"
@@ -158,7 +158,7 @@ export default function Graphs(props) {
     <Item>
     <Plot
             data={graphData}
-            layout={{...graphLay, width:window.innerWidth-50}}
+            layout={{...graphLay, width:window.innerWidth-50, margin:{l:0, r:0}}}
             config={figConfig}
             
         />
@@ -174,7 +174,18 @@ export default function Graphs(props) {
           justifyContent="center"
           alignItems="center"
           spacing={0.5}>
-                            <Grid item xs={4} md={4}>
+
+                <Grid item xs={12} md={8}>
+        <Item>
+        <Plot
+            data={props.data[2].mfcc_graph.data}
+            layout={{...props.data[2].mfcc_graph.layout, width:(window.innerWidth/1.5)-50}}
+            config={figConfig}
+            width={200}
+        />
+        </Item>
+              </Grid>
+              <Grid item xs={12} md={4}>
                         <Item style={{height:452, backgroundColor:"#fffef0"}}>
                         <Typography>
             Summary of the current orchestration
@@ -186,17 +197,6 @@ export default function Graphs(props) {
                       </Typography>
                       </Item>
                   </Grid>
-                <Grid item xs={8} md={8}>
-        <Item>
-        <Plot
-            data={props.data[2].mfcc_graph.data}
-            layout={{...props.data[2].mfcc_graph.layout, width:(window.innerWidth/1.5)-50}}
-            config={figConfig}
-            width={200}
-        />
-        </Item>
-              </Grid>
-        
 
                   </Grid>
       </div>

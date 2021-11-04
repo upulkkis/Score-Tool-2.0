@@ -275,11 +275,11 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                   # 'rangeselector': {'visible':True,
                   #                  'buttons':[{'step':'all'}, {'step':'day'}, {'step':'hour'}]},
                   'showgrid': False,
-                  #'range': [1, 1.5],
+                  'range': [1.6, 4.3]
                   },
         "title": {'text': "Masking curve", 'xanchor':'left', 'x':0},
         'yaxis': {'title':  'dB (SPL)', 'showgrid': False, 'zeroline': False},
-        'dragmode': 'pan',
+        'dragmode': 'zoom',
         'annotations':annotations,
         'legend': {'orientation': 'h', 'y':-0.15}
         #'grid': {'rows': 1, 'columns': 2},

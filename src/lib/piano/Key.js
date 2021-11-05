@@ -100,7 +100,8 @@ class Key extends React.Component {
         onMouseEnter={gliss ? null : null}
         onMouseLeave={gliss ? this.onStopNoteInput : null}
         onTouchStart={useTouchEvents ? this.onPlayNoteInput : null}
-        onTouchCancel={useTouchEvents ? this.onStopNoteInput : null}
+        onTouchCancel={gliss ? this.onStopNoteInput : null}
+        onTouchMove={gliss ? null : null}
         onTouchEnd={useTouchEvents ? this.onStopNoteInput : null}
       >
         <div className="ReactPiano__NoteLabelContainer">{children}</div>

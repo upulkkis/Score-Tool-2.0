@@ -135,11 +135,14 @@ export default function AddInstCompare(props){
           onClose={handleClose} 
           style={{zIndex: 10000}}   
           anchorOrigin={{
-            vertical: 'center',
+            vertical: 'bottom',
             horizontal: 'left',
           }}
+          sx={{
+            marginTop:3,
+          }}
           transformOrigin={{
-            vertical: 'center',
+            vertical: 'bottom',
             horizontal: 'right',
           }}>
                 <Box sx={{ border: 1, p: 1, bgcolor: 'white' }}>

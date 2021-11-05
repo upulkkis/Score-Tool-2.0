@@ -13,7 +13,7 @@ export default function AboutScoreTool(props) {
 </Typography>
 <Typography variant="h5">Score</Typography>
 <Typography>
-    For analysis, the score must be in uncompressed musicXML format. All current notation programs can export musicXML from the "SaveAs" menu. 
+    For analysis, the score must be in musicXML or mxl (compressed musicXML) format. All current notation programs can export musicXML from the "SaveAs" menu. 
     Drag and drop, or click drop area to upload your score to Score-Tool. Click "load score". Analyzed score can be downloaded as PNG file.
     </Typography>
     <Typography variant="h5">Chord</Typography>

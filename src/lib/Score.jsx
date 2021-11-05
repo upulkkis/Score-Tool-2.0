@@ -52,8 +52,10 @@ class Score extends Component {
       const options = {
         autoResize: this.props.autoResize !== undefined ? this.props.autoResize : false,
         drawTitle: this.props.drawTitle !== undefined ? this.props.drawTitle : true,
+        loadUrlTimeout: 10000
       }
       this.osmd = new OSMD(this.divRef.current, options);
+      this.osmd.setLogLevel("trace")
       //console.log(this.state.instData)
       this.osmd.load(this.props.file).then(() => {
         let scale = 0.5

@@ -96,8 +96,18 @@ class App extends Component {
         });
         this.forceUpdate()
       }
+      var filename = file.name;
+      if (filename.toLowerCase().indexOf(".xml") > 0
+          || filename.toLowerCase().indexOf(".musicxml") > 0) {
+          reader.readAsText(file);
+      } else if (filename.toLowerCase().indexOf(".mxl") > 0) {
+          reader.readAsBinaryString(file);
+      }
+      else {
+          alert("No vaild .xml/.mxl/.musicxml file!");
+      }
       //reader.readAsArrayBuffer(file)
-      reader.readAsText(file)
+      //reader.readAsText(file)
 
   })
   }
@@ -224,7 +234,7 @@ Load current file
               </Select>
             </FormControl>
       <Typography style={{textAlign:"center"}}> or  </Typography>
-        <Dropzone onDrop={this.onDrop} maxFiles={1} accept="text/xml">
+        <Dropzone onDrop={this.onDrop} maxFiles={1}>
         {({getRootProps, getInputProps}) => (
           <section className="container">
             <div {...getRootProps({className: 'dropzone Upload'})} style={{margin: 20, padding: 10, borderRadius:10, border: "2px dashed #4c4c48", backgroundColor: "#dcc4ac"}}>

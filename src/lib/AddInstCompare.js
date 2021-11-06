@@ -46,8 +46,16 @@ export default function AddInstCompare(props){
         scoreNames[idx] = item
         */
         setState(state=>({...state, popOpen:false}))
-        setState(state=> ({...state, scoreNames:evt, scoreTechs:"normal", scoreDyns:"mf"}))
-        props.onChange([evt, "normal", "mf", state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
+        let dyn="mf"
+        if(evt==="crotale"){
+          dyn="f"
+        }
+        let tech ="normal"
+        if(evt==="percussion_misc"){
+          tech="castanet"
+        }
+        setState(state=> ({...state, scoreNames:evt, scoreTechs:tech, scoreDyns:dyn}))
+        props.onChange([evt, tech, dyn, state.scorePitch, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
         //setState(state => state.scoreNames[idx] = event.target.value)
       }
       const techChange = (idx, event) => {

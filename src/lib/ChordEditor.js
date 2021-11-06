@@ -86,14 +86,18 @@ export default function ChordEditor(props) {
       if(tgt==="percussion_misc"){
         tech = "castanet"
       }
+      let dyn="mf"
+      if(tgt==="crotale"){
+        dyn = "f"
+      }
       let notes = []
-      if(noteNumbers[tgt][tech]["mf"][0]===noteNumbers[tgt][tech]["mf"][1]){
-        notes = [noteNumbers[tgt][tech]["mf"][0]]
+      if(noteNumbers[tgt][tech][dyn][0]===noteNumbers[tgt][tech][dyn][1]){
+        notes = [noteNumbers[tgt][tech][dyn][0]]
       }
       if(newList.length === 0){
-      newList.push([tgt, tech, 'mf', notes, false, true, 0])
+      newList.push([tgt, tech, dyn, notes, false, true, 0])
       }else{
-      newList.push([tgt, tech, 'mf', notes, false, true, newList[newList.length-1][6]+1])
+      newList.push([tgt, tech, dyn, notes, false, true, newList[newList.length-1][6]+1])
       }
       console.log(newList)
       setState(state=>({...state,

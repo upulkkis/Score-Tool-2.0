@@ -20,6 +20,7 @@ import InstSelect from './InstSelect';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import * as svg from 'save-svg-as-png';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -35,7 +36,7 @@ const baseURL = "https://rest.score-tool.com/";
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { dataReady: false, loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { dataReady: false, loading:[],loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -49,13 +50,17 @@ class Score extends Component {
     }
 
     setupOsmd() {
+      this.setState(state => ({...state, loading: <CircularProgress color="success" />}))
+       
       const options = {
         autoResize: this.props.autoResize !== undefined ? this.props.autoResize : false,
         drawTitle: this.props.drawTitle !== undefined ? this.props.drawTitle : true,
-        loadUrlTimeout: 10000
+        loadUrlTimeout: 10000,
+        drawSlurs: false
       }
       this.osmd = new OSMD(this.divRef.current, options);
-      this.osmd.setLogLevel("trace")
+      //this.osmd.setLogLevel("trace")
+      //this.osmd.drawingParameters = ["compacttight"]
       //console.log(this.state.instData)
       this.osmd.load(this.props.file).then(() => {
         let scale = 0.5
@@ -112,7 +117,8 @@ class Score extends Component {
         // console.log(this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0])
         // this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0].stemColor = 'red'
         //this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0].notes[0].noteheadColor = 'red'
-      })
+      }).then(()=>this.setState(state => ({...state, loading: []}))
+      ).catch(()=>this.setState(state => ({...state, loading: <div> ERROR LOADING FILE</div>})))
       
     }
 
@@ -120,7 +126,12 @@ class Score extends Component {
       this.osmd.updateGraphic()
     }
 
-    renderScore() {
+    setLoading(){
+      this.setState(state => ({...state, loading: <CircularProgress color="success" />}))
+      setTimeout(() => this.renderScore(), 200)
+    }
+
+    renderScore(){
       this.osmd.setOptions({
       drawFromMeasureNumber: this.state.measureRange[0],
     drawUpToMeasureNumber: this.state.measureRange[1],
@@ -265,7 +276,7 @@ class Score extends Component {
       // console.log(partDyns)
       // console.log(partNotes)
       this.orchestrationChords = {instruments: this.state.instNames, databaseEntries: {inst:this.state.scoreNames, tech:this.state.scoreTechs, dyn:this.state.scoreDyns, tgt:this.state.scoreTgt,onoff:this.state.scoreOnoff, modify:this.state.scoreModify},dynamics: partDyns, notes: partNotes, xpos: xpositions}
-      
+      this.setState(state => ({...state, loading: []}))
     }
   
     resize() {
@@ -698,11 +709,14 @@ const rowChange = (i, event) => {
 </div>
 <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+{this.state.loading}
             <Button
             style = {{display: showScore}}
             variant="contained"
   onClick={() => {
-    this.renderScore()
+      this.setLoading()
+      //this.renderScore()
+    //this.renderScore()
   }}
 >
   Show score
@@ -741,8 +755,8 @@ const rowChange = (i, event) => {
         const absTimeStamp = Thnote.sourceNote.voiceEntry.parentSourceStaffEntry.AbsoluteTimestamp.realValue
         //console.log(absTimeStamp)
         //console.log(this.orchestrationChords.notes[String(absTimeStamp)])
-        console.log("thnote")
-        console.log(Thnote)
+        //console.log("thnote")
+        //console.log(Thnote)
         //console.log(Thnote.sourceNote.voiceEntry.timestamp.RealValue)
         
         /*

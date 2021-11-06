@@ -169,7 +169,7 @@ hide = "none"
       osmd= <div>
         <div style={{display: hide}}>
                     <Button onClick={this.loadFile} variant="contained">
-Load current file
+Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 </Button>
 </div>
 <div style={{display: this.state.load}}>

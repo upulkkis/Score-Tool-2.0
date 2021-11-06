@@ -21,6 +21,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import * as svg from 'save-svg-as-png';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Backdrop } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -36,7 +37,7 @@ const baseURL = "https://rest.score-tool.com/";
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { dataReady: false, loading:[],loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -50,7 +51,7 @@ class Score extends Component {
     }
 
     setupOsmd() {
-      this.setState(state => ({...state, loading: <CircularProgress color="success" />}))
+      this.setState(state => ({...state, loading: true}))
        
       const options = {
         autoResize: this.props.autoResize !== undefined ? this.props.autoResize : false,
@@ -117,8 +118,8 @@ class Score extends Component {
         // console.log(this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0])
         // this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0].stemColor = 'red'
         //this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0].notes[0].noteheadColor = 'red'
-      }).then(()=>this.setState(state => ({...state, loading: []}))
-      ).catch(()=>this.setState(state => ({...state, loading: <div> ERROR LOADING FILE</div>})))
+      }).then(()=>this.setState(state => ({...state, loading: false}))
+      ).catch(()=>this.setState(state => ({...state, loading: false})))
       
     }
 
@@ -127,7 +128,7 @@ class Score extends Component {
     }
 
     setLoading(){
-      this.setState(state => ({...state, loading: <CircularProgress color="success" />}))
+      this.setState(state => ({...state, loading: true}))
       setTimeout(() => this.renderScore(), 200)
     }
 
@@ -276,7 +277,7 @@ class Score extends Component {
       // console.log(partDyns)
       // console.log(partNotes)
       this.orchestrationChords = {instruments: this.state.instNames, databaseEntries: {inst:this.state.scoreNames, tech:this.state.scoreTechs, dyn:this.state.scoreDyns, tgt:this.state.scoreTgt,onoff:this.state.scoreOnoff, modify:this.state.scoreModify},dynamics: partDyns, notes: partNotes, xpos: xpositions}
-      this.setState(state => ({...state, loading: []}))
+      this.setState(state => ({...state, loading: false}))
     }
   
     resize() {
@@ -952,6 +953,13 @@ const rowChange = (i, event) => {
         }}/>
         </Item>
         <AnalysisDialog handleClose={this.handleClose} open={this.state.open} time={this.state.time} data={this.state.modalData}/>
+        <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={this.state.loading}
+      >
+        <CircularProgress disableShrink color="success"/>
+        <Typography> Calculating... (for large scores, 30+ staves and 100+ measures, this can take several minutes)</Typography>
+      </Backdrop>
 
       </>);
     }

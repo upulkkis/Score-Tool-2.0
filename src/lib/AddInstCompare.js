@@ -54,7 +54,13 @@ export default function AddInstCompare(props){
         if(evt==="percussion_misc"){
           tech="castanet"
         }
-        const note = noteNumbers[evt][tech][dyn][0]
+        let note = 60
+        if(noteNumbers[evt][tech][dyn][0]>60){
+          note = noteNumbers[evt][tech][dyn][0]
+        }
+        if(noteNumbers[evt][tech][dyn][1]<60){
+          note = noteNumbers[evt][tech][dyn][0]
+        }
         setState(state=> ({...state, scorePitch:note,scoreNames:evt, scoreTechs:tech, scoreDyns:dyn}))
         props.onChange([evt, tech, dyn, note, state.scoreTgt, state.scoreOnoff, state.scoreIdx])
         //setState(state => state.scoreNames[idx] = event.target.value)

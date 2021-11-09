@@ -240,13 +240,13 @@ export default function SearchDialog(props) {
 
     const addToTarget = (res, e) =>{
       let LISTA = [...state.instList]
-      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1], 0)
+      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1, 0])
       setState(state=>({...state, instList:LISTA}))
     }
 
     const addToSaved = (res, e) =>{
       let LISTA = [...state.instList]
-      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1], 0)
+      LISTA.push([res[0], res[1], res[2], [res[3]], 0, 1, LISTA[LISTA.length-1][6]+1, 0])
       setState(state=>({...state, instList:LISTA}))
       let saved = JSON.parse(localStorage.getItem("orchestrations"))
       saved[state.selected].data = LISTA

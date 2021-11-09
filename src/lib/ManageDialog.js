@@ -147,7 +147,9 @@ const selectedSource=(lista)=>{
   if(lista.length>0){
     let miniList = []
     let index = 0
+    console.log(lista)
     lista.map((elem, i)=>{
+      console.log(elem[0])
       elem[3].map(arrNote=>{
         let micro = 0
         if(typeof(elem[7])==='number'){

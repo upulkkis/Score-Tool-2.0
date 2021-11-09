@@ -22,6 +22,7 @@ import Paper from '@mui/material/Paper';
 import * as svg from 'save-svg-as-png';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Backdrop } from '@mui/material';
+import { typography } from '@mui/system';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -37,7 +38,7 @@ const baseURL = "https://rest.score-tool.com/";
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { calculatingState: "", interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -288,6 +289,10 @@ class Score extends Component {
       this.setState(state => state.open=false);
     };
 
+    calcStop(){
+      this.setState(state => state.interruptCalculation=true);
+    }
+
   
     measureHandleChange(event, newValue, activeThumb){
       if (!Array.isArray(newValue)) {
@@ -304,17 +309,26 @@ class Score extends Component {
     }
 
     calculateMasking(){
+      this.setState(state => state.interruptCalculation=false);
       //console.log(this.orchestrationChords)
       let j = 0
       calc = calc.bind(this)
+      const measuresToCalculate = this.state.measureTimestamps.slice(this.state.measureRange[0]-1, this.state.measureRange[1])
+      let measuresLeft = 999999999
       calc(j)
       this.setState(state => state.calculIndications=true);
+      
       function calc(p){
         let verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[p]
         // console.log(verticals.absoluteTimestamp.realValue)
-        // console.log(this.state.measureTimestamps[this.state.measureRange[0]-1])
       //this.osmd.graphic.VerticalGraphicalStaffEntryContainers.map(verticals =>{
         if(verticals.absoluteTimestamp.realValue>=this.state.measureTimestamps[this.state.measureRange[0]-1] && verticals.absoluteTimestamp.realValue<=this.state.measureTimestamps[this.state.measureRange[1]]){
+
+        if(measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1<measuresLeft){
+          measuresLeft = measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1
+          this.setState(state=>({ ...state, calculatingState: <> <Typography> Measures left to calculate: {measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1} of {measuresToCalculate.length}</Typography> <Button variant="contained" color="info" onClick={this.calcStop.bind(this)}>Stop calculation</Button> </> }))
+        }        
+
         let noteArray = this.orchestrationChords.notes[verticals.absoluteTimestamp.realValue]
         let data = []
         let targets = []
@@ -446,21 +460,36 @@ class Score extends Component {
             j++
             if(this.osmd.graphic.VerticalGraphicalStaffEntryContainers.length>j){
             //verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[j]
-            calc(j)
+            if(!this.state.interruptCalculation){
+              calc(j)
+            }else{
+              this.setState(state=>({ ...state, interruptCalculation:false, calculatingState: <Typography> Calculation stopped! </Typography>}))
             }
+
+            }else{
+              this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
+            }
+            
           });  //AXIOS END
 
 
           
         } else {
+          this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
           j++
           if(this.osmd.graphic.VerticalGraphicalStaffEntryContainers.length>j){
           //verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[j]
-          calc(j)
+          if(!this.state.interruptCalculation){
+            calc(j)
+          }else{
+            this.setState(state=>({ ...state, interruptCalculation:false,  calculatingState: <Typography> Calculation stopped! </Typography>}))
+          }
         }
       }
       //}) // map loop end
       }
+
+      
 
       //console.log(this.orchestrationChords)
       
@@ -644,7 +673,7 @@ class Score extends Component {
           this.calculateMasking()
         }}
       >
-        calculate masking
+        calculate masking, bars {this.state.measureRange[0]} to {this.state.measureRange[1]} ({this.state.measureRange[1]-this.state.measureRange[0]+1} bars)
       </Button>
       <Button
       style={{marginInline: 10}}
@@ -723,6 +752,7 @@ const rowChange = (i, event) => {
   Show score
 </Button>
 {showMasking}
+{this.state.calculatingState}
 </Item>
 {this.state.calculIndications && <Typography style={{display:"inline"}}>Color indications: 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Target masked</div> 

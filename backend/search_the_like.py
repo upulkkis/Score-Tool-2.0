@@ -20,6 +20,9 @@ def do_the_search(orchestra, sources_list, search_source, search_method, search_
         return index
 
     def peak_dist(source_list, target_list, overlap):
+        #print(source_list)
+        #print(target_list)
+
         dist_vect = []
         empty = True
         if len(source_list[0]) <= len(target_list[0]):
@@ -36,6 +39,18 @@ def do_the_search(orchestra, sources_list, search_source, search_method, search_
             return 100000
         return sum(dist_vect)
 
+    def matching_spectra(source_list, target_list, overlap):
+        dist_vect = []
+        empty = True
+        if len(source_list[0]) <= len(target_list[0]):
+            length = len(source_list[0])
+        else:
+            length = len(target_list[0])
+        if length<overlap:
+            overlap=length
+        for i in range(overlap):
+            dist_vect.append(euclidean([source_list[0][i], source_list[1][i]],[target_list[0][i], target_list[1][i]] ))
+        return sum(dist_vect)
     def seek_data(orchestra, source, feature, overlap):
         smallest = 1000000
         match = ''
@@ -64,7 +79,9 @@ def do_the_search(orchestra, sources_list, search_source, search_method, search_
                                             feat = orchestra[inst][tech][dyn][note]['peaks']
                                             dist4 = peak_dist(source[3], feat, overlap)
 
-                                            feat = np.array([dist1, dist2, dist3, dist4])
+                                            dist5 = matching_spectra(source[3], feat, overlap)
+
+                                            feat = np.array([dist1, dist2, dist3, dist4, dist5])
 
                                             dist = sum(feat[feature])
                                             # dist = mean([dist1, dist3, dist4])

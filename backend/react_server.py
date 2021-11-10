@@ -14,14 +14,15 @@ import pickle
 import masking_slice
 import compare_rest
 import timbre_search
+import helpers.constants as constants
 
 #instrument_data_path='N:/Score-Tool iowa samples/out'
 #instrument_data_path = 'c:/sample_database'
-instrument_data_path='/home/uljas/sample_library'
+instrument_data_path=constants.instrument_data_path
 #instrument_data_path='/Users/admin-upu10438/sample_library/sample_library'
 #ir_data_path='N:/Score-Tool iowa samples'
 #ir_data_path = 'c:/sample_database/musatalo'
-ir_data_path='/home/uljas/sample_library/musatalo'
+ir_data_path=constants.ir_data_path
 #ir_data_path='/Users/admin-upu10438/sample_library/sample_library/musatalo'
 
 app = Flask(__name__)
@@ -462,7 +463,7 @@ def compare_instruments():
 def search_instruments():
     new_data = str(request.data, 'utf-8')
     new_data = json.loads(new_data)
-    print(new_data)
+    #print(new_data)
     result = timbre_search.press_search(orchestra, new_data[0], new_data[1], new_data[2], new_data[3], new_data[4], new_data[5], new_data[6], new_data[7])
     return json.dumps(result, cls=NumpyEncoder)
 

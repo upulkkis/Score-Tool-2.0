@@ -38,7 +38,7 @@ export default function SearchDialog(props) {
   const strings = ['violin', 'viola', 'cello', 'double_bass', 'solo_violin', 'solo_viola', 'solo_cello', 'solo_double_bass']
 
   const DYN = ['p', 'mf', 'f']
-  const METHOD = ['mfcc', 'centroid', 'masking_curve', 'peaks']
+  const METHOD = ['mfcc', 'centroid', 'masking_curve', 'peaks', 'match']
 
   const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ]
   const OCT = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -73,7 +73,7 @@ export default function SearchDialog(props) {
       searchPitch: CHROMATIC,
       searchOct: OCT,
       searchDyn : DYN,
-      searchMethod: ["peaks"],
+      searchMethod: ["match"],
       searchPeaks: 3,
       toggle: [true, true, true, false, false, false],
       result:null

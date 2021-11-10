@@ -228,8 +228,10 @@ def search(app, orchestra):
 def press_search(orchestra, search_sources, method, inst_search, tech_search, dyn_search, pitch_class_search, octave_search, overlap):
 
 
-    method_array=np.array([False, False, False, False])
+    method_array=np.array([False, False, False, False, False])
     for methods in method:
+        if methods == 'match':
+            method_array[4]=True
         if methods=='peaks':
             method_array[3]=True
         if methods=='mfcc':

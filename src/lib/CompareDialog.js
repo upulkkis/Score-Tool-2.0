@@ -16,6 +16,8 @@ import Orchestration from './Orchestration';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { address } from './Constants';
+const baseURL = address
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     backgroundColor: '#fffef0',
@@ -23,8 +25,6 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
   }));
-const baseURL = "https://rest.score-tool.com/";
-// const baseURL = "http://127.0.0.1:5000/";
 
 const theme = createTheme({
   palette: {

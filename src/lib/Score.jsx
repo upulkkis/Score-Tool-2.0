@@ -23,6 +23,7 @@ import * as svg from 'save-svg-as-png';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Backdrop } from '@mui/material';
 import { typography } from '@mui/system';
+import { address } from './Constants';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -32,7 +33,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-const baseURL = "https://rest.score-tool.com/";
+const baseURL = address
 //const baseURL = "http://127.0.0.1:5000/"; // http://127.0.0.1:5000/databaseInstruments
 
 class Score extends Component {

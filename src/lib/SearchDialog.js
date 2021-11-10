@@ -18,8 +18,8 @@ import { noteNumbers } from './noteNumbers';
 import { FormatListNumberedTwoTone } from '@mui/icons-material';
 import fromNote from './piano/MidiNumbers.js'
 import axios from 'axios';
-const baseURL = "https://rest.score-tool.com/";
-//const baseURL = "http://127.0.0.1:5000/";
+import { address } from './Constants';
+const baseURL = address
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

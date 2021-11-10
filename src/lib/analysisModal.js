@@ -19,9 +19,10 @@ import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import QuickListen from '../quickListen';
+import { address } from './Constants';
 
 //const baseURL = "http://127.0.0.1:5000/"; // http://127.0.0.1:5000/databaseInstruments
-const baseURL = "https://rest.score-tool.com/";
+const baseURL = address
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

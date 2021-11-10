@@ -10,8 +10,8 @@ import ChordEditor from './ChordEditor';
 import Dropzone from 'react-dropzone';
 import Orchestration from './Orchestration';
 import axios from 'axios';
-const baseURL = "https://rest.score-tool.com/";
-//const baseURL = "http://127.0.0.1:5000/";
+import { address } from './Constants';
+const baseURL = address
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -80,7 +80,7 @@ export default function ManageDialog(props) {
         localStorage.setItem("orchestrations", JSON.stringify([]))
     }
     const handleDelete=(i, e)=>{
-      console.log(i)
+      //console.log(i)
       const orchst = JSON.parse(localStorage.getItem("orchestrations"))
       const newOrchst = orchst.filter((v,p,a)=>(v.id!=i) )
       setOrch(()=>newOrchst)
@@ -147,9 +147,9 @@ const selectedSource=(lista)=>{
   if(lista.length>0){
     let miniList = []
     let index = 0
-    console.log(lista)
+    //console.log(lista)
     lista.map((elem, i)=>{
-      console.log(elem[0])
+      //console.log(elem[0])
       elem[3].map(arrNote=>{
         let micro = 0
         if(typeof(elem[7])==='number'){

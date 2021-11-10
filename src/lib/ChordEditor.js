@@ -20,6 +20,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { Savings } from '@mui/icons-material';
 import QuickListen from '../quickListen';
+import { address } from './Constants';
 const theme = createTheme({
   palette: {
   neutral: {
@@ -28,7 +29,8 @@ const theme = createTheme({
   }
 }
 })
-const baseURL = "https://rest.score-tool.com/";
+console.log(address)
+const baseURL = address;
 //const baseURL = "http://127.0.0.1:5000/";
 
 export default function ChordEditor(props) {

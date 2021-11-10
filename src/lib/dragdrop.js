@@ -6,10 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import axios from "axios";
-
-
-//const baseURL = "http://127.0.0.1:5000/"
-const baseURL = "https://rest.score-tool.com/";
+import { address } from './Constants';
+const baseURL = address
 
 export default function Dragdrop(props) {
 

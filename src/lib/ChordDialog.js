@@ -7,7 +7,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
 import ChordEditor from './ChordEditor';
-const baseURL = "https://rest.score-tool.com/";
+import { address } from './Constants';
+const baseURL = address
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

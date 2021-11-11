@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.spatial.distance import euclidean
-
+import heapq
 
 def do_the_search(orchestra, sources_list, search_source, search_method, search_iterations, include_inst, include_tech, include_dyn, include_notes, overlap):
 
@@ -37,6 +37,30 @@ def do_the_search(orchestra, sources_list, search_source, search_method, search_
                 empty = False
         if empty or len(dist_vect) < overlap:
             return 100000
+        return sum(dist_vect)
+
+    def n_closest(source_list, target_list, overlap):
+
+        def n_lowest(list, n):
+            return heapq.nsmallest(n, list)
+
+        def n_highest_index(list, n):
+            return heapq.nlargest(n, range(len(list)), key=list.__getitem__)
+        dist_vect = []
+
+        if len(source_list[0]) <= len(target_list[0]):
+            length = len(source_list[0])
+        else:
+            length = len(target_list[0])
+        if length<overlap:
+            overlap=length
+
+        indices = n_highest_index(source_list[1], overlap)
+
+        for i in indices:
+            nearest_ind = nearest_index(source_list[0][i], target_list[0])
+            dist_vect.append(euclidean([source_list[0][i], source_list[1][i]],
+                                       [target_list[0][nearest_ind], target_list[1][nearest_ind]]))
         return sum(dist_vect)
 
     def matching_spectra(source_list, target_list, overlap):
@@ -77,9 +101,11 @@ def do_the_search(orchestra, sources_list, search_source, search_method, search_
                                             dist3 = euclidean(feat, source[2])
 
                                             feat = orchestra[inst][tech][dyn][note]['peaks']
-                                            dist4 = peak_dist(source[3], feat, overlap)
+                                            # dist4 = peak_dist(source[3], feat, overlap)
+                                            dist4 = n_closest(source[3], feat, overlap)
 
                                             dist5 = matching_spectra(source[3], feat, overlap)
+                                            #dist5 = n_closest(source[3], feat, overlap)
 
                                             feat = np.array([dist1, dist2, dist3, dist4, dist5])
 

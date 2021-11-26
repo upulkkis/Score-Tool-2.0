@@ -20,6 +20,7 @@ import QueueMusic from '@mui/icons-material/QueueMusic';
 import LibraryMusic from '@mui/icons-material/LibraryMusic';
 import SettingsApplications from '@mui/icons-material/SettingsApplications';
 import Info from '@mui/icons-material/Info';
+import Clear from '@mui/icons-material/Clear';
 import CompareArrows from '@mui/icons-material/CompareArrows';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ManageSearch, ScoreSharp } from '@mui/icons-material';
@@ -141,7 +142,8 @@ class App extends Component {
     var osmd = []
     const handleScore = (e) =>{
       const file = e.target.value;
-      this.setState(state => state.osmd = <Score file={file} show={this.state.cursor} next={this.state.next} />);
+  
+      this.setState(state => state.osmd = <Score file={file} filename={file+"fromExamples"} show={this.state.cursor} next={this.state.next} />);
     }
     //console.log(this.state.files[0])
     
@@ -162,6 +164,7 @@ class App extends Component {
     }
     */
     if (this.state.files[0]){
+      console.log(this.state.files)
       let hide = "inline-block"
       if(this.state.load==="inline-block"){
 hide = "none"
@@ -173,7 +176,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 </Button>
 </div>
 <div style={{display: this.state.load}}>
-<Score file={this.state.file} show={this.state.cursor} next={this.state.next} />
+<Score file={this.state.file} filename={this.state.files[0].name+this.state.files[0].size} show={this.state.cursor} next={this.state.next} />
 </div>
 </div>
     }
@@ -181,6 +184,10 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
     // const trythis = () => {
     //   return extract("bsn", Object.keys(DBinstruments))[0][0]
     // }
+    const clearAll = () =>{
+      localStorage.clear();
+      localStorage.setItem("orchestrations", JSON.stringify([]) );
+    }
     document.body.style.backgroundColor = "#fffef0"
     return (
       <div className="App">
@@ -252,6 +259,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       </div>
       <div style={{display: this.state.about, textAlign: "left", textJustify: "left", paddingInline: "20vw"}}>
 <AboutScoreTool/>
+<Button size="small" onClick={clearAll} variant="contained" color="warning" startIcon={<Clear/>} style={{padding: 10, margin: 5}}> If you get errors, click here to clear all your orchestration data </Button>
 </div>
         </Item>
       </div>

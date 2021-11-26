@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ColoringModes, OpenSheetMusicDisplay as OSMD, PointF2D } from 'opensheetmusicdisplay';
+import { ColoringModes, OpenSheetMusicDisplay as OSMD, PointF2D, GraphicalLabel, Label, TextAlignmentEnum, GraphicalObject } from 'opensheetmusicdisplay';
+//import * as OSMD from '../opensheetmusicdisplay.min.js';
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
 import RespSlider from './RespSlider';
@@ -10,6 +11,8 @@ import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from "axios";
 import {extract} from 'fuzzball';
 import { assignName } from './assignNamesToDatabase';
@@ -39,7 +42,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { calculatingState: "", interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { calculatingState: "", expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -54,12 +57,15 @@ class Score extends Component {
 
     setupOsmd() {
       this.setState(state => ({...state, loading: true}))
-       
+      let measureRangeStart = 1
+      let measureRangeEnd = 10
       const options = {
         autoResize: this.props.autoResize !== undefined ? this.props.autoResize : false,
         drawTitle: this.props.drawTitle !== undefined ? this.props.drawTitle : true,
         loadUrlTimeout: 10000,
-        drawSlurs: false
+        drawSlurs: false,
+        // drawFromMeasureNumber : measureRangeStart,
+        // drawUpToMeasureNumber : measureRangeEnd
       }
       this.osmd = new OSMD(this.divRef.current, options);
       //this.osmd.setLogLevel("trace")
@@ -78,6 +84,7 @@ class Score extends Component {
         scale=0.05
       }
         this.osmd.zoom = scale;
+
         let instNames = []
         let scoreNames = []
         let scoreTechs = []
@@ -85,6 +92,25 @@ class Score extends Component {
         let scoreTgt = []
         let scoreOnoff = []
         let scoreModify = []
+        //console.log(this.props.filename)
+        try{
+          const savedData = JSON.parse(localStorage.getItem(this.props.filename))
+          instNames = savedData.instNames
+          scoreNames = savedData.scoreNames
+          scoreTechs = savedData.scoreTechs
+          scoreDyns = savedData.scoreDyns
+          scoreTgt = savedData.scoreTgt
+          scoreOnoff = savedData.scoreOnoff
+          scoreModify = savedData.scoreModify
+          }
+        catch{
+        instNames = []
+        scoreNames = []
+        scoreTechs = []
+        scoreDyns = []
+        scoreTgt = []
+        scoreOnoff = []
+        scoreModify = []
         this.osmd.sheet.staves.map(p =>{
           instNames.push(p.parentInstrument.nameLabel.text)
           scoreNames.push(assignName(p.parentInstrument.nameLabel.text))
@@ -94,6 +120,7 @@ class Score extends Component {
           scoreOnoff.push(1)
           scoreModify.push(0)
         })
+      }
         /*
         this.osmd.setOptions({
           //renderSingleHorizontalStaffline: true,
@@ -115,7 +142,9 @@ class Score extends Component {
           state.scoreOnoff=scoreOnoff
           state.scoreModify=scoreModify
           state.measureTimestamps=measureTimestamps
-        }) 
+        })
+        //this.osmd.render() 
+        //this.renderScore()
         this.forceUpdate()
         // console.log(this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0])
         // this.osmd.GraphicSheet.musicSheet.staves[0].voices[0].voiceEntries[0].stemColor = 'red'
@@ -130,18 +159,16 @@ class Score extends Component {
     }
 
     setLoading(){
-      this.setState(state => ({...state, loading: true}))
-      setTimeout(() => this.renderScore(), 200)
+      this.setState(state => ({...state, loading: true, expanded: false}))
+      this.osmd.setOptions({
+        drawFromMeasureNumber: this.state.measureRange[0],
+      drawUpToMeasureNumber: this.state.measureRange[1],
+    })
+      setTimeout(() => this.osmd.render(), 200)
+      setTimeout(() => this.renderScore(), 210)
     }
 
     renderScore(){
-      this.osmd.setOptions({
-      drawFromMeasureNumber: this.state.measureRange[0],
-    drawUpToMeasureNumber: this.state.measureRange[1],
-    backend: "svg",
-
-    //drawSlurs: false
-  })
       this.osmd.render()
       //console.log(this.osmd)
       this.setState(state => state.loaded=true)
@@ -310,6 +337,39 @@ class Score extends Component {
     }
 
     calculateMasking(){
+
+      //Code to color an individual bar in blue:
+      //let boundingbox = this.osmd.graphic.measureList[0][1].boundingBox
+      // this.osmd.drawer.drawBoundingBox(boundingbox, "rgba(0,255,0,0.2)", false, "TARGET")
+
+      //DRAW TARGET STAFFS IN LIGHT GREEN:
+      this.osmd.graphic.musicPages[0].musicSystems.map(system=>{
+        system.staffLines.map((SL,ind)=>{
+          if(this.state.scoreTgt[ind]){
+            this.osmd.drawer.drawBoundingBox(SL.boundingBox, "rgba(255, 0, 0,0.2)", false, "TARGET")
+
+            let newLabel = new Label("Target")
+            let GLabel = new GraphicalLabel(newLabel, 4, TextAlignmentEnum.LeftBottom, this.osmd.EngravingRules, SL.boundingBox)
+            GLabel.PositionAndShape = SL.boundingBox
+            GLabel.PositionAndShape.AbsolutePosition.x =GLabel.PositionAndShape.AbsolutePosition.x-10
+            GLabel.setLabelPositionAndShapeBorders()
+            //GLabel.TextLines = [{text:"JUBU", xOffset:10, width: 10}]
+            //GLabel.TextLines = []
+            this.osmd.drawer.drawLabel(GLabel)
+          }
+        }) 
+      })
+
+      
+
+      /*
+      let newLabel = new Label("JUBU")
+      let GLabel = new GraphicalLabel(newLabel, 4, TextAlignmentEnum.LeftCenter, this.osmd.EngravingRules, boundingbox)
+      GLabel.TextLines = [{text:"JUBU", xOffset:10, width: 10}]
+      //GLabel.TextLines = []
+      this.osmd.drawer.drawLabel(GLabel, 0)
+    */
+
       this.setState(state => state.interruptCalculation=false);
       //console.log(this.orchestrationChords)
       let j = 0
@@ -318,6 +378,8 @@ class Score extends Component {
       let measuresLeft = 999999999
       calc(j)
       this.setState(state => state.calculIndications=true);
+
+     
       
       function calc(p){
         let verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[p]
@@ -681,7 +743,9 @@ class Score extends Component {
       variant="contained"
       color="warning"
         onClick={() => {
-          this.renderScore()
+
+          this.setLoading()
+          //this.renderScore()
         }}
       >
         redraw score (remove masking indications)
@@ -690,12 +754,29 @@ class Score extends Component {
       <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography>
       </div>
       }
-      
+            
 // OLD INSTRUMENT SELECTION
 /*
 
 */
 const rowChange = (i, event) => {
+  let modified = {
+    instNames: [...this.state.instNames],
+    scoreNames: [...this.state.scoreNames],
+    scoreTechs: [...this.state.scoreTechs],
+    scoreDyns: [...this.state.scoreDyns],
+    scoreTgt: [...this.state.scoreTgt],
+    scoreOnoff: [...this.state.scoreOnoff],
+    scoreModify: [...this.state.scoreModify]
+  }
+  modified.scoreNames[i] = event.scoreNames
+  modified.scoreTechs[i] = event.scoreTechs
+  modified.scoreDyns[i] = event.scoreDyns
+  modified.scoreTgt[i] = event.scoreTgt
+  modified.scoreOnoff[i] = event.scoreOnoff
+  modified.scoreModify[i] = event.scoreModify
+
+
   //console.log(this.state)
   this.setState(state=>{
     state.scoreNames[i] = event.scoreNames
@@ -705,11 +786,37 @@ const rowChange = (i, event) => {
     state.scoreOnoff[i] = event.scoreOnoff
     state.scoreModify[i] = event.scoreModify
   })
+  
+  localStorage.setItem(this.props.filename, JSON.stringify({
+    instNames: modified.instNames,
+    scoreNames: modified.scoreNames,
+    scoreTechs: modified.scoreTechs,
+    scoreDyns: modified.scoreDyns,
+    scoreTgt: modified.scoreTgt,
+    scoreOnoff: modified.scoreOnoff,
+    scoreModify: modified.scoreModify
+  }))
+}
+
+const handleAccChange = () => {
+  this.setState(state=> state.expanded=!this.state.expanded)
 }
 // svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png');
 
       return (<>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
+        <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#fffef0"}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          style={{textAlign:"center"}}
+        >
+          <Typography style={{textAlign:"center"}}>Click here to show/hide masking calculation properties</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+        <Typography>Select bar range with slider</Typography>
+<RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
         <div >
 <table style={{margin: "auto"}} >
   <tbody>
@@ -738,8 +845,8 @@ const rowChange = (i, event) => {
 </tbody>
 </table>
 </div>
-<Typography>Select bar range with slider</Typography>
-<RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+</AccordionDetails>
+      </Accordion>
 {this.state.loading}
             <Button
             style = {{display: showScore}}
@@ -775,10 +882,14 @@ const rowChange = (i, event) => {
        //console.log(event)
         let xpos = event.clientX // / units;
         let ypos = event.clientY // / units;
+
+        
         
         var clickPointF2D = new PointF2D(xpos, ypos); //{x: xpos, y: ypos};
         //console.log(clickPointF2D)
-        let maxDist = {x: 15, y: 15};
+        //console.log(this.osmd.graphic.GetNearestGraphicalObject(clickPointF2D, new GraphicalObject.GraphicalMeasure.name))
+        
+        let maxDist = {x: 10, y: 10};
         clickPointF2D = this.osmd.graphic.domToSvg(clickPointF2D)
         clickPointF2D = this.osmd.graphic.svgToOsmd(clickPointF2D)
         // console.log(clickPointF2D)

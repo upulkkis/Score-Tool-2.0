@@ -361,7 +361,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
         #If there are at least two componenets over 10db above masking threshold:
         if np.count_nonzero(peaks_above_masking>10)>=1:
-            if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
+            if np.count_nonzero(peaks_above_masking>10)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 10) >= 2:
                 return 20+(percent*0.7)
@@ -369,7 +369,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
         #if there are at least three components over 6db above masking threshold:
         if np.count_nonzero(peaks_above_masking>6)>=1:
-            if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
+            if np.count_nonzero(peaks_above_masking>6)==len(peaks_above_masking):
                 return 10
             if np.count_nonzero(peaks_above_masking > 6) >= 2:
                 return 50 + (percent * 0.5)
@@ -377,7 +377,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
         #if there are at least three components over 0db above masking threshold:
         if np.count_nonzero(peaks_above_masking>0)>=1:
-            if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
+            if np.count_nonzero(peaks_above_masking>0)==len(peaks_above_masking):
                 return 60 #If all peaks are above, but barely
             if np.count_nonzero(peaks_above_masking > 0) >= 2:
                 return 70 + (percent * 0.3)
@@ -675,8 +675,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #effect of centroid
     if target['centroid']<2000 and masking_percent<85:
 
-        masking_add = 2000/(target['centroid']/5) #add masking by certain factor if centroid is under 2khz
-        masking_percent += masking_add
+        masking_add = (2000/target['centroid'])/5 #add masking by certain factor if centroid is under 2khz
+        masking_percent += (masking_add*100)
         if masking_percent>100: #can't go over 100 percent
             masking_percent = 100
 

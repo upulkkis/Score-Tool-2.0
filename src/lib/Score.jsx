@@ -1211,7 +1211,9 @@ function mid2note (midi) {
           this.osmd.cursor.show();
           */
 
-        }}/>
+        }}
+        onMouseLeave={()=>{this.osmd.cursor.hide()}}
+        />
         </Tooltip>
         </Item>
         <AnalysisDialog handleClose={this.handleClose} open={this.state.open} time={this.state.time} data={this.state.modalData}/>

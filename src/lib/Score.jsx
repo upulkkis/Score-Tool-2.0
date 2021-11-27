@@ -11,6 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Tooltip, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from "axios";
@@ -27,6 +28,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Backdrop } from '@mui/material';
 import { typography } from '@mui/system';
 import { address } from './Constants';
+import Orchestration from './Orchestration';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -42,7 +44,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { calculatingState: "", expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { calculatingState: "", tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -727,6 +729,11 @@ class Score extends Component {
       }
       let showMasking = []
       let showScore = "inline-block"
+
+      const handleShowTooltipChange = () => {
+        this.setState(state=>state.showTooltip=!this.state.showTooltip)
+      }
+
       if (this.state.loaded){
         showScore = "none"
         showMasking = <div><Button
@@ -751,6 +758,11 @@ class Score extends Component {
         redraw score (remove masking indications)
       </Button>
       <Button variant="contained" color="primary" onClick={()=>svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')}>Download the score as PNG</Button>
+      <div style={{textAlign:"center", margin:"auto"}}>
+      <FormGroup style={{textAlign:"center", margin:"auto"}}>
+        <FormControlLabel style={{textAlign:"center", margin:"auto"}} control={<Checkbox   checked={this.state.showTooltip} onChange={handleShowTooltipChange} />} label="Show orchestration under mouse pointer" />
+      </FormGroup>
+      </div>
       <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography>
       </div>
       }
@@ -800,6 +812,28 @@ const rowChange = (i, event) => {
 
 const handleAccChange = () => {
   this.setState(state=> state.expanded=!this.state.expanded)
+}
+
+const CHROMATIC = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'B#', 'B' ]
+function mid2note (midi) {
+  var decimal = midi - Math.floor(midi) // get the decimal part
+  let tone = Math.round(midi)
+  let name = CHROMATIC[tone % 12]
+  if(decimal>=0.2 && decimal<0.5){
+    if(/[#]/.test(name)){ // regex if note is sharp
+      name = CHROMATIC[(tone+1) % 12]+"d"  //note without sharp + 1/4 lower
+    } else {
+      name = name+"+"
+    }
+  } else if(decimal>=0.5 && decimal<=0.8){
+    if(/[#]/.test(name)){ // regex if note is sharp
+      name = CHROMATIC[(tone-1) % 12]+"+"  //earlier note + 1/4 sharp
+    } else {
+      name = name+"d"
+    } 
+  }
+  var oct = Math.floor(tone / 12) - 1
+  return name + oct
 }
 // svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png');
 
@@ -862,7 +896,7 @@ const handleAccChange = () => {
 {showMasking}
 {this.state.calculatingState}
 </Item>
-{this.state.calculIndications && <Typography style={{display:"inline"}}>Color indications: 
+{this.state.calculIndications && <><Typography style={{display:"inline"}}>Color indications: 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Target masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> Target nearly masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> Target audible</div> 
@@ -870,8 +904,12 @@ const handleAccChange = () => {
   <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> Orchestration second heaviest masker</div>
   <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> Orchestration third heaviest masker </div>
   </Typography>
+</>
     }
 <Item>
+
+<Tooltip title={<div>{this.state.tooltip}</div>} placement="top-start" followCursor>
+          
       <div ref={this.divRef} style={{width: window.innerWidth-100}} onClick={event=>{
         /*
         console.log(event.target.closest('.vf-stavenote'))
@@ -1092,7 +1130,89 @@ const handleAccChange = () => {
         // console.log(this.osmd.GraphicSheet (clickPointF2D));// (clickPointF2D));
         //console.log(this.osmd.GraphicSheet.GetVerticalContainerFromTimestamp(clickPointF2D.x).AbsoluteTimestamp);
         // console.log(this.osmd.GraphicSheet.GetNearestNote(clickPointF2D, maxDist));
+        }} onMouseOver={event=>{
+          if(this.state.showTooltip){
+          let xpos = event.clientX // / units;
+          let ypos = event.clientY // / units;
+          var clickPointF2D = new PointF2D(xpos, ypos)
+          clickPointF2D = this.osmd.graphic.domToSvg(clickPointF2D)
+          clickPointF2D = this.osmd.graphic.svgToOsmd(clickPointF2D)
+          const absTimeStamp = this.osmd.graphic.tryGetTimeStampFromPosition(clickPointF2D)
+          if(typeof(absTimeStamp)!=="undefined"){
+            this.osmd.cursor.hide();
+            this.osmd.cursor.cursorOptions.color = "purple"
+            this.osmd.cursor.reset();
+            while (this.osmd.cursor.iterator.currentTimeStamp.RealValue != absTimeStamp.realValue){
+              this.osmd.cursor.next()
+            }
+            this.osmd.cursor.show();
+
+            let noteArray = this.orchestrationChords.notes[absTimeStamp.realValue]
+            let data = []
+            let targets = []
+            let tgtPresent = false
+            noteArray.map((note,idx) => {
+              if(this.orchestrationChords.databaseEntries.tgt[idx]){
+                targets.push(idx)
+              }
+              if(note.length>0){
+                let dynamic = []
+                if(this.orchestrationChords.databaseEntries.dyn[idx]!=="from_score"){
+                  dynamic=this.orchestrationChords.databaseEntries.dyn[idx]
+                }
+                if(this.orchestrationChords.databaseEntries.tgt[idx]){
+                  tgtPresent = true
+                }
+                note.map(n => {
+                  // console.log(n.dynamic)
+                  // console.log(["ppppp", "pppp", "ppp", "pp", "p"].includes(n.dynamic))
+                  if(dynamic.length===0 && ["ppppp", "pppp", "ppp", "pp", "p"].includes(n.dynamic)){
+                    dynamic = "p"
+                  }else if(dynamic.length===0 && ["fffff", "ffff", "fff", "ff", "f", "sfz", "sf"].includes(n.dynamic)){
+                  dynamic = "f"
+                  }else if(dynamic.length===0 && ["mf", "mp", "mfz"].includes(n.dynamic)){
+                    dynamic = "mf"
+                    }
+              data.push([this.orchestrationChords.databaseEntries.inst[idx], this.orchestrationChords.databaseEntries.tech[idx], dynamic, n.note+12+this.orchestrationChords.databaseEntries.modify[idx], this.orchestrationChords.databaseEntries.tgt[idx]])
+                })  
+            }
+            })
+
+            data.sort(function(a, b){return a[3]-b[3]})
+            let notes=data.map(l=>mid2note(l[3]))
+            let instruments=data.map(l=>l[0]+" "+l[1])
+            let tgts = data.map((l,i)=>{if(l[4]){return i}})
+
+            const TOOLTIP = <div style={{textAlign:"center", margin:"auto", verticalAlign:"bottom", backgroundColor:"#fffef0cc"}}>
+              <Orchestration
+                notes={notes}
+                instruments={instruments}
+                target={tgts}
+                target_color="green"
+                height={250}
+                scale={0.7}/>
+                <div style={{color:"black"}}>Orchestration under mouse pointer, target on green. Click to see detailed analysis.</div>
+                </div>
+
+          this.setState(state => state.tooltip = TOOLTIP)
+            //console.log(data)
+
+          }
+        } else{
+          this.setState(state => state.tooltip = "click any note for orchestration details")
+          this.osmd.cursor.hide()
+        }
+          /*
+          this.osmd.cursor.hide();
+          this.osmd.cursor.reset();
+          while (this.osmd.cursor.iterator.currentTimeStamp.RealValue != absTimeStamp){
+            this.osmd.cursor.next()
+          }
+          this.osmd.cursor.show();
+          */
+
         }}/>
+        </Tooltip>
         </Item>
         <AnalysisDialog handleClose={this.handleClose} open={this.state.open} time={this.state.time} data={this.state.modalData}/>
         <Backdrop
@@ -1102,6 +1222,7 @@ const handleAccChange = () => {
         <CircularProgress disableShrink color="success"/>
         <Typography> Calculating... (for large scores, 30+ staves and 100+ measures, this can take several minutes)</Typography>
       </Backdrop>
+      {this.state.tooltip}
 
       </>);
     }

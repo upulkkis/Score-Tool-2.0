@@ -176,7 +176,9 @@ export default class Orchestration extends Component {
                 var ultra_highlights = note_data[14]
 
                 for (var i=0; i<note_data[11].length; i++){
-                    ultra_notes.addAccidental(i, new VF.Accidental(note_data[11][i]));
+                    if(note_data[11][i]!=="n"){
+                        ultra_notes.addAccidental(i, new VF.Accidental(note_data[11][i]));
+                    }
                     var tekstiu = viereen(ultra_inst[i], VF.Modifier.Position.RIGHT)
                     tekstiu.setOffsetX(-10)
                     //console.log(teksti) // 
@@ -280,7 +282,9 @@ export default class Orchestration extends Component {
                 }
                 //console.log(treble_notes)
                 for (var i=0; i<note_data[1].length; i++){
-                    treble_notes.addAccidental(i, new VF.Accidental(note_data[1][i]));
+                    if(note_data[1][i]!=="n"){
+                        treble_notes.addAccidental(i, new VF.Accidental(note_data[1][i]));
+                    }
                     var teksti = viereen(treble_inst[i], VF.Modifier.Position.RIGHT)
                     teksti.setOffsetX(-10)
                     //console.log(teksti) // 
@@ -300,7 +304,9 @@ export default class Orchestration extends Component {
                     } 
                 }
                 for (var i=0; i<note_data[3].length; i++){
-                    bass_notes.addAccidental(i, new VF.Accidental(note_data[4][i]));
+                    if(note_data[4][i]!=="n"){
+                        bass_notes.addAccidental(i, new VF.Accidental(note_data[4][i]));
+                    }
 
                     var bteksti = viereen(bass_inst[i], VF.Modifier.Position.RIGHT)
                     bteksti.setOffsetX(-10)

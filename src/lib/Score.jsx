@@ -736,7 +736,12 @@ class Score extends Component {
 
       if (this.state.loaded){
         showScore = "none"
-        showMasking = <div><Button
+        showMasking = <div>
+                <div style={{display:"block", maxWidth:"50%", textAlign:"center", margin:"auto"}}>
+      <Typography variant="h6" style={{display:"block"}}> Set calculation bar range:</Typography>
+            <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+            </div>
+          <Button
         variant="contained"
         color="secondary"
         onClick={() => {
@@ -851,6 +856,7 @@ function mid2note (midi) {
         <AccordionDetails>
         <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+<Button style = {{display: showScore}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
         <div >
 <table style={{margin: "auto"}} >
   <tbody>
@@ -1180,18 +1186,19 @@ function mid2note (midi) {
 
             data.sort(function(a, b){return a[3]-b[3]})
             let notes=data.map(l=>mid2note(l[3]))
-            let instruments=data.map(l=>l[0]+" "+l[1])
+            let instruments=data.map(l=>l[0])
             let tgts = data.map((l,i)=>{if(l[4]){return i}})
 
-            const TOOLTIP = <div style={{textAlign:"center", margin:"auto", verticalAlign:"bottom", backgroundColor:"#fffef0cc"}}>
+            const TOOLTIP = <div style={{textAlign:"center", margin:"auto", verticalAlign:"bottom", backgroundColor:"#fffef0cc", width:200}}>
+              <div style={{color:"black"}}>Orchestration under mouse pointer, target on green. Click to see detailed analysis.</div>
               <Orchestration
                 notes={notes}
                 instruments={instruments}
                 target={tgts}
                 target_color="green"
                 height={250}
+                width={160}
                 scale={0.7}/>
-                <div style={{color:"black"}}>Orchestration under mouse pointer, target on green. Click to see detailed analysis.</div>
                 </div>
 
           this.setState(state => state.tooltip = TOOLTIP)

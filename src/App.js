@@ -1,6 +1,7 @@
 import React, { Component, Suspense, lazy } from 'react';
 import Dropzone from 'react-dropzone';
 import './App.css';
+import MyNavbar from './MyNavbar';
 import Score from './lib/Score'
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -142,8 +143,8 @@ class App extends Component {
     var osmd = []
     const handleScore = (e) =>{
       const file = e.target.value;
-  
-      this.setState(state => state.osmd = <Score file={file} filename={file+"fromExamples"} show={this.state.cursor} next={this.state.next} />);
+      this.setState(state => state.load = "block")
+      this.setState(state => state.osmd = <Score file={file} filename={file+"fromExamples"} show={this.state.cursor} next={this.state.next}/>);
     }
     //console.log(this.state.files[0])
     
@@ -164,11 +165,14 @@ class App extends Component {
     }
     */
     if (this.state.files[0]){
-      console.log(this.state.files)
+      //console.log(this.state.files)
       let hide = "inline-block"
       if(this.state.load==="inline-block"){
 hide = "none"
       }
+
+      //this.setState(state=>state.osmd="")
+
       osmd= <div>
         <div style={{display: hide}}>
                     <Button onClick={this.loadFile} variant="contained">
@@ -179,6 +183,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 <Score file={this.state.file} filename={this.state.files[0].name+this.state.files[0].size} show={this.state.cursor} next={this.state.next} />
 </div>
 </div>
+
     }
 
     // const trythis = () => {
@@ -189,14 +194,47 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       localStorage.setItem("orchestrations", JSON.stringify([]) );
     }
     document.body.style.backgroundColor = "#fffef0"
+    const navClick = (e) => {
+      //console.log(e)
+      switch (e) {
+        case "Score": 
+          this.setState(state=>({...state, analyze: "block", about:"none"}))
+          break
+        case "Chord":
+          this.setState(state=>({...state, chord: true, analyze: "block", about:"none"}))
+          break
+        case "Compare":
+          this.setState(state=>({...state, compare: true, analyze: "block", about:"none"}))
+          break
+        case "Search":
+          this.setState(state=>({...state, search: true, analyze: "block", about:"none"}))
+          break
+        case "About":
+          this.setState(state=>({...state, analyze: "none", about:"block"}))
+          break
+        case "Manage":
+          this.setState(state=>({...state, manage: true, analyze: "block", about:"none"}))
+          break
+        default:
+          this.setState(state=>({...state, analyze: "none", about:"block"}))
+          break
+      }
+
+    }
+    const helpSel = (e) => {
+      console.log(e)
+    }
     return (
       <div className="App">
+        <MyNavbar navClick={navClick} help={helpSel}/>
        <Item>
+       <div style={{display: this.state.about}}>
         <header className="App-header" style={{padding: 10, borderRadius:20}}>
           <h1 className="App-title" style={{padding: 10, borderRadius:20}}>Score-Tool 2.0</h1>
           <h1 className="App-title" style={{padding: 10, borderRadius:20}}>Psychoacoustic orchestration tool by Uljas Pulkkis 2021</h1>
         </header>
- 
+      </div>
+{/*}
         <ThemeProvider theme={theme}>
 <div style={{padding: 10}}>
 <div style={{display: "inline"}}>
@@ -219,13 +257,14 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       </div>
       </div>
 </ThemeProvider>
-
+    */}
             <ChordDialog handleClose = {this.chordClose.bind(this)} open={this.state.chord}/>
             <CompareDialog handleClose = {this.compareClose.bind(this)} open={this.state.compare}/>
             <SearchDialog handleClose = {this.searchClose.bind(this)} open={this.state.search}/>
             <ManageDialog handleClose = {this.manageClose.bind(this)} open={this.state.manage}/>
 
         <div className="" style={{display: this.state.analyze}}>
+        {this.state.load==="none" && <div>
         <Typography style={{textAlign:"center"}}> Select an example score  </Typography>
       <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="score-select">Scores</InputLabel>
@@ -254,6 +293,8 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
           </section>
         )}
       </Dropzone>
+      </div>
+}
       {osmd}
       {this.state.osmd}
       </div>

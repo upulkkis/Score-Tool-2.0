@@ -184,6 +184,7 @@ const selectedSource=(lista)=>{
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
+          {/* 
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -196,6 +197,7 @@ const selectedSource=(lista)=>{
               </IconButton>
             </Toolbar>
           </AppBar>
+          */}
           <Typography style={{textAlign:"center"}}>
               Here you can manage your saved orchestrations
           </Typography>

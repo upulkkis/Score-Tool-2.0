@@ -90,6 +90,7 @@ export default function CompareDialog(props) {
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
+          {/*
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -102,6 +103,7 @@ export default function CompareDialog(props) {
               </IconButton>
             </Toolbar>
           </AppBar>
+          */}
           <Typography style={{textAlign:"center"}}>
               Compare two instrument timbres. Select instruments to compare below.
           </Typography>

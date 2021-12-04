@@ -21,6 +21,7 @@ import { DBinstruments } from '../instruments';
 import { noteNumbers } from './noteNumbers';
 import AnalysisDialog from './analysisModal';
 import InstSelect from './InstSelect';
+import { AppBar, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import * as svg from 'save-svg-as-png';
@@ -29,6 +30,15 @@ import { Backdrop } from '@mui/material';
 import { typography } from '@mui/system';
 import { address } from './Constants';
 import Orchestration from './Orchestration';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+const theme = createTheme({
+  palette: {
+  neutral: { 
+    main: '#dcc4ac',
+    contrastText: 'black'
+  }
+}
+})
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -738,10 +748,14 @@ class Score extends Component {
         showScore = "none"
         showMasking = <div>
                 <div style={{display:"block", maxWidth:"50%", textAlign:"center", margin:"auto"}}>
-      <Typography variant="h6" style={{display:"block"}}> Set calculation bar range:</Typography>
-            <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+      <Typography style={{display:"inline-block"}}> Set calculation bar range:</Typography>
+      <div style={{display:"inline-block", width:"30vh", marginInlineStart:"10px"}}>
+            <RespSlider style={{display:"inline-block"}} range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+            </div>
             </div>
           <Button
+          size="small"
+          sx={{display:"inline-block"}}
         variant="contained"
         color="secondary"
         onClick={() => {
@@ -751,7 +765,8 @@ class Score extends Component {
         calculate masking, bars {this.state.measureRange[0]} to {this.state.measureRange[1]} ({this.state.measureRange[1]-this.state.measureRange[0]+1} bars)
       </Button>
       <Button
-      style={{marginInline: 10}}
+      size="small"
+      style={{marginInline: 10, display:"inline-block"}}
       variant="contained"
       color="warning"
         onClick={() => {
@@ -760,16 +775,17 @@ class Score extends Component {
           //this.renderScore()
         }}
       >
-        redraw score (remove masking indications)
+        redraw score
       </Button>
-      <Button variant="contained" color="primary" onClick={()=>svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')}>Download the score as PNG</Button>
-      <div style={{textAlign:"center", margin:"auto"}}>
-      <FormGroup style={{textAlign:"center", margin:"auto"}}>
-        <FormControlLabel style={{textAlign:"center", margin:"auto"}} control={<Checkbox   checked={this.state.showTooltip} onChange={handleShowTooltipChange} />} label="Show orchestration under mouse pointer" />
-      </FormGroup>
-      </div>
-      <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography>
-      </div>
+      <Button size="small" variant="contained" color="primary" onClick={()=>svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')}>Download score</Button>
+      {/* <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography> */}
+                  <div style={{display:"inline-block", marginInlineStart:10}}>
+                  <FormGroup sx={{display:"inline-block"}}>
+                    <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.showTooltip} onChange={handleShowTooltipChange} />} label="Orch. under mouse" />
+                  </FormGroup>
+                  </div>
+
+                  </div>
       }
             
 // OLD INSTRUMENT SELECTION
@@ -843,6 +859,9 @@ function mid2note (midi) {
 // svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png');
 
       return (<>
+    <ThemeProvider theme={theme}>
+      <AppBar color="neutral" style={{overflow:"auto", marginTop:50}}>
+        <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
         <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#fffef0"}}>
         <AccordionSummary
@@ -854,10 +873,11 @@ function mid2note (midi) {
           <Typography style={{textAlign:"center"}}>Click here to show/hide masking calculation properties</Typography>
         </AccordionSummary>
         <AccordionDetails>
+          
         <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
-<Button style = {{display: showScore}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
-        <div >
+<Button style = {{display: showScore, margin:5}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
+        <div style={{overflow:"auto", maxHeight:"75vh"}}>
 <table style={{margin: "auto"}} >
   <tbody>
 <tr>
@@ -889,7 +909,7 @@ function mid2note (midi) {
       </Accordion>
 {this.state.loading}
             <Button
-            style = {{display: showScore}}
+            style = {{display: showScore, margin:5}}
             variant="contained"
   onClick={() => {
       this.setLoading()
@@ -901,22 +921,26 @@ function mid2note (midi) {
 </Button>
 {showMasking}
 {this.state.calculatingState}
-</Item>
-{this.state.calculIndications && <><Typography style={{display:"inline"}}>Color indications: 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Target masked</div> 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> Target nearly masked</div> 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> Target audible</div> 
-  <div style={{backgroundColor: "rgba(255,51,255,0.5)", display:"inline"}}> Orchestration heaviest masker</div>
-  <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> Orchestration second heaviest masker</div>
-  <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> Orchestration third heaviest masker </div>
+{this.state.calculIndications && <><Typography style={{display:"inline"}}>Colors: 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> audible</div> 
+  <div style={{backgroundColor: "rgba(255,51,255,0.5)", display:"inline"}}> heaviest masker</div>
+  <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> 2nd masker</div>
+  <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> 3rd masker </div>
   </Typography>
 </>
     }
+</Item>
+
+        </Container>
+      </AppBar>
+      </ThemeProvider>
 <Item>
 
 <Tooltip title={<div>{this.state.tooltip}</div>} placement="top-start" followCursor>
           
-      <div ref={this.divRef} style={{width: window.innerWidth-100}} onClick={event=>{
+      <div ref={this.divRef} style={{width: window.innerWidth-100, marginTop:240}} onClick={event=>{
         /*
         console.log(event.target.closest('.vf-stavenote'))
         console.log(event.target.parentElement.closest('.vf-stavenote'))
@@ -1231,7 +1255,9 @@ function mid2note (midi) {
         <CircularProgress disableShrink color="success"/>
         <Typography> Calculating... (for large scores, 30+ staves and 100+ measures, this can take several minutes)</Typography>
       </Backdrop>
+      <div style={{display:"none"}}>
       {this.state.tooltip}
+      </div>
 
       </>);
     }

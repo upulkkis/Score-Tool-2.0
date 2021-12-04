@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 export default function AboutScoreTool(props) {
 
     return(
-        <div>
+        <div style={{marginTop:10}}>
             <Typography variant="h4" style={{border: "1px solid", padding: 5}}>This is a completely new version of Score-Tool. If you want to use the old version, visit <a href="https://old.score-tool.com" target="_blank">old.score-tool.com</a> </Typography>
             
 <Typography variant="h5">About</Typography>

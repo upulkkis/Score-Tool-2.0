@@ -30,6 +30,7 @@ export default function ChordDialog(props) {
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
+          {/* 
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -42,6 +43,7 @@ export default function ChordDialog(props) {
               </IconButton>
             </Toolbar>
           </AppBar>
+          */} 
           <ChordEditor/>
           </Dialog>
           </div>

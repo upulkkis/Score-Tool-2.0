@@ -366,6 +366,8 @@ export default function SearchDialog(props) {
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
+
+          {/* 
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -378,6 +380,7 @@ export default function SearchDialog(props) {
               </IconButton>
             </Toolbar>
           </AppBar>
+          */}
 
           <Typography style={{textAlign:"center"}}> Select search source from your saved orchestrations  </Typography>
       <FormControl sx={{ m: 1, minWidth: 50 }}>

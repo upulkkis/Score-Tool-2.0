@@ -23,6 +23,7 @@ export default function RespSlider(props) {
     }
     return(
         <Slider
+        style={props.style}
         value={state.measureRange}
         min={1}
         max={state.maxMeasure}

@@ -1,5 +1,13 @@
 .App {
+  margin-top: 70px;
   text-align: center;
+}
+
+.MuiDialogContent-root {
+  margin-top: 50px !important;
+}
+.MuiDialog-paperFullScreen {
+  margin-top: 100px !important;
 }
 
 .App-logo {

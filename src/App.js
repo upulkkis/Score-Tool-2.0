@@ -217,7 +217,6 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
           this.setState(state=>({...state, manage: true, analyze: "block", about:"none"}))
           break
         default:
-          this.setState(state=>({...state, analyze: "none", about:"block"}))
           break
       }
 

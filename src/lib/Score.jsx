@@ -752,12 +752,15 @@ class Score extends Component {
       if (this.state.loaded){
         showScore = "none"
         showMasking = <div>
+          <Tooltip title={<Helps help="CalcRange"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
                 <div style={{display:"block", maxWidth:"50%", textAlign:"center", margin:"auto"}}>
       <Typography style={{display:"inline-block"}}> Set calculation bar range:</Typography>
       <div style={{display:"inline-block", width:"30vh", marginInlineStart:"10px"}}>
             <RespSlider style={{display:"inline-block"}} range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
             </div>
             </div>
+            </Tooltip>
+            <Tooltip title={<Helps help="CalcButton"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
           <Button
           size="small"
           sx={{display:"inline-block"}}
@@ -769,6 +772,8 @@ class Score extends Component {
       >
         calculate masking, bars {this.state.measureRange[0]} to {this.state.measureRange[1]} ({this.state.measureRange[1]-this.state.measureRange[0]+1} bars)
       </Button>
+      </Tooltip>
+      <Tooltip title={<Helps help="Redraw"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
       <Button
       size="small"
       style={{marginInline: 10, display:"inline-block"}}
@@ -782,14 +787,18 @@ class Score extends Component {
       >
         redraw score
       </Button>
+      </Tooltip>
+      <Tooltip title={<Helps help="DownloadScore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
       <Button size="small" variant="contained" color="primary" onClick={()=>svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')}>Download score</Button>
+      </Tooltip>
       {/* <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography> */}
+      <Tooltip title={<Helps help="UnderMouse"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
                   <div style={{display:"inline-block", marginInlineStart:10}}>
                   <FormGroup sx={{display:"inline-block"}}>
                     <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.showTooltip} onChange={handleShowTooltipChange} />} label="Orch. under mouse" />
                   </FormGroup>
                   </div>
-
+</Tooltip>
                   </div>
       }
             
@@ -862,7 +871,7 @@ function mid2note (midi) {
   return name + oct
 }
 // svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png');
-console.log(this.props.help)
+// console.log(this.props.help)
       return (<>
     <ThemeProvider theme={theme}>
       <small>
@@ -887,7 +896,9 @@ console.log(this.props.help)
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
 </div>
 </Tooltip>
+<Tooltip title={<Helps help="Showscore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
 <Button style = {{display: showScore, margin:5}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
+</Tooltip>
         <div style={{overflow:"auto", maxHeight:"65vh"}}>
 <table style={{margin: "auto"}} >
   <tbody>
@@ -911,6 +922,7 @@ console.log(this.props.help)
     scoreOnoff= {this.state.scoreOnoff[idx]}
     scoreModify= {this.state.scoreModify[idx]}
     onChange= {e => rowChange(idx,e)}
+    help={this.props.help}
     />
 ))}
 </tbody>
@@ -919,6 +931,7 @@ console.log(this.props.help)
 </AccordionDetails>
       </Accordion>
 {this.state.loading}
+<Tooltip title={<Helps help="Showscore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
             <Button
             style = {{display: showScore, margin:5}}
             variant="contained"
@@ -930,6 +943,7 @@ console.log(this.props.help)
 >
   Show score
 </Button>
+</Tooltip>
 {showMasking}
 {this.state.calculatingState}
 {this.state.calculIndications && <><Typography style={{display:"inline"}}>Colors: 

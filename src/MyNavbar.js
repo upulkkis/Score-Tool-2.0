@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Info from '@mui/icons-material/Info';
+import Help from '@mui/icons-material/Help';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
@@ -99,9 +100,11 @@ export default function MyNavbar(props) {
                 }}
               >
                 {pages.map((page) => (
+                  <Tooltip title={<Helps help={page}/>} disableHoverListener={!help}>
                   <MenuItem key={page} onClick={(e)=>handleCloseNavMenu(page, e)}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
+                  </Tooltip>
                 ))}
               </Menu>
             </Box>
@@ -115,6 +118,7 @@ export default function MyNavbar(props) {
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
+                <Tooltip title={<Helps help={page}/>} disableHoverListener={!help}>
                 <Button
                   key={page}
                   onClick={(e)=>handleCloseNavMenu(page, e)}
@@ -122,13 +126,15 @@ export default function MyNavbar(props) {
                 >
                   {page}
                 </Button>
+                </Tooltip>
               ))}
             </Box>
   
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Information">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Info/>
+              <Tooltip title="Toggle help">
+                <IconButton onClick={(e)=>handleCloseNavMenu("Help", e)} sx={{ p: 0 }}>
+                  <Help/>
+                  {help ? "on" : "off"}
                 </IconButton>
               </Tooltip>
               <Menu

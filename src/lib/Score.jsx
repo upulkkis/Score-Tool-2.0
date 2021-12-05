@@ -3,6 +3,7 @@ import { ColoringModes, OpenSheetMusicDisplay as OSMD, PointF2D, GraphicalLabel,
 //import * as OSMD from '../opensheetmusicdisplay.min.js';
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
+import Helps from '../help/helps';
 import RespSlider from './RespSlider';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -54,7 +55,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { calculatingState: "", tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.cursor = undefined;
@@ -68,7 +69,7 @@ class Score extends Component {
     }
 
     setupOsmd() {
-      this.setState(state => ({...state, loading: true}))
+      this.setState(state => ({...state, loading: true, help: this.props.help}))
       let measureRangeStart = 1
       let measureRangeEnd = 10
       const options = {
@@ -600,6 +601,10 @@ class Score extends Component {
         console.log(this.osmd.cursor.VoicesUnderCursor())
         console.log(this.osmd.cursor.iterator.currentTimeStamp.RealValue)
       }
+      if (this.props.help !== prevProps.help) {
+        
+        this.setState(state=>({...state, help: this.props.help}))
+      }
       window.addEventListener('resize', this.resize)
     }
   }
@@ -857,7 +862,7 @@ function mid2note (midi) {
   return name + oct
 }
 // svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png');
-
+console.log(this.props.help)
       return (<>
     <ThemeProvider theme={theme}>
       <small>
@@ -874,9 +879,12 @@ function mid2note (midi) {
           <Typography style={{textAlign:"center"}}>Click here to show/hide masking calculation properties</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          
+        <Tooltip title={<Helps help="ScoreSlider"/>} disableHoverListener={!this.props.help} placement="top" sx={{zIndex:99999}}>
+          <div>
         <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
+</div>
+</Tooltip>
 <Button style = {{display: showScore, margin:5}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
         <div style={{overflow:"auto", maxHeight:"65vh"}}>
 <table style={{margin: "auto"}} >

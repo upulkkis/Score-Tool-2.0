@@ -2,6 +2,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import Dropzone from 'react-dropzone';
 import './App.css';
 import MyNavbar from './MyNavbar';
+import { Tooltip } from '@mui/material';
 import Helps from './help/helps';
 import Score from './lib/Score'
 import Button from '@mui/material/Button';
@@ -144,8 +145,12 @@ class App extends Component {
     var osmd = []
     const handleScore = (e) =>{
       const file = e.target.value;
+     
+      //this.setState(state => state.osmd = <Score id={file+"fromExamples"} file={file} filename={file+"fromExamples"} help={this.state.help} show={this.state.cursor} next={this.state.next}/>);
+      //osmd = <Score id={file+"fromExamples"} file={file} filename={file+"fromExamples"} help={this.state.help} show={this.state.cursor} next={this.state.next}/>;
       this.setState(state => state.load = "block")
-      this.setState(state => state.osmd = <Score file={file} filename={file+"fromExamples"} show={this.state.cursor} next={this.state.next}/>);
+      this.setState(state => state.file = file)
+      this.setState(state => state.files = [{name:file, size:"fromExamples"}])
     }
     //console.log(this.state.files[0])
     
@@ -181,7 +186,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 </Button>
 </div>
 <div style={{display: this.state.load}}>
-<Score file={this.state.file} filename={this.state.files[0].name+this.state.files[0].size} show={this.state.cursor} next={this.state.next} />
+<Score file={this.state.file} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
 </div>
 </div>
 
@@ -266,6 +271,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
         <div className="" style={{display: this.state.analyze}}>
         {this.state.load==="none" && <div>
         <Typography style={{textAlign:"center"}}> Select an example score  </Typography>
+        <Tooltip title={<Helps help="Examples"/>} disableHoverListener={!this.state.help} placement="top">
       <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="score-select">Scores</InputLabel>
               <Select
@@ -279,9 +285,11 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
                 {Scores()}
               </Select>
             </FormControl>
+            </Tooltip>
       <Typography style={{textAlign:"center"}}> or  </Typography>
         <Dropzone onDrop={this.onDrop} maxFiles={1} accept=".xml,.musicXml,.mxl">
         {({getRootProps, getInputProps}) => (
+          <Tooltip title={<Helps help="Dropzone"/>} disableHoverListener={!this.state.help}>
           <section className="container">
             <div {...getRootProps({className: 'dropzone Upload'})} style={{margin: 20, padding: 10, borderRadius:10, border: "2px dashed #4c4c48", backgroundColor: "#dcc4ac"}}>
               <input {...getInputProps()} />
@@ -291,6 +299,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
               <div>{files}</div>
             </aside>
           </section>
+          </Tooltip>
         )}
       </Dropzone>
       </div>

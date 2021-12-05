@@ -21,6 +21,8 @@ export default function Helps({help}) {
             return "Drop an MusicXml file here, or click to choose one from your filesystem. You can find plenty of MusicXml orchestral scores for example from Musescore site."
         case "ScoreSlider":
             return "Choose here the bar range of the score. Only the selected range will be visible when you click 'Show score'. This can be useful if you have a very large score, because visual rendering takes time."
+        case "ShowHide":
+            return "Click here to alter the masking calculation parameters of the score. If they are visible, clicking here will hide them."
         }
     return ""
 }

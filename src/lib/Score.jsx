@@ -870,6 +870,7 @@ console.log(this.props.help)
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
         <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#f9fff0"}}>
+        <Tooltip title={<Helps help="ShowHide"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -878,6 +879,7 @@ console.log(this.props.help)
         >
           <Typography style={{textAlign:"center"}}>Click here to show/hide masking calculation properties</Typography>
         </AccordionSummary>
+        </Tooltip>
         <AccordionDetails>
         <Tooltip title={<Helps help="ScoreSlider"/>} disableHoverListener={!this.props.help} placement="top" sx={{zIndex:99999}}>
           <div>

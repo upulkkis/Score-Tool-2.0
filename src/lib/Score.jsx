@@ -860,10 +860,11 @@ function mid2note (midi) {
 
       return (<>
     <ThemeProvider theme={theme}>
+      <small>
       <AppBar color="neutral" style={{overflow:"auto", marginTop:50}}>
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
-        <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#fffef0"}}>
+        <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#f9fff0"}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -877,7 +878,7 @@ function mid2note (midi) {
         <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
 <Button style = {{display: showScore, margin:5}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
-        <div style={{overflow:"auto", maxHeight:"75vh"}}>
+        <div style={{overflow:"auto", maxHeight:"65vh"}}>
 <table style={{margin: "auto"}} >
   <tbody>
 <tr>
@@ -935,6 +936,7 @@ function mid2note (midi) {
 
         </Container>
       </AppBar>
+      </small>
       </ThemeProvider>
 <Item>
 

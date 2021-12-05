@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Helps from './help/helps';
 import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -57,15 +58,17 @@ export default function MyNavbar(props) {
       <AppBar color="neutral" sx={{height:50}}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
+            <Tooltip title={<Helps help="Scoretool"/>} disableHoverListener={!help}>
             <Typography
               variant="h6"
               noWrap
               component="div"
-              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' }, cursor:"pointer" }}
+              onClick={()=>props.navClick("About")}
             >
-              Score-Tool
+              Score-Tool 2.0
             </Typography>
-  
+            </Tooltip>
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"

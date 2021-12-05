@@ -2,6 +2,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import Dropzone from 'react-dropzone';
 import './App.css';
 import MyNavbar from './MyNavbar';
+import Helps from './help/helps';
 import Score from './lib/Score'
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -48,7 +49,7 @@ class App extends Component {
     super(props);
     // Don't call this.setState() here!
     // this.state = { file: "MuzioClementi_SonatinaOpus36No1_Part2.xml", cursor:false, next:0 };
-    this.state = { file: "", cursor:false, next:0, files: [], load:"none", chord:false, compare:false, search:false, manage:false,analyze: "none", about:"block", osmd:""};
+    this.state = { file: "", cursor:false, help:false,next:0, files: [], load:"none", chord:false, compare:false, search:false, manage:false,analyze: "none", about:"block", osmd:""};
     // this.state = { file: "Flute_Concerto_Uljakselle.xml", cursor:false, next:0 };
     this.setcursor = this.setcursor.bind(this)
     this.setnext = this.setnext.bind(this)
@@ -222,7 +223,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 
     }
     const helpSel = (e) => {
-      console.log(e)
+      this.setState(state=>state.help=e)
     }
     return (
       <div className="App">
@@ -280,7 +281,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
               </Select>
             </FormControl>
       <Typography style={{textAlign:"center"}}> or  </Typography>
-        <Dropzone onDrop={this.onDrop} maxFiles={1}>
+        <Dropzone onDrop={this.onDrop} maxFiles={1} accept=".xml,.musicXml,.mxl">
         {({getRootProps, getInputProps}) => (
           <section className="container">
             <div {...getRootProps({className: 'dropzone Upload'})} style={{margin: 20, padding: 10, borderRadius:10, border: "2px dashed #4c4c48", backgroundColor: "#dcc4ac"}}>

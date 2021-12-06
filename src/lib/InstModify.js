@@ -110,25 +110,25 @@ export default function InstModify(props){
 
 return(
     <tr>
-      <Tooltip title={<Helps help="AnScorenames"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+      <Tooltip followCursor title={<Helps help="AnScorenames"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"scor"+state.idx} style={{backgroundColor:state.color}}>{state.scoreNames}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnTech"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnTech"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"tec"+state.idx}>{state.scoreTechs}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnDyn"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnDyn"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"dy"+state.idx}><div onClick={dynChange} style={{backgroundColor: "rgba(123,200,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}> {state.scoreDyns} </div></td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnMicro"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnMicro"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"micro"+state.idx}>{selectMicrotone()}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnTgt"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnTgt"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"tg"+state.idx}><div onClick={tgtChange} style={{backgroundColor: "rgba(123,200,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}>{state.scoreTgt ? "target" : "orchestration"}</div></td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnOnoff"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnOnoff"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"onof"+state.idx}> <div onClick={onoffChange} style={{backgroundColor: state.scoreOnoff ? "rgba(123,200,30,0.3)" : "rgba(200,123,30,0.3)", borderRadius: 10, padding: 3, textAlign: "center"}}>{state.scoreOnoff ? "ON" : "OFF"} </div></td>
     </Tooltip>
-    <Tooltip title={<Helps help="AnMo"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Tooltip followCursor title={<Helps help="AnMo"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <td key={"mo"+state.idx}>{modify}</td>
     </Tooltip>
     </tr>

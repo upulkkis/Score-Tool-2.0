@@ -86,7 +86,7 @@ export default function Helps({help}) {
         case "MaskCurve":
             return "This is the 'Main' graph of the Score-Tool App. Here you see the result of masking curve calculation along with the overtones of the target. Target peak overtone above the masking curve means, in theorym, that the partial is audible. Above the graph you also see the mix engineer classifications for different frequency areas. These can be useful to estimate, for example, muddiness or ear tiring properties of the orchestration. Clicking 'Orchestration formant' text shows the 'ideal orchestration formant', i.e. the big orchestral timbre graph against the graph of your orchestration. If they match, you propably have a 'big' sounding orchestration chord."
         case "Glyph":
-            return "This is a visual representation of the timbre. This glyph shows the formant structure of your orchestration. If you have, for example, a nasal sounding timbre, it shows here as a peak on low formant area. This can be used also to quickly see how different your target and orchestration timbres are."
+            return "This is a visual representation of the timbre. This glyph shows the formant structure of your orchestration. If you have, for example, a nasal sounding timbre, it shows here as a peak on some formant area. This can be used also to quickly see how different your target and orchestration timbres are."
         case "Summary":
             return "This is a automatically generated summary of your orchestration. Here you see at a glance some properties, that can be read also from the graphs."
         }

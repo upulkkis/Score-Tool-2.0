@@ -49,6 +49,46 @@ export default function Helps({help}) {
             return "Clicking here will initiate the download of your rendered score with masking indications. The downloaded score will be in PNG from, which can be opened with usual photo viewer programs."
         case "UnderMouse":
             return "This toggles the view of the orchestration under the mouse cursor in score. This is checked by default, because with this feature it is quick and easy to check which instruments are playing together at any point in the score."
+        case "Colors":
+            return "In the masking calculation the score will be color-coded according to these indications. Once the calculation begin, the target staff will be highlighted, and colored reddish if target audibility is poor, yellowish if audibility is moderate, and green if audibility is good. The surrounding orchestral instruments are colored according to their masking properties. Magenta is the heaviest, brownish yellow the 2nd heaviest and light blue the 3rd heaviest masker."
+        case "AnScorenames":
+            return "This is the name if the staff in your score where this entry of current orchestral chord reside."
+        case "AnTech":
+            return "Here you can modify the playing technique of the current entry. Click the text to browse through different techniques."
+        case "AnDyn":
+            return "Click the dynamic to browse through three dynamic levels, p, mf, and f. Play with these first to find possible solution to the audibility issues."
+        case "AnMicro":
+            return "Here you can tune your orchestral chord entry. Tuning range is +-25 cents."
+        case "AnTgt":
+            return "click here to toggle entry target status on/off."
+        case "AnOnoff":
+            return "Click here to temporarely switch entry on/off. This is handy if you want to try if this instrument is causing the masking; switch it off and see if target audibility is better."
+        case "AnMo":
+            return "This toggles transposition level between 0, -12 and +12. This can also be used to find solution to the audibility issues; try your target an octave higher, or masker octave lower."
+        case "Maskers":
+            return "This column indicates the heaviest maskers in you orchestration chord. The red indicates the heaviest, yellow 2nd and magenta 3rd masker. Try to alter dynamics, playing techniques, transpositions etc... and see if the masking order changes."
+        case "Prediction":
+            return "This is one of the most important parameters on this page. The audibility prediction value is the result of an algorithm that takes the masking, blending and timbre similarity prameters into account. If this value is low, it moght be wise to revise the orchestration, if you like to have an audible target."
+        case "SaveOrch":
+            return "Here you can save the orchestration chord for yourself. The chord will be saved in your browser cache so, that when you start the Score-Tool App again, your chord is there. Saved orchestrations can be used, for example, in Search panel. The App suggest a name, but you can alter it or write your own."
+        case "QuickListen":
+            return "Click here to quickly listen how your orchestration chord sounds like."
+        case "Listen":
+            return "Here is implemented an acoustic model of Helsinki Music Centre hall. You can drag your orchestration instruments to pre-marked places in the picture to see how the placement affects the timbre and audibility. You can also change the listening position between conductor and audience. The conductor hears, for example, the nearest players louder than the audience."
+        case "Orchestration":
+            return "This is your orchestration on musical staff. The target is colored green, heaviest masker on red, second magenta and third yellow."
+        case "Centroid":
+            return "Here you can see the spectral centroids, i.e. the brightness value of your target and orchestration. Values under 2 kHz can be concidered 'dark'"
+        case "Distance":
+            return "Here you see the timbre distance value in percentage, i.e. how different your target's timbre is from orchestration. Similar timbres tend to blend together. The orhcestration homogeneity value tells you is the orchestration timbre sounds like a one entity or like a collection of different timbres."
+        case "MaskStaff":
+            return "In this graph you see the masking curve as colors of musical staff. The target overtones are marked on black noteheads, and the faintness indicates the loudness of the partial. The red color indictes heavy masking on vurrent frequency band, yellow moderate masking and green light masking."
+        case "MaskCurve":
+            return "This is the 'Main' graph of the Score-Tool App. Here you see the result of masking curve calculation along with the overtones of the target. Target peak overtone above the masking curve means, in theorym, that the partial is audible. Above the graph you also see the mix engineer classifications for different frequency areas. These can be useful to estimate, for example, muddiness or ear tiring properties of the orchestration. Clicking 'Orchestration formant' text shows the 'ideal orchestration formant', i.e. the big orchestral timbre graph against the graph of your orchestration. If they match, you propably have a 'big' sounding orchestration chord."
+        case "Glyph":
+            return "This is a visual representation of the timbre. This glyph shows the formant structure of your orchestration. If you have, for example, a nasal sounding timbre, it shows here as a peak on low formant area. This can be used also to quickly see how different your target and orchestration timbres are."
+        case "Summary":
+            return "This is a automatically generated summary of your orchestration. Here you see at a glance some properties, that can be read also from the graphs."
         }
     return ""
 }

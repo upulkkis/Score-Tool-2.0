@@ -946,7 +946,8 @@ function mid2note (midi) {
 </Tooltip>
 {showMasking}
 {this.state.calculatingState}
-{this.state.calculIndications && <><Typography style={{display:"inline"}}>Colors: 
+{this.state.calculIndications && <><Tooltip title={<Helps help="Colors"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+  <Typography style={{display:"inline"}}>Colors: 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> audible</div> 
@@ -954,6 +955,7 @@ function mid2note (midi) {
   <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> 2nd masker</div>
   <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> 3rd masker </div>
   </Typography>
+  </Tooltip>
 </>
     }
 </Item>
@@ -1273,7 +1275,7 @@ function mid2note (midi) {
         />
         </Tooltip>
         </Item>
-        <AnalysisDialog handleClose={this.handleClose} open={this.state.open} time={this.state.time} data={this.state.modalData}/>
+        <AnalysisDialog handleClose={this.handleClose} help={this.props.help} open={this.state.open} time={this.state.time} data={this.state.modalData}/>
         <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={this.state.loading}

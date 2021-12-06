@@ -20,6 +20,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import QuickListen from '../quickListen';
 import { address } from './Constants';
+import Helps from '../help/helps';
+import { Tooltip } from '@mui/material';
 
 //const baseURL = "http://127.0.0.1:5000/"; // http://127.0.0.1:5000/databaseInstruments
 const baseURL = address
@@ -240,19 +242,23 @@ export default function AnalysisDialog(props) {
             <td>On/Off</td>
             <td>Transpose +- oct.</td>
           </tr>
-          { list.map((lst, idx)=><InstModify onChange={instmod} idx={idx} row={lst} color={''}/>)
+          { list.map((lst, idx)=><InstModify help={props.help} onChange={instmod} idx={idx} row={lst} color={''}/>)
           }
           </tbody>
-          </table>         
+          </table>
+          <Tooltip title={<Helps help="Maskers"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>     
           <table style={{margin: "auto",display: 'inline'}}>
             <tbody>
             <tr><td>maskers</td></tr>
           {color.map((col,i)=><tr><td style={{backgroundColor:col, borderRadius: 10, padding: 4, textAlign: "center", margin:4}}>{list[i][0]}{" "}{mid2note(list[i][3])}{" "+description[i]}</td></tr>)}
           </tbody>
           </table>
+          </Tooltip>
           <br/>
+          <Tooltip title={<Helps help="Prediction"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+            <div>
           <Typography variant="caption" component="div" color="text.secondary">
-            Target audibility: 
+            Target audibility prediction: 
           </Typography>
           <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress variant="determinate" value={maskingperc} color={(() => {
@@ -281,11 +287,25 @@ export default function AnalysisDialog(props) {
         </Typography>
       </Box>
     </Box>
+    </div>
+    </Tooltip>
           <br/>
+          <Tooltip title={<Helps help="SaveOrch"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+            <div>
           <SaveOrch text={state.textFieldValue} orchestration={list}/>
+          </div>
+          </Tooltip>
+          <Tooltip title={<Helps help="QuickListen"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+            <div>
           <QuickListen instrumentList={listenList}/>
-            <Graphs data={data}/>
+          </div>
+          </Tooltip>
+            <Graphs data={data} help={props.help}/>
+            <Tooltip title={<Helps help="Listen"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+              <div>
             <Dragdrop instrumentList={listenList}/>
+            </div>
+            </Tooltip>
             
         </div>
       </Dialog>

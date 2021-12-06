@@ -1,5 +1,7 @@
 import * as React from 'react';
 import Plot from 'react-plotly.js';
+import { Tooltip } from '@mui/material';
+import Helps from '../help/helps';
 import Orchestration from './Orchestration';
 import Masking from './Masking';
 import Grid from '@mui/material/Grid';
@@ -70,6 +72,7 @@ export default function Graphs(props) {
           spacing={0.5}>
 
   <Grid item xs={12} md={6}>
+  <Tooltip title={<Helps help="Orchestration"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Orchestration at clicked point
@@ -88,8 +91,10 @@ export default function Graphs(props) {
             text_space={200}
             />
     </Item>
+    </Tooltip>
   </Grid>
   <Grid item xs={12} md={6}>
+  <Tooltip title={<Helps help="Centroid"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Spectral centroid at clicked point
@@ -102,6 +107,7 @@ export default function Graphs(props) {
             text_space={200}
             />
     </Item>
+    </Tooltip>
   </Grid>
 </Grid>
 
@@ -113,6 +119,7 @@ export default function Graphs(props) {
           alignItems="center"
           spacing={0.5}>
   <Grid item xs={12} md={6}>
+  <Tooltip title={<Helps help="Distance"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Timbre distance data
@@ -127,8 +134,10 @@ export default function Graphs(props) {
             
         />
     </Item>
+    </Tooltip>
   </Grid>
   <Grid item xs={12} md={6}>
+  <Tooltip title={<Helps help="MaskStaff"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0", verticalAlign: "center"}}>
     <Typography>
             Masking staff graph
@@ -144,6 +153,7 @@ export default function Graphs(props) {
         target_notesizes={props.data[2].masking_score.target_notesizes}
         />
     </Item>
+    </Tooltip>
     </Grid>
   </Grid>
 
@@ -155,6 +165,7 @@ export default function Graphs(props) {
           alignItems="left"
           spacing={0.5}>
   <Grid item xs={12} md={12}>
+  <Tooltip title={<Helps help="MaskCurve"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item>
     <Plot
             data={graphData}
@@ -163,6 +174,7 @@ export default function Graphs(props) {
             
         />
     </Item>
+    </Tooltip>
 </Grid>
 </Grid>
           
@@ -176,6 +188,7 @@ export default function Graphs(props) {
           spacing={0.5}>
 
                 <Grid item xs={12} md={8}>
+                <Tooltip title={<Helps help="Glyph"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
         <Item>
         <Plot
             data={props.data[2].mfcc_graph.data}
@@ -184,8 +197,10 @@ export default function Graphs(props) {
             width={200}
         />
         </Item>
+        </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
+              <Tooltip title={<Helps help="Summary"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
                         <Item style={{height:452, backgroundColor:"#fffef0"}}>
                         <Typography>
             Summary of the current orchestration
@@ -196,6 +211,7 @@ export default function Graphs(props) {
                           {props.data[2].summary}
                       </Typography>
                       </Item>
+                      </Tooltip>
                   </Grid>
 
                   </Grid>

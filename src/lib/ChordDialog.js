@@ -44,7 +44,7 @@ export default function ChordDialog(props) {
             </Toolbar>
           </AppBar>
           */} 
-          <ChordEditor/>
+          <ChordEditor help={props.help}/>
           </Dialog>
           </div>
     )

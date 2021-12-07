@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { fabClasses } from '@mui/material';
+import Helps from '../help/helps';
+import { Tooltip } from '@mui/material';
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     backgroundColor: '#fffef0',
@@ -15,7 +17,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-  export default function CompareGraphs({data}) {
+  export default function CompareGraphs({data, help}) {
 
     if(data.length<2){
         return null
@@ -32,6 +34,7 @@ return(
         spacing={0.5}>
 
 <Grid item xs={12} md={6}>
+<Tooltip title={<Helps help="Overtone"/>} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Overtone structure of {data[3].instruments[0]}
@@ -45,9 +48,11 @@ return(
           text_space={200}
           />
   </Item>
+  </Tooltip>
 </Grid>
 
 <Grid item xs={12} md={6}>
+<Tooltip title={<Helps help="Overtone"/>} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Overtone structure of {data[3].instruments[1]}
@@ -61,6 +66,7 @@ return(
           text_space={200}
           />
   </Item>
+  </Tooltip>
 </Grid>
 
 <Grid
@@ -71,6 +77,7 @@ return(
         alignItems="center"
         spacing={0.5}>
 <Grid item xs={12} md={6}>
+<Tooltip title={<Helps help="CompCentroids"/>} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Spectral centroids
@@ -83,8 +90,10 @@ return(
           text_space={200}
           />
   </Item>
+  </Tooltip>
 </Grid>
 <Grid item xs={12} md={6}>
+<Tooltip title={<Helps help="CompGlyph"/>} disableHoverListener={!help} followCursor>
       <Item>
       <Plot
           data={data[0][1].data}
@@ -95,6 +104,7 @@ return(
           width={200}
       />
       </Item>
+      </Tooltip>
             </Grid>
 </Grid>
 
@@ -108,6 +118,7 @@ return(
         alignItems="left"
         spacing={0.5}>
 <Grid item xs={12} md={12}>
+<Tooltip title={<Helps help="CompSpectra"/>} disableHoverListener={!help} followCursor>
   <Item>
   <Plot
           data={data[0][0].data}
@@ -121,6 +132,7 @@ return(
           config={{displayModeBar: false}}
       />
   </Item>
+  </Tooltip>
 </Grid>
 
 

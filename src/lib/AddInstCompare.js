@@ -15,6 +15,8 @@ import { noteNumbers } from './noteNumbers';
 import { Piano } from 'react-piano';
 import './piano/styles.css';
 import SelectedNote from './selectedNote';
+import Helps from '../help/helps';
+import { Tooltip } from '@mui/material';
 
 export default function AddInstCompare(props){
 
@@ -245,11 +247,21 @@ export default function AddInstCompare(props){
 return(
     <tr>
     <td key={"nam"+state.idx}>{state.instName}</td>
+    <Tooltip title={<Helps help="InstrDropdown"/>} disableHoverListener={!props.help} followCursor>
     <td key={"scor"+state.idx}>{selectInstruments(state.scoreNames, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnTech"/>} disableHoverListener={!props.help} followCursor>
     <td key={"tec"+state.idx}>{selectTechs(state.scoreTechs, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnDyn"/>} disableHoverListener={!props.help} followCursor>
     <td key={"dy"+state.idx}>{selectDyns(state.scoreDyns, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="CompPitch"/>} disableHoverListener={!props.help} followCursor>
     <td key={"pi"+state.idx}>{selectPitch(state.scorePitch, "pi"+state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="CompTrans"/>} disableHoverListener={!props.help} followCursor>
     <td key={"mod"+state.idx}>{selectMods(state.scoreModify, state.idx)}</td>
+    </Tooltip>
 
     </tr>
 )

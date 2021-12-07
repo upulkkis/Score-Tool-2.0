@@ -89,6 +89,69 @@ export default function Helps({help}) {
             return "This is a visual representation of the timbre. This glyph shows the formant structure of your orchestration. If you have, for example, a nasal sounding timbre, it shows here as a peak on some formant area. This can be used also to quickly see how different your target and orchestration timbres are."
         case "Summary":
             return "This is a automatically generated summary of your orchestration. Here you see at a glance some properties, that can be read also from the graphs."
+        case "ClearInstr":
+            return "Clicking here clears current orchestration. It does not clear your saved items, so you can, for example, load a saved orchestration, look at it, and safely click here to 'clear the table' without losing your saved work."
+        case "SelectSaved":
+            return "If you save an orchestration either here or in Score-, or in Search section, it will appear here. Your orchestrations are saved in your browser memory, if you want to check, choose 'developer tools' menu from browser and check the application->local storage section."
+        case "AddInstr":
+            return "Click any of the instrument names to add it into the orchestration chord. These are all the instruments currently available in the database."
+        case "InstrDropdown":
+            return "Here you can change the the database instrument from dropdown menu."
+        case "SelPitch":
+            return "Click the staff to select pitches for the instrument. The piano keyboard that pops up is shows the playing range. Clicking a piano key will select/deselect the current pitch."
+        case "ClearPitch":
+            return "Clears the selected pitches for current instrument."
+        case "ChordTranspose":
+            return "Transposes all the selected pitches. If the transposition results out-of-range pitches, they will be dropped out."
+        case "DelInstr":
+            return "Delete the current instrument with all of its data from the orchestration chord."
+        case "CompPitch":
+            return "Click the staff to select the pitch for the instrument. In here you can select only one pitch."
+        case "CompTrans":
+            return "Select here the temporary transposition for your pitch."
+        case "Overtone":
+            return "Here you can see the overtone structure of your comparable instrument. The loudest overtone is marked as 0dB, and other ones in relation to that."
+        case "CompCentroid":
+            return "Here you can see the spectral centroids, i.e. the brightness value of your comparable instruments. Values under 2 kHz can be concidered 'dark'"
+        case "CompGlyph":
+            return "This is a visual representation of the timbre. This glyph shows the formant structure of your instruments. If you have, for example, a nasal sounding instrument, it shows here as a peak on some formant area. This can be used also to quickly see how different your timbres are."
+        case "CompSpectra":
+            return "This graph shows the masking curves and spectral peaks of both of your comparable instruments. This is not the actual frequency spectrum of the sound, but quite close to it. This can be used to quickly check the spectral differences between the timbres."
+        case "SelSource":
+            return "Here you can select the search source from your saved orchestrations. If the list is empty, go to the chord section, create an orchestration chord and click save, which make the orchestration chord appear in this menu."
+        case "SearchSource":
+            return "Here you see the selected search source orchestration chord in musical staff."
+        case "SearchSpace":
+            return "Click here to select which instruments you want to include in your search. The selection is typically the instrumentation in your score."
+        case "SearchTechs":
+            return "Select here which techniques are included in the search. Usually it is good to first try only with 'normal' selected, and then a bigger search space."
+        case "SearchDyns":
+            return "Select dynamics for search space. For example, of the results are only loud dynamics, try to exclude forte from search."
+        case "SearchPitches":
+            return "Select here the pitch space you are searching. This is handy if you have, i.e., a specific harmony set in the piece."
+        case "SearchOct":
+            return "Select here which octaves are included in the search. Octave 4 is the middle octave in piano keyboard. For example, disable high octaves if you want to find a good bass for your chord."
+        case "SearchMethod":
+            return "This is the most important parameter in search. 'Match' tries to find instrument that matches into overtone structure of your orchestration. It usually finds somthing above the register of your orchestration. 'Peaks' is the opposite of 'Match', it tries to find an instrument with overtone structure that matches the orchestration. It returns usually an instrument in low octave. For both, 'Match' and 'Peaks', the number of partials involved in search is selected from dropdown menu below. 'Masking curve' will try to find a timbre with matching masking properties. 'Mfcc' will try to find a matching format structure, and 'Centroid' will try to find a timbre with matching brightness. You can select any combination of these at the same time, but selecting everything does not quarantee a better search result."
+        case "SearchResult":
+            return "This is the result of your search. If the resulting instrument is in totally wrong octave, try to deselect that octave from search space."
+        case "AddToSearch":
+            return "This button adds the result to search source. This is handy if you want to construct an entire orchestration using the Search."
+        case "Update":
+            return "This updates your current saved orchestration chord with the instruments found in Search."
+        case "UploadChords":
+            return "Here you can upload the list of chords saved by Score-Tool App. I do not recommend editing the saved files manually, because uploading uncompatible file may result crashing the App. If that happens, clear local storage from the brpwser 'developement tools' section."
+        case "DownloadOrch":
+            return "clicking here you can download the entire list of orchestration chords in your browser. This might be a good idea to do every now and then, especially if you have a big orchestration chord collection."
+        case "OrchList":
+            return "Here you find all of your saved orchestration chords listed."
+        case "ListListen":
+            return "A click here will let you hear the current orchestration chord"
+        case "ListDelete":
+            return "Clicking here will delete the current orchestration chord. If you are not sure, better to save everything first."
+        case "EraseAll":
+            return "WARNING! Clicking here will erase all of your orchestration data!"
         }
+
     return ""
 }

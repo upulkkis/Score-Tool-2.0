@@ -19,6 +19,8 @@ import { FormatListNumberedTwoTone } from '@mui/icons-material';
 import fromNote from './piano/MidiNumbers.js'
 import axios from 'axios';
 import { address } from './Constants';
+import { Tooltip } from '@mui/material';
+import Helps from '../help/helps';
 const baseURL = address
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -267,7 +269,7 @@ export default function SearchDialog(props) {
         const result = response.data
         const resultRender = <div id={result[0]}> 
                 <Typography style={{textAlign:"center", margin:"auto"}}> Search result: {result[0][0]} {result[0][1]} {result[0][2]} {mid2note(result[0][3])}</Typography>
-          <div style={{textAlign:"center", margin:"auto"}}><Orchestration
+                <Tooltip title={<Helps help="SearchResult"/>} disableHoverListener={!props.help} followCursor><div style={{textAlign:"center", margin:"auto"}}><Orchestration
         notes={ [ mid2note(result[0][3]) ] }
         instruments={ [ result[0][0] ] }
         target={[]}
@@ -278,14 +280,19 @@ export default function SearchDialog(props) {
         b_score_y={140}
         text_space={100}/>
         </div> 
+        </Tooltip>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play search result, {result[0][0]}: </Typography>
         <div><audio controls id={"yks"+result[0]}> <source src={result[1]} autoPlay="true" type="audio/x-wav"/> </audio></div>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play search source: </Typography>
         <div><audio controls id={"kaks"+result[0]}> <source src={result[2]} type="audio/x-wav"/> </audio></div>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play both together: </Typography>
         <div><audio controls id={"kol"+result[0]}>  <source src={result[3]} type="audio/x-wav"/> </audio></div>
+        <Tooltip title={<Helps help="AddToSearch"/>} disableHoverListener={!props.help} followCursor>
         <Button onClick={e=>addToTarget(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Add search result to search source </Button>
+        </Tooltip>
+        <Tooltip title={<Helps help="Update"/>} disableHoverListener={!props.help} followCursor>
         <Button onClick={e=>addToSaved(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Update your saved orchestration with search result </Button>
+        </Tooltip>
         </div>
 
         setState(state=>({...state, result:resultRender}))
@@ -383,6 +390,7 @@ export default function SearchDialog(props) {
           */}
 
           <Typography style={{textAlign:"center"}}> Select search source from your saved orchestrations  </Typography>
+          <Tooltip title={<Helps help="SelSource"/>} disableHoverListener={!props.help} followCursor>
       <FormControl sx={{ m: 1, minWidth: 50 }}>
               <InputLabel id="orchestration-select">Orchestrations</InputLabel>
               <Select
@@ -396,11 +404,17 @@ export default function SearchDialog(props) {
                 {Storage()}
               </Select>
             </FormControl>
-
+          </Tooltip>
+          <Tooltip title={<Helps help="SearchSource"/>} disableHoverListener={!props.help} followCursor>
+            <div>
             <Typography variant="h5" style={{textAlign:"center", margin:"auto"}}>
               Search source
           </Typography>
       {selectedSource(state.instList)}
+      </div>
+      </Tooltip>
+      <Tooltip title={<Helps help="SearchSpace"/>} disableHoverListener={!props.help} followCursor>
+        <div>
       <Typography variant="h5" style={{textAlign:"center", margin:"auto"}}>
               Search space
           </Typography>
@@ -518,7 +532,10 @@ export default function SearchDialog(props) {
             </tr>
           </tbody>
           </table>
-
+            </div>
+              </Tooltip>
+          <Tooltip title={<Helps help="SearchTechs"/>} disableHoverListener={!props.help} followCursor>
+            <div>
           <Typography>
               Techniques
           </Typography>
@@ -535,7 +552,10 @@ export default function SearchDialog(props) {
                 />
           )}
           </Box>
-
+          </div>
+          </Tooltip>
+          <Tooltip title={<Helps help="SearchDyns"/>} disableHoverListener={!props.help} followCursor>
+            <div>
           <Typography>
               Dynamics
           </Typography>
@@ -547,7 +567,10 @@ export default function SearchDialog(props) {
                 />
           )}
           </Box>
-
+            </div>
+            </Tooltip>
+            <Tooltip title={<Helps help="SearchPitches"/>} disableHoverListener={!props.help} followCursor>
+              <div>
           <Typography>
               Pitch classes
           </Typography>
@@ -559,7 +582,10 @@ export default function SearchDialog(props) {
                 />
           )}
           </Box>
-
+            </div>
+            </Tooltip>
+            <Tooltip title={<Helps help="SearchOct"/>} disableHoverListener={!props.help} followCursor>
+              <div>
           <Typography>
               Octaves
           </Typography>
@@ -571,7 +597,10 @@ export default function SearchDialog(props) {
                 />
           )}
           </Box>
-
+            </div>
+            </Tooltip>
+            <Tooltip title={<Helps help="SearchMethod"/>} disableHoverListener={!props.help} followCursor>
+              <div>
           <Typography>
               Search method
           </Typography>
@@ -595,10 +624,18 @@ export default function SearchDialog(props) {
   </Select>
 </FormControl>
           </Box>
-
+</div>
+  </Tooltip>
           <Button onClick={makeSearch} variant="contained" color="primary" style={{padding: 10, margin: 5}}> SEARCH </Button>
           <br/>
           {state.result}
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
           </Dialog>
           </div>
     )

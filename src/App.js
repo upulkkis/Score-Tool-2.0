@@ -263,10 +263,10 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       </div>
 </ThemeProvider>
     */}
-            <ChordDialog handleClose = {this.chordClose.bind(this)} open={this.state.chord}/>
-            <CompareDialog handleClose = {this.compareClose.bind(this)} open={this.state.compare}/>
-            <SearchDialog handleClose = {this.searchClose.bind(this)} open={this.state.search}/>
-            <ManageDialog handleClose = {this.manageClose.bind(this)} open={this.state.manage}/>
+            <ChordDialog help={this.state.help} handleClose = {this.chordClose.bind(this)} open={this.state.chord}/>
+            <CompareDialog help={this.state.help} handleClose = {this.compareClose.bind(this)} open={this.state.compare}/>
+            <SearchDialog help={this.state.help} handleClose = {this.searchClose.bind(this)} open={this.state.search}/>
+            <ManageDialog help={this.state.help} handleClose = {this.manageClose.bind(this)} open={this.state.manage}/>
 
         <div className="" style={{display: this.state.analyze}}>
         {this.state.load==="none" && <div>

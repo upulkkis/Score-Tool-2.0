@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { address } from './Constants';
+
 const baseURL = address
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -109,14 +110,14 @@ export default function CompareDialog(props) {
           </Typography>
           <table style={{marginInline:"20vw"}}>
             <tbody>
-          <AddInstCompare data={list[0]} onChange={handleChange}/>
-          <AddInstCompare data={list[1]} onChange={handleChange}/>
+          <AddInstCompare help={props.help} data={list[0]} onChange={handleChange}/>
+          <AddInstCompare help={props.help} data={list[1]} onChange={handleChange}/>
           </tbody>
           </table>
           <ThemeProvider theme={theme}>
       <Button variant="contained" color="neutral" onClick={updateGraphs} style={{display:"none"}}> Click to compare</Button>
       </ThemeProvider>
-          <CompareGraphs data={data}/>
+          <CompareGraphs data={data} help={props.help}/>
           </Dialog>
           </div>
     )

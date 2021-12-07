@@ -20,7 +20,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { IconButton } from '@mui/material';
-
+import { Tooltip } from '@mui/material';
+import Helps from '../help/helps';
 export default function AddInst(props){
     let micro = 0
     if(typeof(props.data[7])==='number'){
@@ -303,13 +304,25 @@ const notationList = state.scorePitch.map(note=>mid2note(note))
 return(
     <tr>
     <td key={"nam"+state.idx}>{state.instName}</td>
+    <Tooltip title={<Helps help="InstrDropdown"/>} disableHoverListener={!props.help} followCursor>
     <td key={"scor"+state.idx}>{selectInstruments(state.scoreNames, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnTech"/>} disableHoverListener={!props.help} followCursor>
     <td key={"tec"+state.idx}>{selectTechs(state.scoreTechs, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnDyn"/>} disableHoverListener={!props.help} followCursor>
     <td key={"dy"+state.idx}>{selectDyns(state.scoreDyns, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnMicro"/>} disableHoverListener={!props.help} followCursor>
     <td key={"mi"+state.idx}>{selectMicrotone(state.scoreMicro, state.idx)}</td>
+    </Tooltip>
+    <Tooltip title={<Helps help="SelPitch"/>} disableHoverListener={!props.help} followCursor>
     <td key={"pi"+state.idx}>{selectPitch(state.scorePitch, "pi"+state.idx)}</td>
-
+    </Tooltip>
+    <Tooltip title={<Helps help="ClearPitch"/>} disableHoverListener={!props.help} followCursor>
     <td> <Button variant="outlined" color="warning" onClick={clearClick} size="small"> clear notes </Button></td>
+    </Tooltip>
+    <Tooltip title={<Helps help="AnTgt"/>} disableHoverListener={!props.help} followCursor>
     <td key={"tg"+state.idx}>
       <div style={{border: '1px solid lightGray', borderRadius: 5, padding:8}}>
     <Stack direction="row" spacing={1} alignItems="center">
@@ -319,6 +332,8 @@ return(
           </Stack>
           </div>
       </td>
+      </Tooltip>
+    <Tooltip title={<Helps help="AnOnoff"/>} disableHoverListener={!props.help} followCursor>
     <td key={"onoff"+state.idx} >
     <div style={{border: '1px solid lightGray', borderRadius: 5, padding:8}}>
     <Stack direction="row" spacing={1} alignItems="center">
@@ -328,8 +343,13 @@ return(
           </Stack>
           </div>
           </td>
+          </Tooltip>
+          <Tooltip title={<Helps help="ChordTranspose"/>} disableHoverListener={!props.help} followCursor>
           <td key={"mod"+state.idx}>{selectMods(state.scoreModify, state.idx)}</td>
+          </Tooltip>
+          <Tooltip title={<Helps help="DelInstr"/>} disableHoverListener={!props.help} followCursor>
           <td> <Button variant="outlined" color="warning" onClick={e=>props.onDelete(state.scoreIdx)} size="small"> delete </Button></td>
+          </Tooltip>
     </tr>
 )
 

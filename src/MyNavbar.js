@@ -59,7 +59,7 @@ export default function MyNavbar(props) {
       <AppBar color="neutral" sx={{height:50}}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Tooltip title={<Helps help="Scoretool"/>} disableHoverListener={!help}>
+            <Tooltip title={<Helps help="Scoretool"/>} disableHoverListener={!help} disableTouchListener={!help}>
             <Typography
               variant="h6"
               noWrap

@@ -46,7 +46,7 @@ export default function Helps({help}) {
         case "Redraw":
             return "Clicking here will redraw the score, which might be a lengthy process. Note that redraw will erase all the masking calculation color codes from the score."
         case "DownloadScore":
-            return "Clicking here will initiate the download of your rendered score with masking indications. The downloaded score will be in PNG from, which can be opened with usual photo viewer programs."
+            return "Clicking here will initiate the download of your rendered score with masking indications. The downloaded score will be in PDF from, all systems on single page."
         case "UnderMouse":
             return "This toggles the view of the orchestration under the mouse cursor in score. This is checked by default, because with this feature it is quick and easy to check which instruments are playing together at any point in the score."
         case "Colors":

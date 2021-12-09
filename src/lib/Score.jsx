@@ -32,6 +32,8 @@ import { typography } from '@mui/system';
 import { address } from './Constants';
 import Orchestration from './Orchestration';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import jsPDF  from 'jspdf';
+import {svg2pdf} from 'svg2pdf.js';
 const theme = createTheme({
   palette: {
   neutral: { 
@@ -745,6 +747,50 @@ class Score extends Component {
       let showMasking = []
       let showScore = "inline-block"
 
+      const savePDF = () => {
+        const backends = this.osmd.drawer.Backends;
+        let svgElement = backends[0].getSvgElement();
+        let pageWidth = 210;
+        let pageHeight = 297;
+        const engravingRulesPageFormat = this.osmd.rules.PageFormat;
+        if (engravingRulesPageFormat && !engravingRulesPageFormat.IsUndefined) {
+            pageWidth = engravingRulesPageFormat.width;
+            pageHeight = engravingRulesPageFormat.height;
+        } else {
+            pageHeight = pageWidth * svgElement.clientHeight / svgElement.clientWidth;
+        }
+        console.log(svgElement)
+        const orientation = pageHeight > pageWidth ? "p" : "l";
+        // create a new jsPDF instance
+        let pdf = new jsPDF(orientation, "mm", [pageWidth, pageHeight]);
+        const scale = pageWidth / svgElement.clientWidth;
+        /*
+        for (let idx = 0, len = backends.length; idx < len; ++idx) {
+            if (idx > 0) { 
+                pdf.addPage();
+            }
+
+            svgElement = backends[idx].getSvgElement();
+            pdf.svg(svgElement)
+            // render the svg element
+            svg2pdf(svgElement, pdf, {
+                scale: scale,
+                xOffset: 0,
+                yOffset: 0
+            });
+        }
+        */
+        pdf.svg(svgElement, {
+          x:0,y:0,width:svgElement.clientWidth*scale, height:svgElement.clientHeight*scale
+      })
+        .then(() => {
+          // save the created pdf
+          pdf.save('Score-Tool-Score.pdf')
+        })
+        // simply save the created pdf
+        // pdf.save("Score-Tool-Score.pdf");
+      }
+
       const handleShowTooltipChange = () => {
         this.setState(state=>state.showTooltip=!this.state.showTooltip)
       }
@@ -789,7 +835,7 @@ class Score extends Component {
       </Button>
       </Tooltip>
       <Tooltip title={<Helps help="DownloadScore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
-      <Button size="small" variant="contained" color="primary" onClick={()=>svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')}>Download score</Button>
+      <Button size="small" variant="contained" color="primary" onClick={()=> savePDF() /* svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')*/}>Download score</Button>
       </Tooltip>
       {/* <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography> */}
       <Tooltip title={<Helps help="UnderMouse"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>

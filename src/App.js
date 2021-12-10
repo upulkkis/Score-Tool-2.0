@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
+import { TextField, Backdrop, CircularProgress } from '@mui/material';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -27,6 +28,7 @@ import Clear from '@mui/icons-material/Clear';
 import CompareArrows from '@mui/icons-material/CompareArrows';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ManageSearch, ScoreSharp } from '@mui/icons-material';
+import { MXLHelper } from 'opensheetmusicdisplay';
 const theme = createTheme({
   palette: {
   neutral: {
@@ -50,7 +52,7 @@ class App extends Component {
     super(props);
     // Don't call this.setState() here!
     // this.state = { file: "MuzioClementi_SonatinaOpus36No1_Part2.xml", cursor:false, next:0 };
-    this.state = { file: "", cursor:false, help:false,next:0, files: [], load:"none", chord:false, compare:false, search:false, manage:false,analyze: "none", about:"block", osmd:""};
+    this.state = { loading:false, from: 0, to: 0, file: "", filetype:"",cursor:false, help:false,next:0, files: [], load:"none", chord:false, compare:false, search:false, manage:false,analyze: "none", about:"block", osmd:""};
     // this.state = { file: "Flute_Concerto_Uljakselle.xml", cursor:false, next:0 };
     this.setcursor = this.setcursor.bind(this)
     this.setnext = this.setnext.bind(this)
@@ -66,6 +68,9 @@ class App extends Component {
     if(items===null){
       localStorage.setItem("orchestrations", JSON.stringify([]) )
     }
+  }
+  componentDidUpdate(prevProps){
+
   }
   chordClose() {
     this.setState(state => state.chord=false);
@@ -84,32 +89,113 @@ class App extends Component {
   }
 
   loadFile(){
+    
     //console.log(this.state)
       this.state.files.forEach((file) => {
+      let filename = file.name;
+      let filetype = ""
       const reader = new FileReader()
+      if (filename.toLowerCase().indexOf(".xml") > 0
+      || filename.toLowerCase().indexOf(".musicxml") > 0) {
+        this.setState(state => state.filetype = "xml")
+        filetype = "xml"
+      reader.readAsText(file);
+  } else if (filename.toLowerCase().indexOf(".mxl") > 0) {
+    this.setState(state => state.filetype = "mxl")
+    filetype = "mxl"
+      reader.readAsBinaryString(file);
+  }
+  else {
+      alert("No vaild .xml/.mxl/.musicxml file!");
+  }
       //console.log(file)
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
       // Do whatever you want with the file contents
         const txtStr = reader.result
-        //console.log(binaryStr)
+        
+        if (filetype==="mxl") {
+          if (this.state.from > 0 && this.state.to > 0) {
+          //this.setState(state => state.loading = true) 
+          let parser = new DOMParser();
+          MXLHelper.MXLtoXMLstring(txtStr).then((x) => {
+            let xmlDoc = parser.parseFromString(x,"text/xml")
+            let measures = xmlDoc.getElementsByTagName("measure")
+            for (var i = measures.length - 1; i >= 0; i--) {
+              if (i%100===0){
+              console.log("Bars left to check: "+i)
+              }
+              // console.log("test number: "+measures[i].getAttribute("number"))
+              if (parseInt(measures[i].getAttribute("number"))<this.state.from || parseInt(measures[i].getAttribute("number"))>this.state.to){
+                // console.log("pass number: "+measures[i].getAttribute("number"))
+                if (parseInt(measures[i].getAttribute("number"))!==1){
+                  // console.log("remove number: "+measures[i].getAttribute("number"))
+                  measures[i].parentNode.removeChild(measures[i])
+                  //measures[i].textContent = ""
+                }
+              }
+            }
+            this.setState(state => state.loading = false)
+            //console.log(xmlDoc)
+            this.setState(state => state.osmd= <div>
+            <Score file={xmlDoc} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
+            </div>
+            )
+            this.setState(state => state.filetype = "done")
+            
+          })
+        } else {
+          this.setState(state => state.loading = false)
+          this.setState(state => state.osmd = <div>
+          <Score file={txtStr} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
+          </div>
+          )
+          this.setState(state => state.filetype = "done")
+        }
+      } else if (filetype==="xml") {
+        if (this.state.from > 0 && this.state.to > 0) {
+          //this.setState(state => state.loading = true)
+        let parser = new DOMParser();
+        //onsole.log(this.state.file)
+        let xmlDoc = parser.parseFromString(txtStr,"text/xml")
+        let measures = xmlDoc.getElementsByTagName("measure")
+        for (var i = measures.length - 1; i >= 0; i--) {
+          // console.log("test number: "+measures[i].getAttribute("number"))
+          if (parseInt(measures[i].getAttribute("number"))<this.state.from || parseInt(measures[i].getAttribute("number"))>this.state.to){
+            // console.log("pass number: "+measures[i].getAttribute("number"))
+            if (parseInt(measures[i].getAttribute("number"))!==1){
+              // console.log("remove number: "+measures[i].getAttribute("number"))
+              measures[i].parentNode.removeChild(measures[i])
+            }
+          }
+        }
+        this.setState(state => state.loading = false)
+        this.setState(state => state.osmd  = <div>
+        <Score file={xmlDoc} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
+        </div>
+        )
+        this.setState(state => state.filetype = "done")
+      } else {
+        this.setState(state => state.loading = false)
+        this.setState(state => state.osmd = <div>
+        <Score file={txtStr} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
+        </div>
+        )
+        this.setState(state => state.filetype = "done")
+  
+      }
+    }
+
         this.setState(state => {
-          state.file = txtStr
+          state.file = ""
           state.load = "inline-block"
+          
         });
-        this.forceUpdate()
+        //this.forceUpdate()
       }
-      var filename = file.name;
-      if (filename.toLowerCase().indexOf(".xml") > 0
-          || filename.toLowerCase().indexOf(".musicxml") > 0) {
-          reader.readAsText(file);
-      } else if (filename.toLowerCase().indexOf(".mxl") > 0) {
-          reader.readAsBinaryString(file);
-      }
-      else {
-          alert("No vaild .xml/.mxl/.musicxml file!");
-      }
+      
+
       //reader.readAsArrayBuffer(file)
       //reader.readAsText(file)
 
@@ -148,8 +234,12 @@ class App extends Component {
      
       //this.setState(state => state.osmd = <Score id={file+"fromExamples"} file={file} filename={file+"fromExamples"} help={this.state.help} show={this.state.cursor} next={this.state.next}/>);
       //osmd = <Score id={file+"fromExamples"} file={file} filename={file+"fromExamples"} help={this.state.help} show={this.state.cursor} next={this.state.next}/>;
+      this.setState(state => state.filetype = "done")
       this.setState(state => state.load = "block")
       this.setState(state => state.file = file)
+      this.setState(state => state.osmd  = <div>
+        <Score file={file} filename={file+"fromExamples"} help={this.state.help} show={this.state.cursor} next={this.state.next} />
+        </div>)
       this.setState(state => state.files = [{name:file, size:"fromExamples"}])
     }
     //console.log(this.state.files[0])
@@ -174,21 +264,61 @@ class App extends Component {
       //console.log(this.state.files)
       let hide = "inline-block"
       if(this.state.load==="inline-block"){
-hide = "none"
+        hide = "none"
       }
-
-      //this.setState(state=>state.osmd="")
-
-      osmd= <div>
-        <div style={{display: hide}}>
-                    <Button onClick={this.loadFile} variant="contained">
+     if (this.state.filetype==="done"){
+    osmd = ""
+  }else {
+    osmd= <div>
+    <div style={{display: hide}}>
+      <Typography>If you have huge score, you can set the bar range here to conciderably reduce the loading time (numbers only, first bar will always show because of the musicXML format restrictions)</Typography>
+    <div>
+        <TextField
+          label="from bar"
+          id="outlined-size-small"
+          defaultValue={0}
+          size="small"
+          value={this.state.from}
+          onChange={e=>this.setState(state=>state.from = e.target.value)}
+        />
+        <TextField
+          label="to bar"
+          id="outlined-size-small"
+          defaultValue={0}
+          size="small"
+          value={this.state.to}
+          onChange={e=>this.setState(state=>state.to = e.target.value)}
+        />
+      </div>
+                <Button onClick={() => {
+                  this.setState(state => state.loading = true)
+                  setTimeout(() => this.loadFile(), 200)
+                }  
+                } variant="contained">
 Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 </Button>
 </div>
-<div style={{display: this.state.load}}>
-<Score file={this.state.file} filename={this.state.files[0].name+this.state.files[0].size} help={this.state.help} show={this.state.cursor} next={this.state.next} />
 </div>
-</div>
+  }
+      
+      /*
+      console.log(xmlDoc)
+      let measures = xmlDoc.getElementsByTagName("measure")
+      let from = 3
+      let to = 5
+      for (var i = measures.length - 1; i >= 0; i--) {
+        // console.log("test number: "+measures[i].getAttribute("number"))
+        if (parseInt(measures[i].getAttribute("number"))<from || parseInt(measures[i].getAttribute("number"))>to){
+          // console.log("pass number: "+measures[i].getAttribute("number"))
+          if (parseInt(measures[i].getAttribute("number"))!==1){
+            // console.log("remove number: "+measures[i].getAttribute("number"))
+            measures[i].parentNode.removeChild(measures[i])
+          }
+        }
+      }
+      console.dirxml(xmlDoc)
+      //this.setState(state=>state.osmd="")
+*/
 
     }
 
@@ -312,6 +442,13 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
 <Button size="small" onClick={clearAll} variant="contained" color="warning" startIcon={<Clear/>} style={{padding: 10, margin: 5}}> If you get errors, click here to clear all your orchestration data </Button>
 </div>
         </Item>
+        <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={this.state.loading}
+      >
+        <CircularProgress disableShrink color="success"/>
+        <Typography> Cutting extra measures from your score. If there's 100s of bars, this can take awhile...</Typography>
+      </Backdrop>
       </div>
     );
   }

@@ -56,7 +56,7 @@ export default function MyNavbar(props) {
   
     return (
         <ThemeProvider theme={theme}>
-      <AppBar color="neutral" sx={{height:50}}>
+      <AppBar color="neutral" sx={{height:50, paddingTop: 0, minHeight: 20, marginTop: -2}}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Tooltip title={<Helps help="Scoretool"/>} disableHoverListener={!help} disableTouchListener={!help}>

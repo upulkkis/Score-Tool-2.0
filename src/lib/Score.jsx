@@ -926,7 +926,7 @@ function mid2note (midi) {
     <ThemeProvider theme={theme}>
       <small>
         <ScrollHide>
-      <AppBar color="neutral" style={{overflow:"auto", marginTop:50}}>
+      <AppBar color="neutral" style={{overflow:"auto", marginTop:30}}>
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
         <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#f9fff0"}}>

@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Tooltip, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { Tooltip, FormGroup, FormControlLabel, Checkbox, Box } from '@mui/material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from "axios";
@@ -34,6 +34,7 @@ import Orchestration from './Orchestration';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import jsPDF  from 'jspdf';
 import {svg2pdf} from 'svg2pdf.js';
+import ScrollHide from './ScrollHide';
 const theme = createTheme({
   palette: {
   neutral: { 
@@ -212,6 +213,7 @@ class Score extends Component {
       // Check through score if dynamics change and set the timestamp for new dynamics
       let partNotes = {}
       let xpositions = {}
+      let predictions = {}
       let sustainingNotes = []
       sustainingNotes.length = this.state.instNames.length
       /*
@@ -317,10 +319,11 @@ class Score extends Component {
       }
     }
       partNotes[verticals.AbsoluteTimestamp.realValue] = notesAtPoint
+      predictions[verticals.AbsoluteTimestamp.realValue] = -1
       })
       // console.log(partDyns)
       // console.log(partNotes)
-      this.orchestrationChords = {instruments: this.state.instNames, databaseEntries: {inst:this.state.scoreNames, tech:this.state.scoreTechs, dyn:this.state.scoreDyns, tgt:this.state.scoreTgt,onoff:this.state.scoreOnoff, modify:this.state.scoreModify},dynamics: partDyns, notes: partNotes, xpos: xpositions}
+      this.orchestrationChords = {instruments: this.state.instNames, databaseEntries: {inst:this.state.scoreNames, tech:this.state.scoreTechs, dyn:this.state.scoreDyns, tgt:this.state.scoreTgt,onoff:this.state.scoreOnoff, modify:this.state.scoreModify},dynamics: partDyns, notes: partNotes, predictions: predictions, maskers: {}, xpos: xpositions}
       this.setState(state => ({...state, loading: false}))
     }
   
@@ -481,7 +484,8 @@ class Score extends Component {
             const startPointF2D = new PointF2D(xposition, StaffY); //{x: xpos, y: ypos};
             const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
             let col = tgtColor(result[0])
-
+            this.orchestrationChords.predictions[verticals.AbsoluteTimestamp.realValue] = result[0]
+            this.orchestrationChords.maskers[verticals.AbsoluteTimestamp.realValue] = result[1]
             // console.log(result[0])
             this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
               col, 4)    
@@ -921,6 +925,7 @@ function mid2note (midi) {
       return (<>
     <ThemeProvider theme={theme}>
       <small>
+        <ScrollHide>
       <AppBar color="neutral" style={{overflow:"auto", marginTop:50}}>
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
@@ -1008,6 +1013,7 @@ function mid2note (midi) {
 
         </Container>
       </AppBar>
+      </ScrollHide>
       </small>
       </ThemeProvider>
 <Item>
@@ -1252,6 +1258,8 @@ function mid2note (midi) {
             this.osmd.cursor.show();
 
             let noteArray = this.orchestrationChords.notes[absTimeStamp.realValue]
+            let prediction = this.orchestrationChords.predictions[absTimeStamp.realValue]
+            //console.log(this.orchestrationChords)
             let data = []
             let targets = []
             let tgtPresent = false
@@ -1281,6 +1289,49 @@ function mid2note (midi) {
                 })  
             }
             })
+            let showPrediction = ""
+            if (prediction>=0){
+              prediction = 100-prediction
+              const maskerIdx = this.orchestrationChords.maskers[absTimeStamp.realValue]
+              const maskers = <div> <Typography variant="caption" component="div" color="text.secondary"> 
+              Possible masker: {this.orchestrationChords.instruments[maskerIdx[0]]}
+                 </Typography>
+                 </div>
+
+              showPrediction =             <div>
+              <Typography variant="caption" component="div" color="text.secondary">
+                Target audibility prediction: 
+              </Typography>
+              <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+          <CircularProgress variant="determinate" value={prediction} color={(() => {
+                          if(prediction<=30){
+                            return "error"
+                          }else if(prediction<=50){
+                            return "warning"
+                          } else {
+                            return "success"
+                          }
+                      })()}/>
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: 'absolute',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="caption" component="div" color="text.secondary">
+              {`${Math.round(prediction)}%`}
+            </Typography>
+          </Box>
+        </Box>
+        {maskers}
+        </div>
+            }
 
             data.sort(function(a, b){return a[3]-b[3]})
             let notes=data.map(l=>mid2note(l[3]))
@@ -1289,6 +1340,7 @@ function mid2note (midi) {
 
             const TOOLTIP = <div style={{textAlign:"center", margin:"auto", verticalAlign:"bottom", backgroundColor:"#fffef0cc", width:200}}>
               <div style={{color:"black"}}>Orchestration under mouse pointer, target on green. Click to see detailed analysis.</div>
+              {showPrediction}
               <Orchestration
                 notes={notes}
                 instruments={instruments}

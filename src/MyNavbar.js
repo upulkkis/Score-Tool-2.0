@@ -56,7 +56,7 @@ export default function MyNavbar(props) {
   
     return (
         <ThemeProvider theme={theme}>
-      <AppBar color="neutral" sx={{height:50, paddingTop: 0, minHeight: 20, marginTop: -2}}>
+      <AppBar color="neutral" sx={{height:50, minHeight: 20, marginTop: -2}}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Tooltip title={<Helps help="Scoretool"/>} disableHoverListener={!help} disableTouchListener={!help}>
@@ -70,7 +70,7 @@ export default function MyNavbar(props) {
               Score-Tool 2.0
             </Typography>
             </Tooltip>
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, paddingTop: 1 }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -96,7 +96,7 @@ export default function MyNavbar(props) {
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
                 sx={{
-                  display: { xs: 'block', md: 'none' },
+                  display: { xs: 'block', md: 'none' }
                 }}
               >
                 {pages.map((page) => (
@@ -112,7 +112,8 @@ export default function MyNavbar(props) {
               variant="h6"
               noWrap
               component="div"
-              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+              sx={{ flexGrow: 1, paddingTop: 1, display: { xs: 'flex', md: 'none' }, cursor:"pointer" }}
+              onClick={()=>props.navClick("About")}
             >
               Score-Tool 2.0
             </Typography>
@@ -130,9 +131,9 @@ export default function MyNavbar(props) {
               ))}
             </Box>
   
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, paddingTop: 1 }}>
               <Tooltip title="Toggle help">
-                <IconButton onClick={(e)=>handleCloseNavMenu("Help", e)} sx={{ p: 0 }}>
+                <IconButton size="small" onClick={(e)=>handleCloseNavMenu("Help", e)} sx={{ p: 0 }}>
                   <Help/>
                   {help ? "on" : "off"}
                 </IconButton>

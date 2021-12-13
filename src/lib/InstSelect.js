@@ -156,19 +156,19 @@ export default function InstSelect(props){
 
 return(
     <tr>
-      <Tooltip title={<Helps help="Scorename"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+      <Tooltip title={<Helps help="Scorename"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"nam"+state.idx}>{state.instName}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="Instruments"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+    <Tooltip title={<Helps help="Instruments"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"scor"+state.idx}>{selectInstruments(state.scoreNames, state.idx)}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="Techs"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+    <Tooltip title={<Helps help="Techs"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"tec"+state.idx}>{selectTechs(state.scoreTechs, state.idx)}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="Dyns"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+    <Tooltip title={<Helps help="Dyns"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"dy"+state.idx}>{selectDyns(state.scoreDyns, state.idx)}</td>
     </Tooltip>
-    <Tooltip title={<Helps help="Target"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+    <Tooltip title={<Helps help="Target"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"tg"+state.idx}>
       <div style={{border: '1px solid lightGray', borderRadius: 5, padding:8}}>
     <Stack direction="row" spacing={1} alignItems="center">
@@ -179,7 +179,7 @@ return(
           </div>
       </td>
       </Tooltip>
-      <Tooltip title={<Helps help="Onoff"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+      <Tooltip title={<Helps help="Onoff"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
     <td key={"onoff"+state.idx} >
     <div style={{border: '1px solid lightGray', borderRadius: 5, padding:8}}>
     <Stack direction="row" spacing={1} alignItems="center">
@@ -190,7 +190,7 @@ return(
           </div>
           </td>
           </Tooltip>
-          <Tooltip title={<Helps help="Transpose"/>} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
+          <Tooltip title={<Helps help="Transpose"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} placement="top" sx={{zIndex:99999}}>
           <td key={"mod"+state.idx}>{selectMods(state.scoreModify, state.idx)}</td>
           </Tooltip>
     </tr>

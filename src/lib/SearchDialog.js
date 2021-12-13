@@ -269,7 +269,7 @@ export default function SearchDialog(props) {
         const result = response.data
         const resultRender = <div id={result[0]}> 
                 <Typography style={{textAlign:"center", margin:"auto"}}> Search result: {result[0][0]} {result[0][1]} {result[0][2]} {mid2note(result[0][3])}</Typography>
-                <Tooltip title={<Helps help="SearchResult"/>} disableHoverListener={!props.help} followCursor><div style={{textAlign:"center", margin:"auto"}}><Orchestration
+                <Tooltip title={<Helps help="SearchResult"/>} disableTouchListener={!props.help}  disableHoverListener={!props.help} followCursor><div style={{textAlign:"center", margin:"auto"}}><Orchestration
         notes={ [ mid2note(result[0][3]) ] }
         instruments={ [ result[0][0] ] }
         target={[]}
@@ -287,10 +287,10 @@ export default function SearchDialog(props) {
         <div><audio controls id={"kaks"+result[0]}> <source src={result[2]} type="audio/x-wav"/> </audio></div>
         <Typography style={{textAlign:"center", margin:"auto"}}> Play both together: </Typography>
         <div><audio controls id={"kol"+result[0]}>  <source src={result[3]} type="audio/x-wav"/> </audio></div>
-        <Tooltip title={<Helps help="AddToSearch"/>} disableHoverListener={!props.help} followCursor>
+        <Tooltip title={<Helps help="AddToSearch"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <Button onClick={e=>addToTarget(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Add search result to search source </Button>
         </Tooltip>
-        <Tooltip title={<Helps help="Update"/>} disableHoverListener={!props.help} followCursor>
+        <Tooltip title={<Helps help="Update"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <Button onClick={e=>addToSaved(result[0],e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> Update your saved orchestration with search result </Button>
         </Tooltip>
         </div>
@@ -390,7 +390,7 @@ export default function SearchDialog(props) {
           */}
 
           <Typography style={{textAlign:"center"}}> Select search source from your saved orchestrations  </Typography>
-          <Tooltip title={<Helps help="SelSource"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="SelSource"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
       <FormControl sx={{ m: 1, minWidth: 50 }}>
               <InputLabel id="orchestration-select">Orchestrations</InputLabel>
               <Select
@@ -405,7 +405,7 @@ export default function SearchDialog(props) {
               </Select>
             </FormControl>
           </Tooltip>
-          <Tooltip title={<Helps help="SearchSource"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="SearchSource"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
             <div>
             <Typography variant="h5" style={{textAlign:"center", margin:"auto"}}>
               Search source
@@ -413,7 +413,7 @@ export default function SearchDialog(props) {
       {selectedSource(state.instList)}
       </div>
       </Tooltip>
-      <Tooltip title={<Helps help="SearchSpace"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="SearchSpace"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <div>
       <Typography variant="h5" style={{textAlign:"center", margin:"auto"}}>
               Search space
@@ -534,7 +534,7 @@ export default function SearchDialog(props) {
           </table>
             </div>
               </Tooltip>
-          <Tooltip title={<Helps help="SearchTechs"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="SearchTechs"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
             <div>
           <Typography>
               Techniques
@@ -554,7 +554,7 @@ export default function SearchDialog(props) {
           </Box>
           </div>
           </Tooltip>
-          <Tooltip title={<Helps help="SearchDyns"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="SearchDyns"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
             <div>
           <Typography>
               Dynamics
@@ -569,7 +569,7 @@ export default function SearchDialog(props) {
           </Box>
             </div>
             </Tooltip>
-            <Tooltip title={<Helps help="SearchPitches"/>} disableHoverListener={!props.help} followCursor>
+            <Tooltip title={<Helps help="SearchPitches"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
               <div>
           <Typography>
               Pitch classes
@@ -584,7 +584,7 @@ export default function SearchDialog(props) {
           </Box>
             </div>
             </Tooltip>
-            <Tooltip title={<Helps help="SearchOct"/>} disableHoverListener={!props.help} followCursor>
+            <Tooltip title={<Helps help="SearchOct"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
               <div>
           <Typography>
               Octaves
@@ -599,7 +599,7 @@ export default function SearchDialog(props) {
           </Box>
             </div>
             </Tooltip>
-            <Tooltip title={<Helps help="SearchMethod"/>} disableHoverListener={!props.help} followCursor>
+            <Tooltip title={<Helps help="SearchMethod"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
               <div>
           <Typography>
               Search method

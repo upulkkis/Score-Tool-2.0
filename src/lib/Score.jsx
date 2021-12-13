@@ -802,7 +802,7 @@ class Score extends Component {
       if (this.state.loaded){
         showScore = "none"
         showMasking = <div>
-          <Tooltip title={<Helps help="CalcRange"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+          <Tooltip title={<Helps help="CalcRange"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
                 <div style={{display:"block", maxWidth:"50%", textAlign:"center", margin:"auto"}}>
       <Typography style={{display:"inline-block"}}> Set calculation bar range:</Typography>
       <div style={{display:"inline-block", width:"30vh", marginInlineStart:"10px"}}>
@@ -810,7 +810,7 @@ class Score extends Component {
             </div>
             </div>
             </Tooltip>
-            <Tooltip title={<Helps help="CalcButton"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+            <Tooltip title={<Helps help="CalcButton"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
           <Button
           size="small"
           sx={{display:"inline-block"}}
@@ -823,7 +823,7 @@ class Score extends Component {
         calculate masking, bars {this.state.measureRange[0]} to {this.state.measureRange[1]} ({this.state.measureRange[1]-this.state.measureRange[0]+1} bars)
       </Button>
       </Tooltip>
-      <Tooltip title={<Helps help="Redraw"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+      <Tooltip title={<Helps help="Redraw"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
       <Button
       size="small"
       style={{marginInline: 10, display:"inline-block"}}
@@ -838,11 +838,11 @@ class Score extends Component {
         redraw score
       </Button>
       </Tooltip>
-      <Tooltip title={<Helps help="DownloadScore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+      <Tooltip title={<Helps help="DownloadScore"/>} disableTouchListener={!this.props.help}  disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
       <Button size="small" variant="contained" color="primary" onClick={()=> savePDF() /* svg.saveSvgAsPng(document.getElementById('osmdSvgPage1'), 'score.png')*/}>Download score</Button>
       </Tooltip>
       {/* <Typography variant="h5" style={{display:"block"}}> Click any note in score for full analysis.</Typography> */}
-      <Tooltip title={<Helps help="UnderMouse"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+      <Tooltip title={<Helps help="UnderMouse"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
                   <div style={{display:"inline-block", marginInlineStart:10}}>
                   <FormGroup sx={{display:"inline-block"}}>
                     <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.showTooltip} onChange={handleShowTooltipChange} />} label="Orch. under mouse" />
@@ -930,7 +930,7 @@ function mid2note (midi) {
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
         <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#f9fff0"}}>
-        <Tooltip title={<Helps help="ShowHide"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+        <Tooltip title={<Helps help="ShowHide"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -941,13 +941,13 @@ function mid2note (midi) {
         </AccordionSummary>
         </Tooltip>
         <AccordionDetails>
-        <Tooltip title={<Helps help="ScoreSlider"/>} disableHoverListener={!this.props.help} placement="top" sx={{zIndex:99999}}>
+        <Tooltip title={<Helps help="ScoreSlider"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} placement="top" sx={{zIndex:99999}}>
           <div>
         <Typography>Select bar range with slider</Typography>
 <RespSlider range={this.state.measureRange} max={this.state.maxMeasure} measureHandleChange={this.measureHandleChange}/>
 </div>
 </Tooltip>
-<Tooltip title={<Helps help="Showscore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+<Tooltip title={<Helps help="Showscore"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
 <Button style = {{display: showScore, margin:5}} variant="contained" onClick={() => {this.setLoading()}}> Show score</Button>
 </Tooltip>
         <div style={{overflow:"auto", maxHeight:"65vh"}}>
@@ -982,7 +982,7 @@ function mid2note (midi) {
 </AccordionDetails>
       </Accordion>
 {this.state.loading}
-<Tooltip title={<Helps help="Showscore"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+<Tooltip title={<Helps help="Showscore"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
             <Button
             style = {{display: showScore, margin:5}}
             variant="contained"
@@ -997,7 +997,7 @@ function mid2note (midi) {
 </Tooltip>
 {showMasking}
 {this.state.calculatingState}
-{this.state.calculIndications && <><Tooltip title={<Helps help="Colors"/>} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
+{this.state.calculIndications && <><Tooltip title={<Helps help="Colors"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
   <Typography style={{display:"inline"}}>Colors: 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 

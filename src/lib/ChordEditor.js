@@ -194,10 +194,10 @@ export default function ChordEditor(props) {
     return (
       <>
       <ThemeProvider theme={theme}>
-      <Tooltip title={<Helps help="ClearInstr"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="ClearInstr"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
       <Button variant="contained" color="warning" onClick={handleClear}> Clear all instruments </Button>
       </Tooltip>
-      <Tooltip title={<Helps help="SelectSaved"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="SelectSaved"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <div style={{textAlign:"center", margin: "auto"}}>
       <Typography style={{textAlign:"center"}}> Select orchestration from your saved orchestrations  </Typography>
       <FormControl sx={{ m: 1, minWidth: "50vw", textAlign:"center", margin: "auto"}}>
@@ -216,7 +216,7 @@ export default function ChordEditor(props) {
         </div>
         </Tooltip>
       <Typography style={{textAlign:"center"}}> or/and  </Typography>
-      <Tooltip title={<Helps help="AddInstr"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="AddInstr"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <div >
       <Typography style={{textAlign:"center"}}> Click below to add instrument to orchestration  </Typography>
       <table>
@@ -247,7 +247,7 @@ export default function ChordEditor(props) {
 
       </ThemeProvider>
       <br/>
-      <Tooltip title={<Helps help="Prediction"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="Prediction"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
       <div style={{margin:"auto", textAlign:"center"}}>
       <Typography variant="caption" component="div" color="text.secondary">
             Target audibility prediction: 
@@ -284,17 +284,17 @@ export default function ChordEditor(props) {
     <br/>
       <ThemeProvider theme={theme}>
       <Button variant="contained" color="neutral" onClick={updateGraphs} style={{display:"none"}}> Click to update graphs </Button>
-      <Tooltip title={<Helps help="SaveOrch"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="SaveOrch"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <div>
       <SaveOrch text={state.textFieldValue} orchestration={state.instList}/>
       </div>
       </Tooltip>
       </ThemeProvider>
-      <Tooltip title={<Helps help="QuickListen"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="QuickListen"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
       <div style={{textAlign:"center", margin:"auto"}}><QuickListen instrumentList={state.listenList}/></div>
       </Tooltip>
       <Graphs data={state.data} help={props.help}/>
-      <Tooltip title={<Helps help="Listen"/>} disableHoverListener={!props.help} followCursor>
+      <Tooltip title={<Helps help="Listen"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
         <div>
           <Dragdrop instrumentList={state.listenList}/>
           </div>

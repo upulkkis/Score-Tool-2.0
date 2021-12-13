@@ -203,7 +203,7 @@ const selectedSource=(lista)=>{
           <Typography style={{textAlign:"center"}}>
               Here you can manage your saved orchestrations
           </Typography>
-          <Tooltip title={<Helps help="UploadChords"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="UploadChords"/>} disableTouchListener={!props.help}  disableHoverListener={!props.help} followCursor>
             <div>
           <Dropzone onDrop={onDrop} maxFiles={1} accept=".chords">
         {({getRootProps, getInputProps}) => (
@@ -225,7 +225,7 @@ const selectedSource=(lista)=>{
           </Typography>
         }
           {orch.length>0 && <div> 
-            <Tooltip title={<Helps help="DownloadOrch"/>} disableHoverListener={!props.help} followCursor>
+            <Tooltip title={<Helps help="DownloadOrch"/>} disableTouchListener={!props.help}  disableHoverListener={!props.help} followCursor>
             <Button onClick={downloadTxtFile} variant="contained" color="primary" style={{padding: 10, margin: 5}}> Download your orchestrations </Button>
             </Tooltip>
             <Typography style={{textAlign:"center"}}>
@@ -239,20 +239,20 @@ const selectedSource=(lista)=>{
                   <td>Listen</td>
                   <td>Delete</td>
                   </tr>
-          {orch.map((o, i)=><tr>               <Tooltip title={<Helps help="OrchList"/>} disableHoverListener={!props.help} followCursor>
+          {orch.map((o, i)=><tr>               <Tooltip title={<Helps help="OrchList"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
               <div><td >{o.name}</td>  <td>{selectedSource(o.data)}</td>
           </div>
           </Tooltip>
-          <Tooltip title={<Helps help="ListListen"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="ListListen"/>}  disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
             <td><Button onClick={(e)=>handleListen(i, o.data,e)} variant="contained" color="secondary" style={{padding: 10, margin: 5}}> LISTEN </Button>{listen[i]}</td>
             </Tooltip>
-            <Tooltip title={<Helps help="ListDelete"/>} disableHoverListener={!props.help} followCursor>
+            <Tooltip title={<Helps help="ListDelete"/>}  disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
             <td><Button onClick={(e)=>handleDelete(o.id, e)} variant="contained" color="warning" style={{padding: 10, margin: 5}}> DELETE </Button></td>
             </Tooltip>
           </tr>)}
           </tbody>
           </table>
-          <Tooltip title={<Helps help="EraseAll"/>} disableHoverListener={!props.help} followCursor>
+          <Tooltip title={<Helps help="EraseAll"/>}  disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
           <Button onClick={eraseAll} variant="contained" color="error" style={{padding: 10, margin: 5}}> Erase all your orchestrations </Button>
           </Tooltip>
         </div>

@@ -34,7 +34,7 @@ return(
         spacing={0.5}>
 
 <Grid item xs={12} md={6}>
-<Tooltip title={<Helps help="Overtone"/>} disableHoverListener={!help} followCursor>
+<Tooltip title={<Helps help="Overtone"/>} disableTouchListener={!help} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Overtone structure of {data[3].instruments[0]}
@@ -52,7 +52,7 @@ return(
 </Grid>
 
 <Grid item xs={12} md={6}>
-<Tooltip title={<Helps help="Overtone"/>} disableHoverListener={!help} followCursor>
+<Tooltip title={<Helps help="Overtone"/>} disableTouchListener={!help} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Overtone structure of {data[3].instruments[1]}
@@ -77,7 +77,7 @@ return(
         alignItems="center"
         spacing={0.5}>
 <Grid item xs={12} md={6}>
-<Tooltip title={<Helps help="CompCentroids"/>} disableHoverListener={!help} followCursor>
+<Tooltip title={<Helps help="CompCentroids"/>} disableTouchListener={!help} disableHoverListener={!help} followCursor>
   <Item style={{height:452, backgroundColor:"#fffef0"}}>
       <Typography>
           Spectral centroids
@@ -93,7 +93,7 @@ return(
   </Tooltip>
 </Grid>
 <Grid item xs={12} md={6}>
-<Tooltip title={<Helps help="CompGlyph"/>} disableHoverListener={!help} followCursor>
+<Tooltip title={<Helps help="CompGlyph"/>} disableTouchListener={!help} disableHoverListener={!help} followCursor>
       <Item>
       <Plot
           data={data[0][1].data}
@@ -118,7 +118,7 @@ return(
         alignItems="left"
         spacing={0.5}>
 <Grid item xs={12} md={12}>
-<Tooltip title={<Helps help="CompSpectra"/>} disableHoverListener={!help} followCursor>
+<Tooltip title={<Helps help="CompSpectra"/>} disableTouchListener={!help} disableHoverListener={!help} followCursor>
   <Item>
   <Plot
           data={data[0][0].data}

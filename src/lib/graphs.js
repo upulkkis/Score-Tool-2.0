@@ -72,7 +72,7 @@ export default function Graphs(props) {
           spacing={0.5}>
 
   <Grid item xs={12} md={6}>
-  <Tooltip followCursor title={<Helps help="Orchestration"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+  <Tooltip followCursor title={<Helps help="Orchestration"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Orchestration at clicked point
@@ -94,7 +94,7 @@ export default function Graphs(props) {
     </Tooltip>
   </Grid>
   <Grid item xs={12} md={6}>
-  <Tooltip followCursor title={<Helps help="Centroid"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+  <Tooltip followCursor title={<Helps help="Centroid"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Spectral centroid at clicked point
@@ -119,7 +119,7 @@ export default function Graphs(props) {
           alignItems="center"
           spacing={0.5}>
   <Grid item xs={12} md={6}>
-  <Tooltip followCursor title={<Helps help="Distance"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+  <Tooltip followCursor title={<Helps help="Distance"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0"}}>
         <Typography>
             Timbre distance data
@@ -137,7 +137,7 @@ export default function Graphs(props) {
     </Tooltip>
   </Grid>
   <Grid item xs={12} md={6}>
-  <Tooltip followCursor title={<Helps help="MaskStaff"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+  <Tooltip followCursor title={<Helps help="MaskStaff"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item style={{height:452, backgroundColor:"#fffef0", verticalAlign: "center"}}>
     <Typography>
             Masking staff graph
@@ -165,7 +165,7 @@ export default function Graphs(props) {
           alignItems="left"
           spacing={0.5}>
   <Grid item xs={12} md={12}>
-  <Tooltip followCursor title={<Helps help="MaskCurve"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+  <Tooltip followCursor title={<Helps help="MaskCurve"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
     <Item>
     <Plot
             data={graphData}
@@ -188,7 +188,7 @@ export default function Graphs(props) {
           spacing={0.5}>
 
                 <Grid item xs={12} md={8}>
-                <Tooltip followCursor title={<Helps help="Glyph"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+                <Tooltip followCursor title={<Helps help="Glyph"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
         <Item>
         <Plot
             data={props.data[2].mfcc_graph.data}
@@ -200,7 +200,7 @@ export default function Graphs(props) {
         </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-              <Tooltip followCursor title={<Helps help="Summary"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+              <Tooltip followCursor title={<Helps help="Summary"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
                         <Item style={{height:452, backgroundColor:"#fffef0"}}>
                         <Typography>
             Summary of the current orchestration

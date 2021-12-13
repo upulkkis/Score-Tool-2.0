@@ -100,7 +100,7 @@ export default function MyNavbar(props) {
                 }}
               >
                 {pages.map((page) => (
-                  <Tooltip title={<Helps help={page}/>} disableHoverListener={!help}>
+                  <Tooltip title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
                   <MenuItem key={page} onClick={(e)=>handleCloseNavMenu(page, e)}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
@@ -114,11 +114,11 @@ export default function MyNavbar(props) {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
             >
-              Score-Tool
+              Score-Tool 2.0
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
-                <Tooltip title={<Helps help={page}/>} disableHoverListener={!help}>
+                <Tooltip title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
                 <Button
                   key={page}
                   onClick={(e)=>handleCloseNavMenu(page, e)}

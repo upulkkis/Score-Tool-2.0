@@ -246,7 +246,7 @@ export default function AnalysisDialog(props) {
           }
           </tbody>
           </table>
-          <Tooltip followCursor title={<Helps help="Maskers"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>     
+          <Tooltip followCursor title={<Helps help="Maskers"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>     
           <table style={{margin: "auto",display: 'inline'}}>
             <tbody>
             <tr><td>maskers</td></tr>
@@ -255,7 +255,7 @@ export default function AnalysisDialog(props) {
           </table>
           </Tooltip>
           <br/>
-          <Tooltip followCursor title={<Helps help="Prediction"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+          <Tooltip followCursor title={<Helps help="Prediction"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
             <div>
           <Typography variant="caption" component="div" color="text.secondary">
             Target audibility prediction: 
@@ -290,18 +290,18 @@ export default function AnalysisDialog(props) {
     </div>
     </Tooltip>
           <br/>
-          <Tooltip followCursor title={<Helps help="SaveOrch"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+          <Tooltip followCursor title={<Helps help="SaveOrch"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
             <div>
           <SaveOrch text={state.textFieldValue} orchestration={list}/>
           </div>
           </Tooltip>
-          <Tooltip followCursor title={<Helps help="QuickListen"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+          <Tooltip followCursor title={<Helps help="QuickListen"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
             <div>
           <QuickListen instrumentList={listenList}/>
           </div>
           </Tooltip>
             <Graphs data={data} help={props.help}/>
-            <Tooltip followCursor title={<Helps help="Listen"/>} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+            <Tooltip followCursor title={<Helps help="Listen"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
               <div>
             <Dragdrop instrumentList={listenList}/>
             </div>

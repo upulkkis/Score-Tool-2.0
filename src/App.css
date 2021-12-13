@@ -59,6 +59,19 @@
   font-size: large;
 }
 
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+    display: flex;
+    flex-wrap: wrap; 
+	}
+  tr:nth-child(even){background-color: #f2f2f2;}
+
+}
+
 @keyframes App-logo-spin {
    from { transform: rotateY(0deg); }
    to { transform: rotateY(360deg); }

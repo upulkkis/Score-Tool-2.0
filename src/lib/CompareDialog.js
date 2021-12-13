@@ -84,6 +84,7 @@ export default function CompareDialog(props) {
     //console.log(localStorage.getItem("orchestrations"))
     return(
         <div>
+          {/*
         <Dialog
           fullScreen
           open={open}
@@ -91,7 +92,7 @@ export default function CompareDialog(props) {
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
-          {/*
+          
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -105,6 +106,7 @@ export default function CompareDialog(props) {
             </Toolbar>
           </AppBar>
           */}
+          <div style={{display: props.open ? "block" : "none"}}>
           <Typography style={{textAlign:"center"}}>
               Compare two instrument timbres. Select instruments to compare below.
           </Typography>
@@ -118,7 +120,8 @@ export default function CompareDialog(props) {
       <Button variant="contained" color="neutral" onClick={updateGraphs} style={{display:"none"}}> Click to compare</Button>
       </ThemeProvider>
           <CompareGraphs data={data} help={props.help}/>
-          </Dialog>
+          {/* </Dialog> */}
+          </div>
           </div>
     )
 }

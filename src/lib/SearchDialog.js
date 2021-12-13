@@ -366,7 +366,7 @@ export default function SearchDialog(props) {
 
     return(
         <div>
-        <Dialog
+        {/* <Dialog
           fullScreen
           open={open}
           onClose={props.handleClose}
@@ -374,7 +374,7 @@ export default function SearchDialog(props) {
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
 
-          {/* 
+           
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -388,7 +388,7 @@ export default function SearchDialog(props) {
             </Toolbar>
           </AppBar>
           */}
-
+        <div style={{display: props.open ? "block" : "none"}}>
           <Typography style={{textAlign:"center"}}> Select search source from your saved orchestrations  </Typography>
           <Tooltip title={<Helps help="SelSource"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} followCursor>
       <FormControl sx={{ m: 1, minWidth: 50 }}>
@@ -636,7 +636,8 @@ export default function SearchDialog(props) {
           <br/>
           <br/>
           <br/>
-          </Dialog>
+          </div>
+          {/* </Dialog> */}
           </div>
     )
 }

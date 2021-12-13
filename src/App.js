@@ -64,6 +64,7 @@ class App extends Component {
   }
   componentDidMount(){
     const items = JSON.parse(localStorage.getItem("orchestrations"))
+    console.log(items)
     //localStorage.setItem("orchestrations", JSON.stringify([]))
     if(items===null){
       localStorage.setItem("orchestrations", JSON.stringify([]) )
@@ -334,22 +335,22 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       //console.log(e)
       switch (e) {
         case "Score": 
-          this.setState(state=>({...state, analyze: "block", about:"none"}))
+          this.setState(state=>({...state, analyze: "block", about:"none", chord: false, compare: false, search: false, manage:false}))
           break
         case "Chord":
-          this.setState(state=>({...state, chord: true, analyze: "block", about:"none"}))
+          this.setState(state=>({...state, chord: true, analyze: "none", about:"none", compare: false, search: false, manage:false}))
           break
         case "Compare":
-          this.setState(state=>({...state, compare: true, analyze: "block", about:"none"}))
+          this.setState(state=>({...state, compare: true, analyze: "none", about:"none", chord: false, search: false, manage:false}))
           break
         case "Search":
-          this.setState(state=>({...state, search: true, analyze: "block", about:"none"}))
+          this.setState(state=>({...state, search: true, analyze: "none", about:"none", chord: false, compare: false, manage:false}))
           break
         case "About":
-          this.setState(state=>({...state, analyze: "none", about:"block"}))
+          this.setState(state=>({...state, analyze: "none", about:"block", chord: false, compare: false, search: false, manage:false}))
           break
         case "Manage":
-          this.setState(state=>({...state, manage: true, analyze: "block", about:"none"}))
+          this.setState(state=>({...state, manage: true, analyze: "none", about:"none", chord: false, compare: false, search: false}))
           break
         default:
           break

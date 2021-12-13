@@ -23,6 +23,7 @@ export default function ChordDialog(props) {
 
     return(
         <div>
+          {/*
         <Dialog
           fullScreen
           open={open}
@@ -30,6 +31,7 @@ export default function ChordDialog(props) {
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
+          */}
           {/* 
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
@@ -43,9 +45,13 @@ export default function ChordDialog(props) {
               </IconButton>
             </Toolbar>
           </AppBar>
-          */} 
+          */}
+          {props.open &&
+          <div style={{display: props.open ? "block" : "none"}}>
           <ChordEditor help={props.help}/>
-          </Dialog>
+          </div>
+          }
+          {/* </Dialog> */}
           </div>
     )
 }

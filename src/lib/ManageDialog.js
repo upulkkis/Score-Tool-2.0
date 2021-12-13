@@ -179,6 +179,7 @@ const selectedSource=(lista)=>{
 
     return(
         <div>
+          {/* 
         <Dialog
           fullScreen
           open={open}
@@ -186,7 +187,7 @@ const selectedSource=(lista)=>{
           TransitionComponent={Transition}
           PaperProps={{style:{backgroundColor: "#fffef0"}}}
         >
-          {/* 
+          
           <AppBar sx={{ position: 'relative', backgroundColor: "#dcc4ac", color:"#4c4c48" }}>
             <Toolbar>
               <IconButton
@@ -200,6 +201,7 @@ const selectedSource=(lista)=>{
             </Toolbar>
           </AppBar>
           */}
+           <div style={{display: props.open ? "block" : "none"}}>
           <Typography style={{textAlign:"center"}}>
               Here you can manage your saved orchestrations
           </Typography>
@@ -257,8 +259,8 @@ const selectedSource=(lista)=>{
           </Tooltip>
         </div>
         }
-        
-          </Dialog>
+        </div>
+          {/* </Dialog> */}
           </div>
     )
 }

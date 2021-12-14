@@ -35,6 +35,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import jsPDF  from 'jspdf';
 import {svg2pdf} from 'svg2pdf.js';
 import ScrollHide from './ScrollHide';
+import StatPlots from '../StatPlots';
 const theme = createTheme({
   palette: {
   neutral: { 
@@ -58,9 +59,10 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
+      this.barTimestamps = [];
       this.cursor = undefined;
       this.next = undefined;
       this.show = true;
@@ -186,7 +188,7 @@ class Score extends Component {
 
     renderScore(){
       this.osmd.render()
-      //console.log(this.osmd)
+      this.barTimestamps = this.osmd.sheet.sourceMeasures.map(bar=>bar.absoluteTimestamp.realValue) // Get real values of barline positions
       this.setState(state => state.loaded=true)
       let partDyns = []
       /*
@@ -275,7 +277,7 @@ class Score extends Component {
         let notesAtPoint = []
         notesAtPoint.length = verticals.StaffEntries.length
         if(verticals.absoluteTimestamp.realValue>=this.state.measureTimestamps[this.state.measureRange[0]-1] && verticals.absoluteTimestamp.realValue<=this.state.measureTimestamps[this.state.measureRange[1]]){
-        for(let i=0;i<verticals.StaffEntries.length;i++){
+          for(let i=0;i<verticals.StaffEntries.length;i++){
           notesAtPoint[i]=[]
           if(verticals.StaffEntries[i]){
             if (typeof(verticals.StaffEntries[i].parentMeasure.parentStaffLine)!=="undefined"){
@@ -546,11 +548,17 @@ class Score extends Component {
               calc(j)
             }else{
               this.setState(state=>({ ...state, interruptCalculation:false, calculatingState: <Typography> Calculation stopped! </Typography>}))
+
+              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions}/>}))
             }
 
             }else{
               this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
+
+              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions}/>}))
             }
+            
+
             
           });  //AXIOS END
 
@@ -570,6 +578,7 @@ class Score extends Component {
       }
       //}) // map loop end
       }
+
 
       
 
@@ -1373,6 +1382,7 @@ function mid2note (midi) {
         />
         </Tooltip>
         </Item>
+        <div> {this.state.statisticPlots} </div>
         <AnalysisDialog handleClose={this.handleClose} help={this.props.help} open={this.state.open} time={this.state.time} data={this.state.modalData}/>
         <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

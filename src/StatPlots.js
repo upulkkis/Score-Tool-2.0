@@ -24,8 +24,9 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": yAxis,
         "x": xAxis,
-        "name": "Audibility Prediction",
-        "line": {'color': 'gray'},
+        "name": "Target audibility Prediction",
+        "line": {'color': 'purple'},
+        showlegend: true
     }
 
     const barlineTrace = {
@@ -37,6 +38,19 @@ const Item = styled(Paper)(({ theme }) => ({
         "textposition": "top right",
         "name": "Barlines",
         "line": {'color': 'rgba(120,120,120,0.3)'},
+        showlegend: false
+    }
+    
+    const barlineTrace2 = {
+        "mode": "text",
+        "type": "scatter",
+        "y": bars.map(x => 200),
+        "x": bars,
+        "text": bars.map((x, i) => i),
+        "textposition": "top right",
+        "name": "Barlines",
+        "line": {'color': 'rgba(120,120,120,0.3)'},
+        showlegend: false
     }
 
     const fig_layout = {
@@ -51,6 +65,13 @@ const Item = styled(Paper)(({ theme }) => ({
         width:window.innerWidth-50, 
         height: 250,
         margin:{l:0, r:0, t:0, b:0}, 
+        showlegend: true,
+        legend:{
+            yanchor:"top",
+            y:0.95,
+            xanchor:"left",
+            x:0.01
+        }
     }
 
     const fig_layout_cent = {
@@ -65,6 +86,13 @@ const Item = styled(Paper)(({ theme }) => ({
         width:window.innerWidth-50, 
         height: 250,
         margin:{l:0, r:0, t:0, b:0}, 
+        showlegend: true,
+        legend:{
+            yanchor:"top",
+            y:0.95,
+            xanchor:"left",
+            x:0.01
+        }
     }
 
     const centroids_t = {
@@ -72,8 +100,9 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": xAxis.map(x=>graphs.centroid[x] ? graphs.centroid[x][1] : 0),
         "x": xAxis,
-        "name": "Centroid target",
-        "line": {'color': 'gray'},
+        "name": "Target spectral centroid",
+        "line": {'color': 'green'},
+        showlegend: true
     }
 
     const centroids_0 = {
@@ -81,8 +110,9 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": xAxis.map(x=>graphs.centroid[x] ? graphs.centroid[x][0] : 0),
         "x": xAxis,
-        "name": "Centroid orch.",
-        "line": {'color': 'gray'},
+        "name": "Orchestration spectral centroid",
+        "line": {'color': 'red'},
+        showlegend: true
     }
 
     const fig_layout_distance = {
@@ -97,6 +127,12 @@ const Item = styled(Paper)(({ theme }) => ({
         width:window.innerWidth-50, 
         height: 250,
         margin:{l:0, r:0, t:0, b:0}, 
+        legend:{
+            yanchor:"top",
+            y:0.95,
+            xanchor:"left",
+            x:0.01
+        }
     }
 
     const dist = {
@@ -104,8 +140,9 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": xAxis.map(x=>graphs.distance[x]),
         "x": xAxis,
-        "name": "Distance",
-        "line": {'color': 'gray'},
+        "name": "Target timbre distance from orchestration",
+        "line": {'color': 'lime'},
+        showlegend: true
     }
 
     const fig_layout_homog = {
@@ -116,10 +153,17 @@ const Item = styled(Paper)(({ theme }) => ({
         },
         "title": "Homogeneity",
         'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
-        'yaxis': {'title':  'Homogeneity'},
+        'yaxis': {'title':  'Homogeneity', 'zeroline':false},
         width:window.innerWidth-50, 
         height: 250,
         margin:{l:0, r:0, t:0, b:0}, 
+        showlegend: true,
+        legend:{
+            yanchor:"top",
+            y:0.05,
+            xanchor:"left",
+            x:0.01
+        }
     }
 
     const homog = {
@@ -127,8 +171,10 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": xAxis.map(x=>graphs.homog[x]),
         "x": xAxis,
-        "name": "Homogeneity",
-        "line": {'color': 'gray'},
+        yaxis: {'zeroline':false},
+        "name": "Orchestration timbre homogeneity",
+        "line": {'color': 'olive'},
+        showlegend: true
     }
 
     const fig_config = {
@@ -147,8 +193,11 @@ const Item = styled(Paper)(({ theme }) => ({
         'scene': {
             "aspectratio": {"x": 1, "y": 4, "z": 0.5},
             'camera': {eye:{x:1, y:0, z:2.5}},
+            'xaxis': {title:  'Frequency'},
+            'yaxis': {title:  'Bar'},
+            'zaxis': {title:  'Decibels'},
         },
-        width:window.innerWidth-50, 
+        width:window.innerWidth, 
         margin:{l:0, r:0, t:0, b:0}, 
 
     }
@@ -176,13 +225,16 @@ const Item = styled(Paper)(({ theme }) => ({
 
     return (
         <div>
+            <br/>
+            <Typography variant="h3"> Analytical graphs of score: </Typography>
+            <br/>
         <Plot
         data={[targetPredictionTrace, barlineTrace]}
         layout={fig_layout}
         config={fig_config}
         />
                 <Plot
-        data={[centroids_0, centroids_t, barlineTrace]}
+        data={[centroids_0, centroids_t, barlineTrace2]}
         layout={fig_layout_cent}
         config={fig_config}
         />
@@ -192,10 +244,11 @@ const Item = styled(Paper)(({ theme }) => ({
         config={fig_config}
         />
                 <Plot
-        data={[homog, barlineTrace]}
+        data={[homog, barlineTrace2]}
         layout={fig_layout_homog}
         config={fig_config}
         />
+        <Typography> Orchestration masking and target peaks in 3d: </Typography>
     <Plot
     data={[trace3d_orch, trace3d_tar]}
     layout={threeD_layout}

@@ -29,11 +29,12 @@ const Item = styled(Paper)(({ theme }) => ({
     }
 
     const barlineTrace = {
-        "mode": "lines",
+        "mode": "lines+text",
         "type": "scatter",
         "y": [].concat(...bars.map(x => [0, 100, 0])),
         "x": [].concat(...bars.map(x => [x, x, x])),
-        "text": [].concat(...bars.map((x, i) => ["", i, ""])),
+        "text": [].concat(...bars.map((x, i) => ["", i+1, ""])),
+        "textposition": "top right",
         "name": "Barlines",
         "line": {'color': 'rgba(120,120,120,0.3)'},
     }
@@ -45,8 +46,11 @@ const Item = styled(Paper)(({ theme }) => ({
             'color': 'black'
         },
         "title": "Audibility Prediction",
-        'xaxis': {'title':  'Whole notes from start'},
-        'yaxis': {'title':  'Prediction'}
+        'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
+        'yaxis': {'title':  'Prediction'},
+        width:window.innerWidth-50, 
+        height: 250,
+        margin:{l:0, r:0, t:0, b:0}, 
     }
 
     const fig_config = {

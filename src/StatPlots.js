@@ -13,7 +13,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-  export default function StatPlots({ predictions, bars }) {
+  export default function StatPlots({ predictions, bars, threeD, graphs }) {
 
 
     const xAxis = Object.keys(predictions).sort()
@@ -53,17 +53,155 @@ const Item = styled(Paper)(({ theme }) => ({
         margin:{l:0, r:0, t:0, b:0}, 
     }
 
+    const fig_layout_cent = {
+        'plot_bgcolor': "#fffef0",
+        'paper_bgcolor': "#fffef0",
+        'font': {
+            'color': 'black'
+        },
+        "title": "Centroid",
+        'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
+        'yaxis': {'title':  'Centroid'},
+        width:window.innerWidth-50, 
+        height: 250,
+        margin:{l:0, r:0, t:0, b:0}, 
+    }
+
+    const centroids_t = {
+        "mode": "lines",
+        "type": "scatter",
+        "y": xAxis.map(x=>graphs.centroid[x] ? graphs.centroid[x][1] : 0),
+        "x": xAxis,
+        "name": "Centroid target",
+        "line": {'color': 'gray'},
+    }
+
+    const centroids_0 = {
+        "mode": "lines",
+        "type": "scatter",
+        "y": xAxis.map(x=>graphs.centroid[x] ? graphs.centroid[x][0] : 0),
+        "x": xAxis,
+        "name": "Centroid orch.",
+        "line": {'color': 'gray'},
+    }
+
+    const fig_layout_distance = {
+        'plot_bgcolor': "#fffef0",
+        'paper_bgcolor': "#fffef0",
+        'font': {
+            'color': 'black'
+        },
+        "title": "Distance",
+        'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
+        'yaxis': {'title':  'Distance'},
+        width:window.innerWidth-50, 
+        height: 250,
+        margin:{l:0, r:0, t:0, b:0}, 
+    }
+
+    const dist = {
+        "mode": "lines",
+        "type": "scatter",
+        "y": xAxis.map(x=>graphs.distance[x]),
+        "x": xAxis,
+        "name": "Distance",
+        "line": {'color': 'gray'},
+    }
+
+    const fig_layout_homog = {
+        'plot_bgcolor': "#fffef0",
+        'paper_bgcolor': "#fffef0",
+        'font': {
+            'color': 'black'
+        },
+        "title": "Homogeneity",
+        'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
+        'yaxis': {'title':  'Homogeneity'},
+        width:window.innerWidth-50, 
+        height: 250,
+        margin:{l:0, r:0, t:0, b:0}, 
+    }
+
+    const homog = {
+        "mode": "lines",
+        "type": "scatter",
+        "y": xAxis.map(x=>graphs.homog[x]),
+        "x": xAxis,
+        "name": "Homogeneity",
+        "line": {'color': 'gray'},
+    }
+
     const fig_config = {
         'displayModeBar': false
     }
 
+    //3d GRAPH:
+
+    const threeD_layout = {
+        type: "surface",
+        'plot_bgcolor': 'fffef0',
+        'paper_bgcolor': 'fffef0',
+        'font': {
+            'color': 'black'
+        },
+        'scene': {
+            "aspectratio": {"x": 1, "y": 4, "z": 0.5},
+            'camera': {eye:{x:1, y:0, z:2.5}},
+        },
+        width:window.innerWidth-50, 
+        margin:{l:0, r:0, t:0, b:0}, 
+
+    }
+    const threeXaxis = Object.keys(threeD.orchestration).sort()
+    const trace3d_orch = {
+        type: 'surface',
+        x:threeD.locs,
+        y:threeXaxis,
+        z:threeXaxis.map(x=>threeD.orchestration[x]),
+        opacity:1,
+        colorscale: 'Greys', 
+        showscale:false
+    }
+    
+    const trace3d_tar = {
+        type: 'surface',
+        x:threeD.locs,
+        y:threeXaxis,
+        z:threeXaxis.map(x=>threeD.target[x]),
+        opacity:1,
+        // colorscale: 'Greens', 
+        showscale:false
+    }
+
+
     return (
+        <div>
         <Plot
         data={[targetPredictionTrace, barlineTrace]}
         layout={fig_layout}
         config={fig_config}
-        
+        />
+                <Plot
+        data={[centroids_0, centroids_t, barlineTrace]}
+        layout={fig_layout_cent}
+        config={fig_config}
+        />
+                <Plot
+        data={[dist, barlineTrace]}
+        layout={fig_layout_distance}
+        config={fig_config}
+        />
+                <Plot
+        data={[homog, barlineTrace]}
+        layout={fig_layout_homog}
+        config={fig_config}
+        />
+    <Plot
+    data={[trace3d_orch, trace3d_tar]}
+    layout={threeD_layout}
+    config={fig_config}
     />
+    </div>
     )
 
   }

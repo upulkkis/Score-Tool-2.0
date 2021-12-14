@@ -764,8 +764,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         if masking_percent>100:
             masking_percent=100
 
-    if multisclice:
-        return [masking_percent, osmd_indexes]
+    #if multisclice:
+    #    return [masking_percent, osmd_indexes]
 
     distance_graph = html.Div(className='bar2', children=[
          #html.Div([dcc.Graph(id='distance-graph', figure=distance, config=fig_config)]),
@@ -835,6 +835,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     target_peaks = format_notecolor(target['peaks'], target_notevalues)
     target_colors = ['rgba(0, 0, 0, {})'.format(i) for i in target_peaks]
     target_notesizes = np.ones(len(target_notevalues)) + 40
+
+    if multisclice:
+        return [masking_percent, osmd_indexes, mfcc_distance_value, hom_val, [orchestration['centroid'], target['centroid']], [orchestration['masking_threshold'], target['masking_threshold'], orchestration['masking_locs']]]
 
     graphs_dict = {"fig_config": fig_config,
                    "msking_graph": {"data": [trace1, trace3, trace2, vertical_line, hearing_threshold, trace3, orchestration_formant, stem_trace,

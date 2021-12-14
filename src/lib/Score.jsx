@@ -63,6 +63,8 @@ class Score extends Component {
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.barTimestamps = [];
+      this.threeDdata = {target: {}, orchestration: {}, locs:[]};
+      this.scoregraphs = {distance: {}, homog: {}, centroid: {}};
       this.cursor = undefined;
       this.next = undefined;
       this.show = true;
@@ -480,23 +482,34 @@ class Score extends Component {
           var GraphicalMusicPage = this.osmd.graphic.MusicPages[0]
           if(result){
             if(true){ //was: if(result[0]), but leads to skip if target is fully audible
+              this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = new Array(107).fill(-20);
               if(tgtPresent){
           targets.map(tgt=>{
             var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[tgt].boundingBox.absolutePosition.y+2
             const startPointF2D = new PointF2D(xposition, StaffY); //{x: xpos, y: ypos};
             const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
             let col = tgtColor(result[0])
-            this.orchestrationChords.predictions[verticals.AbsoluteTimestamp.realValue] = result[0]
-            this.orchestrationChords.maskers[verticals.AbsoluteTimestamp.realValue] = result[1]
+
             // console.log(result[0])
             this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
               col, 4)    
           })
+          this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = result[5][1]
+          this.orchestrationChords.predictions[verticals.AbsoluteTimestamp.realValue] = result[0]
+          this.orchestrationChords.maskers[verticals.AbsoluteTimestamp.realValue] = result[1]
         } // "rgba(255,0,0,0.7)"  "rgba(255,255,0,0.5)"  "rgba(0,255,0,0.3)"     "rgba(255,51,255,0.5)"    "rgba(255,153,51,0.5)" "rgba(51,153,355,0.5)"
             }
             if(result[1]){
               result[1].map((ind, i) =>{
                 var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[ind].boundingBox.absolutePosition.y+2
+                
+                this.threeDdata.orchestration[verticals.AbsoluteTimestamp.realValue] = result[5][0]
+                this.threeDdata.locs = result[5][2]
+
+                this.scoregraphs.distance[verticals.AbsoluteTimestamp.realValue] = result[2]
+                this.scoregraphs.homog[verticals.AbsoluteTimestamp.realValue] = result[3]
+                this.scoregraphs.centroid[verticals.AbsoluteTimestamp.realValue] = result[4]
+
                 const startPointF2D = new PointF2D(xposition, StaffY); //{x: xpos, y: ypos};
                 const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
                 let col = []
@@ -549,13 +562,13 @@ class Score extends Component {
             }else{
               this.setState(state=>({ ...state, interruptCalculation:false, calculatingState: <Typography> Calculation stopped! </Typography>}))
 
-              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions}/>}))
+              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
             }
 
             }else{
               this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
 
-              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions}/>}))
+              this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
             }
             
 
@@ -566,6 +579,7 @@ class Score extends Component {
           
         } else {
           this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
+          this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
           j++
           if(this.osmd.graphic.VerticalGraphicalStaffEntryContainers.length>j){
           //verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[j]

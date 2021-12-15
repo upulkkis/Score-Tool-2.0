@@ -15,6 +15,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
   export default function StatPlots({ predictions, bars, threeD, graphs }) {
 
+    const height = 150
+    const legendY = 0.92
 
     const xAxis = Object.keys(predictions).sort()
     const yAxis = xAxis.map(x=>predictions[x]===-1 ? 0 : 100-predictions[x])
@@ -35,7 +37,7 @@ const Item = styled(Paper)(({ theme }) => ({
         "y": [].concat(...bars.map(x => [0, 100, 0])),
         "x": [].concat(...bars.map(x => [x, x, x])),
         "text": [].concat(...bars.map((x, i) => ["", i+1, ""])),
-        "textposition": "top right",
+        "textposition": "middle right",
         "name": "Barlines",
         "line": {'color': 'rgba(120,120,120,0.3)'},
         showlegend: false
@@ -63,12 +65,12 @@ const Item = styled(Paper)(({ theme }) => ({
         'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
         'yaxis': {'title':  'Prediction'},
         width:window.innerWidth-50, 
-        height: 250,
+        height: height,
         margin:{l:0, r:0, t:0, b:0}, 
         showlegend: true,
         legend:{
             yanchor:"top",
-            y:0.95,
+            y:legendY,
             xanchor:"left",
             x:0.01
         }
@@ -84,12 +86,12 @@ const Item = styled(Paper)(({ theme }) => ({
         'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
         'yaxis': {'title':  'Centroid'},
         width:window.innerWidth-50, 
-        height: 250,
+        height: height,
         margin:{l:0, r:0, t:0, b:0}, 
         showlegend: true,
         legend:{
             yanchor:"top",
-            y:0.95,
+            y:legendY,
             xanchor:"left",
             x:0.01
         }
@@ -125,11 +127,11 @@ const Item = styled(Paper)(({ theme }) => ({
         'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
         'yaxis': {'title':  'Distance'},
         width:window.innerWidth-50, 
-        height: 250,
+        height: height,
         margin:{l:0, r:0, t:0, b:0}, 
         legend:{
             yanchor:"top",
-            y:0.95,
+            y:legendY,
             xanchor:"left",
             x:0.01
         }
@@ -155,12 +157,12 @@ const Item = styled(Paper)(({ theme }) => ({
         'xaxis': {'title':  'Bar', tickfont: {color:"rgba(0,0,0,0)"}},
         'yaxis': {'title':  'Homogeneity', 'zeroline':false},
         width:window.innerWidth-50, 
-        height: 250,
+        height: height,
         margin:{l:0, r:0, t:0, b:0}, 
         showlegend: true,
         legend:{
             yanchor:"top",
-            y:0.05,
+            y:1-legendY,
             xanchor:"left",
             x:0.01
         }
@@ -228,27 +230,31 @@ const Item = styled(Paper)(({ theme }) => ({
             <br/>
             <Typography variant="h3"> Analytical graphs of score: </Typography>
             <br/>
+            <Typography> Audibility prediction, higher means better audibility: </Typography>
         <Plot
         data={[targetPredictionTrace, barlineTrace]}
         layout={fig_layout}
         config={fig_config}
         />
+        <Typography> Spectral centroids, higher means brighter timbre: </Typography>
                 <Plot
         data={[centroids_0, centroids_t, barlineTrace2]}
         layout={fig_layout_cent}
         config={fig_config}
         />
+        <Typography> Target timbre distance, higher means not similar with orchestration: </Typography>
                 <Plot
         data={[dist, barlineTrace]}
         layout={fig_layout_distance}
         config={fig_config}
         />
+        <Typography> Orchestration homogeneity, higher means more homogenous: </Typography>
                 <Plot
         data={[homog, barlineTrace2]}
         layout={fig_layout_homog}
         config={fig_config}
         />
-        <Typography> Orchestration masking and target peaks in 3d: </Typography>
+        <Typography> Orchestration masking and target peaks in 3d, more colored peaks means more audibility: </Typography>
     <Plot
     data={[trace3d_orch, trace3d_tar]}
     layout={threeD_layout}

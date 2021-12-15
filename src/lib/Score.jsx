@@ -59,7 +59,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true, includeGraphs:false,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.barTimestamps = [];
@@ -401,9 +401,10 @@ class Score extends Component {
       calc(j)
       this.setState(state => state.calculIndications=true);
 
-     
+      let calcStarted = false
       
       function calc(p){
+
         let verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[p]
         // console.log(verticals.absoluteTimestamp.realValue)
       //this.osmd.graphic.VerticalGraphicalStaffEntryContainers.map(verticals =>{
@@ -412,7 +413,8 @@ class Score extends Component {
         if(measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1<measuresLeft){
           measuresLeft = measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1
           this.setState(state=>({ ...state, calculatingState: <> <Typography> Measures left to calculate: {measuresToCalculate.filter(value=>value>verticals.absoluteTimestamp.realValue).length+1} of {measuresToCalculate.length}</Typography> <Button variant="contained" color="info" onClick={this.calcStop.bind(this)}>Stop calculation</Button> </> }))
-        }        
+        }
+        calcStarted = true
 
         let noteArray = this.orchestrationChords.notes[verticals.absoluteTimestamp.realValue]
         let data = []
@@ -482,7 +484,9 @@ class Score extends Component {
           var GraphicalMusicPage = this.osmd.graphic.MusicPages[0]
           if(result){
             if(true){ //was: if(result[0]), but leads to skip if target is fully audible
+              if(this.state.includeGraphs){
               this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = new Array(107).fill(-20);
+              }
               if(tgtPresent){
           targets.map(tgt=>{
             var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[tgt].boundingBox.absolutePosition.y+2
@@ -494,7 +498,9 @@ class Score extends Component {
             this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
               col, 4)    
           })
+          if(this.state.includeGraphs){
           this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = result[5][1]
+          }
           this.orchestrationChords.predictions[verticals.AbsoluteTimestamp.realValue] = result[0]
           this.orchestrationChords.maskers[verticals.AbsoluteTimestamp.realValue] = result[1]
         } // "rgba(255,0,0,0.7)"  "rgba(255,255,0,0.5)"  "rgba(0,255,0,0.3)"     "rgba(255,51,255,0.5)"    "rgba(255,153,51,0.5)" "rgba(51,153,355,0.5)"
@@ -503,13 +509,14 @@ class Score extends Component {
               result[1].map((ind, i) =>{
                 var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[ind].boundingBox.absolutePosition.y+2
                 
+                if(this.state.includeGraphs){
                 this.threeDdata.orchestration[verticals.AbsoluteTimestamp.realValue] = result[5][0]
                 this.threeDdata.locs = result[5][2]
 
                 this.scoregraphs.distance[verticals.AbsoluteTimestamp.realValue] = result[2]
                 this.scoregraphs.homog[verticals.AbsoluteTimestamp.realValue] = result[3]
                 this.scoregraphs.centroid[verticals.AbsoluteTimestamp.realValue] = result[4]
-
+                }
                 const startPointF2D = new PointF2D(xposition, StaffY); //{x: xpos, y: ypos};
                 const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
                 let col = []
@@ -561,14 +568,17 @@ class Score extends Component {
               calc(j)
             }else{
               this.setState(state=>({ ...state, interruptCalculation:false, calculatingState: <Typography> Calculation stopped! </Typography>}))
-
+              if(this.state.includeGraphs){
               this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
+              }
             }
 
             }else{
               this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
-
+              if(this.state.includeGraphs){
               this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
+              }
+              
             }
             
 
@@ -578,16 +588,22 @@ class Score extends Component {
 
           
         } else {
-          this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
-          this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
           j++
           if(this.osmd.graphic.VerticalGraphicalStaffEntryContainers.length>j){
           //verticals = this.osmd.graphic.VerticalGraphicalStaffEntryContainers[j]
+
           if(!this.state.interruptCalculation){
-            calc(j)
+            if(!calcStarted){
+              console.log("this fired")
+              calc(j)
+            }
           }else{
             this.setState(state=>({ ...state, interruptCalculation:false,  calculatingState: <Typography> Calculation stopped! </Typography>}))
           }
+        }
+        this.setState(state=>({ ...state, calculatingState: <Typography> Calculation complete! </Typography>}))
+        if(this.state.includeGraphs){
+        this.setState(state=>({ ...state, statisticPlots: <StatPlots bars={this.barTimestamps} predictions={this.orchestrationChords.predictions} threeD={this.threeDdata} graphs={this.scoregraphs}/>}))
         }
       }
       //}) // map loop end
@@ -822,6 +838,11 @@ class Score extends Component {
         this.setState(state=>state.showTooltip=!this.state.showTooltip)
       }
 
+
+      const handleIncludeGraphs = () => {
+        this.setState(state=>state.includeGraphs=!this.state.includeGraphs)
+      }
+
       if (this.state.loaded){
         showScore = "none"
         showMasking = <div>
@@ -846,6 +867,11 @@ class Score extends Component {
         calculate masking, bars {this.state.measureRange[0]} to {this.state.measureRange[1]} ({this.state.measureRange[1]-this.state.measureRange[0]+1} bars)
       </Button>
       </Tooltip>
+      <div style={{display:"inline-block", marginInlineStart:10}}>
+                  <FormGroup sx={{display:"inline-block"}}>
+                    <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.includeGraphs} onChange={handleIncludeGraphs} />} label="Calculate graphs (slow)" />
+                  </FormGroup>
+                  </div>
       <Tooltip title={<Helps help="Redraw"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
       <Button
       size="small"

@@ -48,8 +48,8 @@ const Item = styled(Paper)(({ theme }) => ({
         "type": "scatter",
         "y": bars.map(x => 200),
         "x": bars,
-        "text": bars.map((x, i) => i),
-        "textposition": "top right",
+        "text": bars.map((x, i) => i+1),
+        "textposition": "middle right",
         "name": "Barlines",
         "line": {'color': 'rgba(120,120,120,0.3)'},
         showlegend: false

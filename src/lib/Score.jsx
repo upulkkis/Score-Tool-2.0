@@ -184,7 +184,7 @@ class Score extends Component {
         drawFromMeasureNumber: this.state.measureRange[0],
       drawUpToMeasureNumber: this.state.measureRange[1],
     })
-      setTimeout(() => this.osmd.render(), 200)
+      // setTimeout(() => this.osmd.render(), 200)
       setTimeout(() => this.renderScore(), 210)
     }
 

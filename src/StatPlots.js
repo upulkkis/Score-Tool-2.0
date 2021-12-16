@@ -184,7 +184,7 @@ const Item = styled(Paper)(({ theme }) => ({
     }
 
     //3d GRAPH:
-
+    const aspect = Math.round(window.innerWidth /200)
     const threeD_layout = {
         type: "surface",
         'plot_bgcolor': 'fffef0',
@@ -192,36 +192,49 @@ const Item = styled(Paper)(({ theme }) => ({
         'font': {
             'color': 'black'
         },
-        'scene': {
-            "aspectratio": {"x": 1, "y": 4, "z": 0.5},
-            'camera': {eye:{x:1, y:0, z:2.5}},
+        'scene': { 
+            "aspectratio": {"x": 1, "y": aspect, "z": 0.5},
+            
+            'camera': {
+                projection:{type:"ortographic"},
+                eye:{x:2.8, y:0.5, z:2.85},
+                uirevision: true
+            },
             'xaxis': {title:  'Frequency'},
-            'yaxis': {title:  'Bar'},
+            'yaxis': {
+                title:  'Bar',
+                tickmode: 'array',
+                tickvals: bars,
+                ticktext: bars.map((x,i)=>i+1)
+            },
             'zaxis': {title:  'Decibels'},
         },
-        width:window.innerWidth, 
+        width:window.innerWidth-50, 
         margin:{l:0, r:0, t:0, b:0}, 
-
     }
     const threeXaxis = Object.keys(threeD.orchestration).sort()
     const trace3d_orch = {
         type: 'surface',
+        "name": "Masking curve",
         x:threeD.locs,
         y:threeXaxis,
         z:threeXaxis.map(x=>threeD.orchestration[x]),
         opacity:1,
         colorscale: 'Greys', 
-        showscale:false
+        showscale:false,
+        showlegend: true,
     }
     
     const trace3d_tar = {
         type: 'surface',
+        "name": "Target peaks",
         x:threeD.locs,
         y:threeXaxis,
         z:threeXaxis.map(x=>threeD.target[x]),
         opacity:1,
         // colorscale: 'Greens', 
-        showscale:false
+        showscale:false,
+        showlegend: true
     }
 
 

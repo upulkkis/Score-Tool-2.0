@@ -1,6 +1,6 @@
 {
   "name": "Score-Tool-2.0",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A new version of score-tool app",
   "homepage": ".",
   "main": "dist/index.js",

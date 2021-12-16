@@ -59,7 +59,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true, includeGraphs:false,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true, includeGraphs:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.barTimestamps = [];
@@ -869,7 +869,7 @@ class Score extends Component {
       </Tooltip>
       <div style={{display:"inline-block", marginInlineStart:10}}>
                   <FormGroup sx={{display:"inline-block"}}>
-                    <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.includeGraphs} onChange={handleIncludeGraphs} />} label="Calculate graphs (slow)" />
+                    <FormControlLabel sx={{display:"inline-block"}} control={<Checkbox  style={{display:"inline-block"}} checked={this.state.includeGraphs} onChange={handleIncludeGraphs} />} label="Show graphs (slow for large scores)" />
                   </FormGroup>
                   </div>
       <Tooltip title={<Helps help="Redraw"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
@@ -1047,7 +1047,7 @@ function mid2note (midi) {
 {showMasking}
 {this.state.calculatingState}
 {this.state.calculIndications && <><Tooltip title={<Helps help="Colors"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
-  <Typography style={{display:"inline"}}>Colors: 
+  <Typography style={{display:"inline"}}>Score colors: 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 
   <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> audible</div> 

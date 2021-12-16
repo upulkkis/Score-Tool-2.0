@@ -14,6 +14,7 @@ import pickle
 import masking_slice
 import compare_rest
 import timbre_search
+from setDB import setDB
 
 #instrument_data_path='N:/Score-Tool iowa samples/out'
 #instrument_data_path = 'c:/sample_database'
@@ -153,7 +154,7 @@ def transpose(sample, semitones):
     newdata = resample_poly(sample, 44100 / 100, int(44100 * trans / 100))
     return newdata
 
-def cutSample(data):
+def cutSample(data, name, tech, dyn, note, inst_range):
     fadeamount=300
     maxindex = np.argmax(data>0.01)
     startpos = randint(200,1400)*10+1000
@@ -174,6 +175,7 @@ def cutSample(data):
     fade = np.geomspace(1, 2, fadeamount)-1
     data[0:fadeamount]=data[0:fadeamount]*fade
     data[-fadeamount:]=data[-fadeamount:]*np.flip(fade)
+    data = setDB(name, tech, dyn, note, inst_range, data)
     data = np.concatenate((np.zeros(startpos), data), axis=None)
     return data
 
@@ -229,7 +231,7 @@ def calculate(ensemble, positions, listening_point):
             data = data[:, 0]
         if fraction!=0:
             data = transpose(data, fraction)
-        data = cutSample(data)
+        data = cutSample(data, name, tech, dyn, note, list(orchestra[name][tech][dyn].keys()))
         #print(point)
         ir, sr = sf.read(ir_data_path + '/{}/{}.wav'.format(point, pos))
         ir = np.transpose(ir)
@@ -237,7 +239,7 @@ def calculate(ensemble, positions, listening_point):
             #print('nolla')
             # convolved_left=np.convolve(data, ir[0])
             convolved_left = convolve(data, ir[0])
-            print(convolved_left)
+            # print(convolved_left)
             # convolved_right=np.convolve(data, ir[1])
             convolved_right = convolve(data, ir[1])
             output = [convolved_left, convolved_right]
@@ -248,9 +250,9 @@ def calculate(ensemble, positions, listening_point):
             else:
                 orchestration_sound = [convolved_left, convolved_right]
         else:
-            print('muu: ' + str(instrument))
-            print(np.shape(ir))
-            print(np.shape(data))
+            # print('muu: ' + str(instrument))
+            # print(np.shape(ir))
+            # print(np.shape(data))
             convolved_left = convolve(data, ir[0])
             convolved_right = convolve(data, ir[1])
             output = fix_length(output, convolved_left, convolved_right)

@@ -23,7 +23,7 @@ from scipy.signal import find_peaks
 from helpers import hertz_to_microtone
 from helpers import chord_db_to_color
 import sort_for_vexflow
-
+from setDB import setDB
 import alternate_mfcc
 import maskingCurve_peakInput
 import maskingCurve
@@ -36,7 +36,7 @@ plot_color="#fffef0"
 paper_color=  'rgba(0,0,0,.2)'
 paper_color="#fffef0"
 
-def get_and_cut_sample(inst):
+def get_and_cut_sample(inst, inst_range):
     data, sr = sf.read(instrument_data_path+"/{}/{}/{}/{}.wav".format(inst[0], inst[1], inst[2], inst[3]))
     if len(np.shape(data))==2:
         data=data[:,0]
@@ -58,10 +58,14 @@ def get_and_cut_sample(inst):
             data = data[maxindex - startpos:]
         else:
             data = np.concatenate((data, np.zeros(44100-len(data))), axis=None)
+
     # print('data len :'+str(len(data)))
     fade = np.geomspace(1, 2, fadeamount) - 1
     data[0:fadeamount] = data[0:fadeamount] * fade
     data[-fadeamount:] = data[-fadeamount:] * np.flip(fade)
+
+    data = setDB(inst[0], inst[1], inst[2], inst[3], inst_range, data)
+
     data = np.concatenate((np.zeros(startpos), data), axis=None)
     return data
 
@@ -102,14 +106,14 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             #print(instrument)
             if instrument[5]==1: #If instrument is set "on"
                 if instrument[4]==0: #if orchestration
-                    try:
+                    #try:
                         #odata=orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
                         #orchestration_sum = orchestration_sum+orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
                         orch_mfcc_array=np.vstack([orch_mfcc_array, orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['mfcc']])
                         if len(orch_sample)==0:
-                            orch_sample=get_and_cut_sample(instrument)
+                            orch_sample=get_and_cut_sample(instrument, list(orchestra[instrument[0]][instrument[1]][instrument[2]].keys()))
                         else:
-                            orch_sample=orch_sample+get_and_cut_sample(instrument)
+                            orch_sample=orch_sample+get_and_cut_sample(instrument, list(orchestra[instrument[0]][instrument[1]][instrument[2]].keys()))
                         o_cents.append(orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['centroid'])
                         pks = orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks']
                         peaks_o = combine_peaks.combine_peaks(peaks_o, [pks[0], pks[1]])#orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks'])
@@ -121,8 +125,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
                         if instrument[3]<min_orch_note:
                              min_orch_note=instrument[3]
-                    except:
-                        print("Out of range orchestration notes found!")
+                    #except Exception as e:
+                    #    print("Out of range orchestration notes found!")
+                    #    print(e)
                 if instrument[4]: #if target
                     try:
                         #tdata=orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['data']
@@ -130,9 +135,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                         t_cents.append(orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['centroid'])
                         targ_mfcc_array = np.vstack([targ_mfcc_array,orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['mfcc']])
                         if len(target_sample) == 0:
-                            target_sample = get_and_cut_sample(instrument)
+                            target_sample = get_and_cut_sample(instrument, list(orchestra[instrument[0]][instrument[1]][instrument[2]].keys()))
                         else:
-                            target_sample = target_sample + get_and_cut_sample(instrument)
+                            target_sample = target_sample + get_and_cut_sample(instrument, list(orchestra[instrument[0]][instrument[1]][instrument[2]].keys()))
                         pks = orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks']
                         peaks_t = combine_peaks.combine_peaks(peaks_t, [pks[0], pks[1]])#orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks'])
                         masking_curves_t.append(maskingCurve_peakInput.maskingCurve(S, pks))

@@ -352,8 +352,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 new_locs.append(old_locs[i])
         return new_peaks, new_locs
 
-    if any(x < 35 for x in target['peak_locs']):
+    if any(x < 35 for x in target['peak_locs']):    #Frequency peaks under 35hz are concidered as mistake
         target['peaks'], target['peak_locs'] = remove_too_low_frequencies(target['peaks'], target['peak_locs'])
+
     idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     peaks_above_masking = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     # print(target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold']))
@@ -361,7 +362,69 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     # print(peaks_above_masking)
     # Function to calculate masking percent. Takes into account how afr peaks are from masking threshold
     def calculate_masking_percent(peaks_above):
+
+        # Check the critical band area for louder peaks:
+        nonzeros_loc = np.array(target['peak_locs'])[idx_above]
+        nonzeros_pks = np.array(target['peaks'])[idx_above]
+        nonzero_indexes = np.nonzero(idx_above)[0] # Returns tuple, take index [0]
+        for i in range(len(nonzeros_loc)):
+            idx = (np.abs(orchestration['masking_locs'] - nonzeros_loc[i])).argmin() #Find the nearest masking index for peak
+            low_range = idx-3 # Check three indexes under target peak
+            high_range = idx+3 # Check two indexes above target peak
+            if idx <4:
+                low_range = idx
+            band_max = np.array(orchestration['masking_threshold'])[low_range:high_range].max() #Get maximum around peak
+            peaks_above_masking[nonzero_indexes[i]] = target['peaks'][i]-band_max
+            if peaks_above_masking[nonzero_indexes[i]] <= 0: #If current peak is under loca maximum...
+                idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
+
         percent = 100
+        if np.count_nonzero(idx_above == True) == 0:
+            return 100
+        else:
+            # percent = 20
+            percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
+
+        #If there are at least two componenets over 15db above masking threshold:
+        if np.count_nonzero(peaks_above_masking>15)>=1:
+            if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
+                return 0
+            if np.count_nonzero(peaks_above_masking > 10) >= 2:
+                return 5+(percent*0.3)
+            return 20+(percent*0.4)
+
+        #If there are at least two componenets over 10db above masking threshold:
+        if np.count_nonzero(peaks_above_masking>10)>=1:
+            if np.count_nonzero(peaks_above_masking>10)==len(peaks_above_masking):
+                return 0
+            if np.count_nonzero(peaks_above_masking > 10) >= 2:
+                return 20+(percent*0.7)
+            return 50+(percent*0.5)
+
+        #if there are at least three components over 6db above masking threshold:
+        if np.count_nonzero(peaks_above_masking>6)>=1:
+            if np.count_nonzero(peaks_above_masking>6)==len(peaks_above_masking):
+                return 10
+            if np.count_nonzero(peaks_above_masking > 6) >= 2:
+                return 50 + (percent * 0.5)
+            return 70 + (percent * 0.3)
+
+        #if there are at least three components over 0db above masking threshold:
+        if np.count_nonzero(peaks_above_masking>0)>=1:
+            if np.count_nonzero(peaks_above_masking>0)==len(peaks_above_masking):
+                return 60 #If all peaks are above, but barely
+            if np.count_nonzero(peaks_above_masking > 0) >= 2:
+                return 70 + (percent * 0.3)
+            return 80 + (percent * 0.2)
+
+
+        if np.count_nonzero(idx_above == True) == 0:
+            masking_percent = 100
+        else:
+            masking_percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
+        return masking_percent
+
+        '''  OLD VERSION!!!
         if np.count_nonzero(idx_above == True) == 0:
             return 100
         else:
@@ -405,6 +468,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         else:
             masking_percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
         return masking_percent
+        '''
 
 
 

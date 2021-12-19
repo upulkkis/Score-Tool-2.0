@@ -1,8 +1,20 @@
 import numpy as np
 import math
 from instrument_Db_Levels import levels
+import statistics
 
 def applyDB(x, targetDB):
+
+    ''' NEW VERSION WITH RMS '''
+    Pref = 2e-5  # Reference sound pressure
+    # max = np.max(x) # Get the max value (peak level) of the sound file
+    root_mean_square = math.sqrt(statistics.mean(x ** 2.))  # RMS of the signal
+    dB = 20 * math.log10(root_mean_square/Pref)   ##Get Db level of value
+    dBref = 20 * math.log10(0.9/Pref) #Calculate reference for 0.9 amplitude
+    adjusted=targetDB+(dBref-86) # Calculate db level according to our reference
+    amp_value = Pref*10 ** (adjusted / 20)  # calculate amp value with reference from db
+    adj_coeff  = amp_value/root_mean_square#coefficient for adjusting the file amplitude level
+    ''' OLD VERSION WITH MAX PEAK
     Pref = 2e-5  # Reference sound pressure
     max = np.max(x) # Get the max value (peak level) of the sound file
     dB = 20 * math.log10(max/Pref)   ##Get Db level of value
@@ -10,6 +22,7 @@ def applyDB(x, targetDB):
     adjusted=targetDB+(dBref-80) # Calculate db level according to our reference
     amp_value = Pref*10 ** (adjusted / 20)  # calculate amp value with reference from db
     adj_coeff  = amp_value/max#coefficient for adjusting the file amplitude level
+    '''
     return x*adj_coeff
 
 def setDB (inst, tech, dyn, note, inst_range, sound):

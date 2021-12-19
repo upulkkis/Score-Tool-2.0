@@ -17,12 +17,12 @@ import timbre_search
 from setDB import setDB
 
 #instrument_data_path='N:/Score-Tool iowa samples/out'
-#instrument_data_path = 'c:/sample_database'
-instrument_data_path='/home/uljas/sample_library'
+instrument_data_path = 'c:/sample_database'
+#instrument_data_path='/home/uljas/sample_library'
 #instrument_data_path='/Users/admin-upu10438/sample_library/sample_library'
 #ir_data_path='N:/Score-Tool iowa samples'
-#ir_data_path = 'c:/sample_database/musatalo'
-ir_data_path='/home/uljas/sample_library/musatalo'
+ir_data_path = 'c:/sample_database/musatalo'
+#ir_data_path='/home/uljas/sample_library/musatalo'
 #ir_data_path='/Users/admin-upu10438/sample_library/sample_library/musatalo'
 
 app = Flask(__name__)
@@ -296,8 +296,8 @@ def calculate(ensemble, positions, listening_point):
     if level >= 0.99:  # 0.99:
         # attenuation= level-0.99
         normalization = 0.99 / level
-        print(level)
-        print(normalization)
+        # print(level)
+        # print(normalization)
         output[0] = output[0] * normalization
         output[1] = output[1] * normalization
         if is_target:
@@ -333,6 +333,8 @@ class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
+        if isinstance(obj, np.int64):
+            return int(obj)
         return json.JSONEncoder.default(self, obj)
 
 @app.route('/database', methods=['GET'])

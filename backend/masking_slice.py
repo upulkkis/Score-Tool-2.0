@@ -343,6 +343,17 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #Tässä interpoloidaan maskauskäyrän välit vastaamaan targetin huippuja:
     # hearing_target_list = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     #print(hearing_target_list)
+    def remove_too_low_frequencies(old_peaks, old_locs):
+        new_peaks=[]
+        new_locs=[]
+        for i in range(len(old_locs)):
+            if old_locs[i] >35:
+                new_peaks.append(old_peaks[i])
+                new_locs.append(old_locs[i])
+        return new_peaks, new_locs
+
+    if any(x < 35 for x in target['peak_locs']):
+        target['peaks'], target['peak_locs'] = remove_too_low_frequencies(target['peaks'], target['peak_locs'])
     idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     peaks_above_masking = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     # print(target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold']))
@@ -355,7 +366,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             return 100
         else:
             percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
-
+        #print(percent)
         #If there are at least two componenets over 15db above masking threshold:
         if np.count_nonzero(peaks_above_masking>15)>=1:
             if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
@@ -387,7 +398,6 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             if np.count_nonzero(peaks_above_masking > 0) >= 2:
                 return 70 + (percent * 0.3)
             return 80 + (percent * 0.2)
-
 
 
         if np.count_nonzero(idx_above == True) == 0:

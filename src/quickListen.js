@@ -1,9 +1,11 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import axios from "axios";
+import { address } from './lib/Constants';
 
+const baseURL = address
 //const baseURL = "http://127.0.0.1:5000/"
-const baseURL = "https://rest.score-tool.com/";
+//const baseURL = "https://rest.score-tool.com/";
 
 export default function QuickListen(props) {
 

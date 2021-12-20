@@ -112,6 +112,7 @@ class Score extends Component {
         let scoreTgt = []
         let scoreOnoff = []
         let scoreModify = []
+        let hasNotes = []
         //console.log(this.props.filename)
         try{
           const savedData = JSON.parse(localStorage.getItem(this.props.filename))
@@ -131,6 +132,7 @@ class Score extends Component {
         scoreTgt = []
         scoreOnoff = []
         scoreModify = []
+        hasNotes = []
         this.osmd.sheet.staves.map(p =>{
           instNames.push(p.parentInstrument.nameLabel.text)
           scoreNames.push(assignName(p.parentInstrument.nameLabel.text))
@@ -139,8 +141,34 @@ class Score extends Component {
           scoreTgt.push(0)
           scoreOnoff.push(1)
           scoreModify.push(0)
+          let noteStaff = false
+          p.voices.map(voice => {
+            if (voice.voiceEntries.length > 0) {
+              noteStaff = true
+            }
+          })       
+          hasNotes.push(noteStaff)
         })
+          
       }
+      console.log(instNames)
+      console.log(hasNotes)
+      // Check if there is notes on staff, if not, do not render.  TOO SLOW, DO NOT USE!!!
+      /*
+      this.osmd.sheet.Instruments.map(instrument=>{
+        let empty = true
+        instrument.voices.map(voice => {
+          if (voice.voiceEntries.length > 0) {
+            empty = false
+          }
+        })
+        if (empty) {
+          console.log("Found empty measure!")
+          instrument.Visible = false
+        }
+      })
+      */
+
         /*
         this.osmd.setOptions({
           //renderSingleHorizontalStaffline: true,
@@ -162,6 +190,7 @@ class Score extends Component {
           state.scoreOnoff=scoreOnoff
           state.scoreModify=scoreModify
           state.measureTimestamps=measureTimestamps
+          state.hasNotes = hasNotes
         })
         //this.osmd.render() 
         //this.renderScore()

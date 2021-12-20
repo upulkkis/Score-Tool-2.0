@@ -20,7 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
     let xAxis = Object.keys(predictions)
     xAxis = xAxis.map(val => parseFloat(val)).sort(function(a, b) {return a - b})
-    console.log(xAxis)
+    //console.log(xAxis)
     const yAxis = xAxis.map(x=>predictions[x]===-1 ? 0 : 100-predictions[x])
 
     const targetPredictionTrace = {

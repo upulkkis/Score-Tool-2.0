@@ -19,6 +19,7 @@ import axios from "axios";
 import {extract} from 'fuzzball';
 import { assignName } from './assignNamesToDatabase';
 import { DBinstruments } from '../instruments';
+import { percInstList } from './percInstrumentList';
 import { noteNumbers } from './noteNumbers';
 import AnalysisDialog from './analysisModal';
 import InstSelect from './InstSelect';
@@ -468,6 +469,9 @@ class Score extends Component {
         noteArray.map((note,idx) => {
           try{
           if(note.length>0){
+            if (percInstList.includes(this.orchestrationChords.databaseEntries.inst[idx])){
+              note = note.map(n=>({...n, note:48}))
+            }
           if(note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]>=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0] && 
             note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]<=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][1]){
           
@@ -501,7 +505,7 @@ class Score extends Component {
         //Nothing to do here
       }
         })
-        //console.log(data)
+
         data = data.filter((v,i,a)=> {
           if (v[5]){
             try{
@@ -1214,6 +1218,9 @@ function mid2note (midi) {
             targets.push(idx)
           }
           if(note.length>0){
+            if (percInstList.includes(this.orchestrationChords.databaseEntries.inst[idx])){
+              note = note.map(n=>({...n, note:48}))
+            }
             let dynamic = []
             if(this.orchestrationChords.databaseEntries.dyn[idx]!=="from_score"){
               dynamic=this.orchestrationChords.databaseEntries.dyn[idx]
@@ -1373,6 +1380,9 @@ function mid2note (midi) {
                 targets.push(idx)
               }
               if(note.length>0){
+                if (percInstList.includes(this.orchestrationChords.databaseEntries.inst[idx])){
+                  note = note.map(n=>({...n, note:48}))
+                }
                 let dynamic = []
                 if(this.orchestrationChords.databaseEntries.dyn[idx]!=="from_score"){
                   dynamic=this.orchestrationChords.databaseEntries.dyn[idx]

@@ -38,6 +38,7 @@ const theme = createTheme({
 }
 })
 
+// --openssl-legacy-provider 
 //const OpenSheetMusicDisplay = React.lazy(() => import('./lib/OpenSheetMusicDisplay'));
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,

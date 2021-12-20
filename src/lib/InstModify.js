@@ -63,17 +63,19 @@ export default function InstModify(props){
   })
       }
       const tgtChange = (idx, event) => {
-        setState(state => ({...state, scoreTgt: !state.scoreTgt}))
+        let newValue = !state.scoreTgt
+        setState(state => ({...state, scoreTgt: newValue}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, !state.scoreTgt, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, newValue, state.scoreOnoff, state.scoreIdx, state.scoreMicro]
   })
       }
       const onoffChange = (idx, event) => {
-        setState(state => ({...state, scoreOnoff:!state.scoreOnoff}))
+        let newValue = !state.scoreOnoff
+        setState(state => ({...state, scoreOnoff:newValue}))
         props.onChange({
           idx: state.idx, 
-          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, !state.scoreOnoff, state.scoreIdx, state.scoreMicro]
+          row: [state.scoreNames, state.scoreTechs, state.scoreDyns, state.scorePitch, state.scoreTgt, newValue, state.scoreIdx, state.scoreMicro]
   })
       }
       

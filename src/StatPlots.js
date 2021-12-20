@@ -18,7 +18,9 @@ const Item = styled(Paper)(({ theme }) => ({
     const height = 150
     const legendY = 0.92
 
-    const xAxis = Object.keys(predictions).sort()
+    let xAxis = Object.keys(predictions)
+    xAxis = xAxis.map(val => parseFloat(val)).sort(function(a, b) {return a - b})
+    console.log(xAxis)
     const yAxis = xAxis.map(x=>predictions[x]===-1 ? 0 : 100-predictions[x])
 
     const targetPredictionTrace = {
@@ -200,7 +202,7 @@ const Item = styled(Paper)(({ theme }) => ({
                 eye:{x:2.8, y:0.5, z:2.85},
                 uirevision: true
             },
-            'xaxis': {title:  'Frequency'},
+            'xaxis': {title:  'Frequency', type:"log"},
             'yaxis': {
                 title:  'Bar',
                 tickmode: 'array',

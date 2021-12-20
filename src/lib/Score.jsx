@@ -59,7 +59,7 @@ const baseURL = address
 class Score extends Component {
     constructor(props) {
       super(props);
-      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true, includeGraphs:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[],instData:{}, open: false, time:[], modalData: []};
+      this.state = { statisticPlots: "", calculatingState: "", help:false, tooltip:"", showTooltip:true, expanded:true, includeGraphs:true,interruptCalculation:false, dataReady: false, loading:false,loaded: false,cur: false, calculIndications: false, measureTimestamps:[],measureRange: [1,2], maxMeasure:2, instNames:[], scoreNames:[], scoreTechs:[], scoreDyns:[], scoreTgt:[], scoreOnoff:[], scoreModify:[], hasNotes: [], instData:{}, open: false, time:[], modalData: []};
       this.osmd = undefined;
       this.orchestrationChords = undefined;
       this.barTimestamps = [];
@@ -123,6 +123,15 @@ class Score extends Component {
           scoreTgt = savedData.scoreTgt
           scoreOnoff = savedData.scoreOnoff
           scoreModify = savedData.scoreModify
+          this.osmd.sheet.staves.map(p =>{
+            let noteStaff = false
+            p.voices.map(voice => {
+              if (voice.voiceEntries.length > 0) {
+                noteStaff = true
+              }
+            })       
+            hasNotes.push(noteStaff)
+          })
           }
         catch{
         instNames = []
@@ -151,23 +160,23 @@ class Score extends Component {
         })
           
       }
-      console.log(instNames)
-      console.log(hasNotes)
+      // console.log(instNames)
+      // console.log(hasNotes)
       // Check if there is notes on staff, if not, do not render.  TOO SLOW, DO NOT USE!!!
-      /*
-      this.osmd.sheet.Instruments.map(instrument=>{
+      
+      this.osmd.sheet.Instruments.map((instrument, idx)=>{
         let empty = true
         instrument.voices.map(voice => {
           if (voice.voiceEntries.length > 0) {
             empty = false
           }
         })
-        if (empty) {
+        if (empty && idx!==0) {
           console.log("Found empty measure!")
           instrument.Visible = false
         }
       })
-      */
+      
 
         /*
         this.osmd.setOptions({
@@ -394,9 +403,18 @@ class Score extends Component {
       // this.osmd.drawer.drawBoundingBox(boundingbox, "rgba(0,255,0,0.2)", false, "TARGET")
 
       //DRAW TARGET STAFFS IN LIGHT GREEN:
+      let tgtList = []
+      this.state.scoreTgt.map((tgt,i)=>{
+        if (this.state.hasNotes[i]){
+          tgtList.push(tgt)
+        }
+      })
+      console.log(this.state.scoreTgt)
+      console.log(tgtList)
       this.osmd.graphic.musicPages[0].musicSystems.map(system=>{
+
         system.staffLines.map((SL,ind)=>{
-          if(this.state.scoreTgt[ind]){
+          if(tgtList[ind]){
             this.osmd.drawer.drawBoundingBox(SL.boundingBox, "rgba(255, 0, 0,0.2)", false, "TARGET")
 
             let newLabel = new Label("Target")
@@ -450,7 +468,12 @@ class Score extends Component {
         let targets = []
         let tgtPresent = false
         noteArray.map((note,idx) => {
-          if(this.orchestrationChords.databaseEntries.tgt[idx]){
+          try{
+          if(note.length>0){
+          if(note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]>=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0] && 
+            note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]<=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][1]){
+          
+            if(this.orchestrationChords.databaseEntries.tgt[idx]){
             targets.push(idx)
           }
           if(note.length>0){
@@ -472,8 +495,13 @@ class Score extends Component {
                 dynamic = "mf"
                 }
           data.push([this.orchestrationChords.databaseEntries.inst[idx], this.orchestrationChords.databaseEntries.tech[idx], dynamic, n.note+12+this.orchestrationChords.databaseEntries.modify[idx], this.orchestrationChords.databaseEntries.tgt[idx], this.orchestrationChords.databaseEntries.onoff[idx], idx])
-            })  
-        }
+            })
+          }
+        }}
+      }
+      catch{
+        //Nothing to do here
+      }
         })
         //console.log(data)
         data = data.filter((v,i,a)=> {
@@ -485,7 +513,6 @@ class Score extends Component {
             }
           } else return false
         })
-        //console.log(data)
 
         const tgtColor = (val) => {
           let col = "rgba(0,255,0,0.3)"
@@ -1040,8 +1067,9 @@ function mid2note (midi) {
     <th>on/off</th>
     <th>transpose</th>
   </tr>
-{this.state.instNames.map((instName, idx)=>(
-    <InstSelect
+{this.state.instNames.map((instName, idx)=> {
+    if(this.state.hasNotes[idx]){
+    return <InstSelect
     idx={idx}       
     instName={instName}
     scoreNames= {this.state.scoreNames[idx]}
@@ -1053,7 +1081,8 @@ function mid2note (midi) {
     onChange= {e => rowChange(idx,e)}
     help={this.props.help}
     />
-))}
+    }
+  })}
 </tbody>
 </table>
 </div>

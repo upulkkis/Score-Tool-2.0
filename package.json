@@ -10,7 +10,7 @@
     "README.md"
   ],
   "scripts": {
-    "start": "react-scripts --max_old_space_size=8192 --openssl-legacy-provider start",
+    "start": "react-scripts --max_old_space_size=8192 start",
     "build": "react-scripts --max_old_space_size=8192 build && compress-cra",
     "build2": "react-scripts build && gzip build/static/js/*.js && gzip build/static/css/*.css",
     "deploy": "scp -r ./build/* root@score-tool.com:/var/www/new.score-tool.com",

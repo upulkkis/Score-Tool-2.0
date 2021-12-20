@@ -377,6 +377,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             peaks_above_masking[nonzero_indexes[i]] = target['peaks'][i]-band_max
             if peaks_above_masking[nonzero_indexes[i]] <= 0: #If current peak is under loca maximum...
                 idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
+            if nonzeros_loc[i] >7000: #Do not count peaks over 7kHz
+                peaks_above_masking[nonzero_indexes[i]] = -1
+                idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
 
         percent = 100
         if np.count_nonzero(idx_above == True) == 0:
@@ -389,25 +392,25 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         if np.count_nonzero(peaks_above_masking>15)>=1:
             if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
                 return 0
-            if np.count_nonzero(peaks_above_masking > 10) >= 2:
+            if np.count_nonzero(peaks_above_masking > 15) >= 2:
                 return 5+(percent*0.3)
-            return 20+(percent*0.4)
+            return 10+(percent*0.4)
 
         #If there are at least two componenets over 10db above masking threshold:
         if np.count_nonzero(peaks_above_masking>10)>=1:
             if np.count_nonzero(peaks_above_masking>10)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 10) >= 2:
-                return 20+(percent*0.7)
-            return 50+(percent*0.5)
+                return 30+(percent*0.3)
+            return 50+(percent*0.4)
 
         #if there are at least three components over 6db above masking threshold:
         if np.count_nonzero(peaks_above_masking>6)>=1:
             if np.count_nonzero(peaks_above_masking>6)==len(peaks_above_masking):
                 return 10
             if np.count_nonzero(peaks_above_masking > 6) >= 2:
-                return 50 + (percent * 0.5)
-            return 70 + (percent * 0.3)
+                return 35 + (percent * 0.5)
+            return 40 + (percent * 0.3)
 
         #if there are at least three components over 0db above masking threshold:
         if np.count_nonzero(peaks_above_masking>0)>=1:

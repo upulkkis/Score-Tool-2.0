@@ -405,14 +405,12 @@ class Score extends Component {
       //DRAW TARGET STAFFS IN LIGHT GREEN:
       let tgtList = []
       this.state.scoreTgt.map((tgt,i)=>{
-        if (this.state.hasNotes[i]){
+        if (this.state.hasNotes[i] || i===0){
           tgtList.push(tgt)
         }
       })
-      console.log(this.state.scoreTgt)
-      console.log(tgtList)
-      this.osmd.graphic.musicPages[0].musicSystems.map(system=>{
 
+      this.osmd.graphic.musicPages[0].musicSystems.map(system=>{
         system.staffLines.map((SL,ind)=>{
           if(tgtList[ind]){
             this.osmd.drawer.drawBoundingBox(SL.boundingBox, "rgba(255, 0, 0,0.2)", false, "TARGET")

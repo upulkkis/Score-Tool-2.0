@@ -5,12 +5,12 @@ path = 'c:\\samples\\'
 
 Production = False
 #instrument_data_path='N:/Score-Tool iowa samples/out'
-instrument_data_path = 'c:/sample_database'
-#instrument_data_path='/home/uljas/sample_library'
+#instrument_data_path = 'c:/sample_database'
+instrument_data_path='/home/uljas/sample_library'
 #instrument_data_path='/Users/admin-upu10438/sample_library/sample_library'
 #ir_data_path='N:/Score-Tool iowa samples'
-ir_data_path = 'c:/sample_database/musatalo'
-#ir_data_path='/home/uljas/sample_library/musatalo'
+#ir_data_path = 'c:/sample_database/musatalo'
+ir_data_path='/home/uljas/sample_library/musatalo'
 #ir_data_path='/Users/admin-upu10438/sample_library/sample_library/musatalo'
 
 Pref = 2e-5 #Reference sound pressure

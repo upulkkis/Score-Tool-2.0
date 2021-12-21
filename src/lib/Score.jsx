@@ -85,10 +85,23 @@ class Score extends Component {
         drawTitle: this.props.drawTitle !== undefined ? this.props.drawTitle : true,
         loadUrlTimeout: 10000,
         drawSlurs: false,
+        /*
+        onXMLRead: (txtScore => {
+          const start = "<measure number=\"4\""
+          const beginning = txtScore.split("<measure number=\"4\"")[0]
+          console.log(txtScore)
+          let end = txtScore.substring(txtScore.indexOf("</measure"))
+          console.log(txtScore.indexOf("<measure number=\"6\""))
+          console.log(end)
+          //let end = txtScore.split("<measure number=\"6\"")
+          return beginning+"<measure number=\"6\""+end
+        })
+        */
         // drawFromMeasureNumber : measureRangeStart,
         // drawUpToMeasureNumber : measureRangeEnd
       }
       this.osmd = new OSMD(this.divRef.current, options);
+      
       //this.osmd.setLogLevel("trace")
       //this.osmd.drawingParameters = ["compacttight"]
       //console.log(this.state.instData)

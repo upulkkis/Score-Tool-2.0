@@ -438,7 +438,7 @@ def load_piece(piece, file):
 def calculate_masking_slice():
     new_data = str(request.data, 'utf-8')
     new_data = json.loads(new_data)
-    # print(new_data)
+    print(new_data)
     result = masking_slice.get_slice(new_data, orchestra, multisclice=True)
     # print(result)
     return json.dumps(result, cls=NumpyEncoder)

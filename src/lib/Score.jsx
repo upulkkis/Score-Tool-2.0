@@ -463,6 +463,7 @@ class Score extends Component {
         calcStarted = true
 
         let noteArray = this.orchestrationChords.notes[verticals.absoluteTimestamp.realValue]
+
         let data = []
         let targets = []
         let tgtPresent = false
@@ -472,6 +473,8 @@ class Score extends Component {
             if (percInstList.includes(this.orchestrationChords.databaseEntries.inst[idx])){
               note = note.map(n=>({...n, note:48}))
             }
+            console.log(idx)
+            console.log(this.orchestrationChords.databaseEntries.inst[idx])
           if(note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]>=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0] && 
             note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]<=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][1]){
           
@@ -486,8 +489,8 @@ class Score extends Component {
             if(this.orchestrationChords.databaseEntries.tgt[idx]){
               tgtPresent = true
             }
+            
             note.map(n => {
-              // console.log(n.dynamic)
               // console.log(["ppppp", "pppp", "ppp", "pp", "p"].includes(n.dynamic))
               if(dynamic.length===0 && ["ppppp", "pppp", "ppp", "pp", "p"].includes(n.dynamic)){
                 dynamic = "p"
@@ -505,7 +508,6 @@ class Score extends Component {
         //Nothing to do here
       }
         })
-
         data = data.filter((v,i,a)=> {
           if (v[5]){
             try{
@@ -515,7 +517,6 @@ class Score extends Component {
             }
           } else return false
         })
-
         const tgtColor = (val) => {
           let col = "rgba(0,255,0,0.3)"
           if(val>=75){
@@ -652,7 +653,7 @@ class Score extends Component {
 
           if(!this.state.interruptCalculation){
             if(!calcStarted){
-              console.log("this fired")
+              // console.log("this fired")
               calc(j)
             }
           }else{

@@ -486,11 +486,20 @@ class Score extends Component {
             if (percInstList.includes(this.orchestrationChords.databaseEntries.inst[idx])){
               note = note.map(n=>({...n, note:48}))
             }
+
+            /*
             console.log(idx)
             console.log(this.orchestrationChords.databaseEntries.inst[idx])
-          if(note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]>=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0] && 
-            note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]<=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][1]){
-          
+            console.log(this.orchestrationChords.databaseEntries.tech[idx])
+            console.log([note[0].dynamic][0])
+            console.log(noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0])
+            */
+
+          // Omit range check in this phase
+          //if(note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]>=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][0] && 
+          //  note[0].note+12+this.orchestrationChords.databaseEntries.modify[idx]<=noteNumbers[this.orchestrationChords.databaseEntries.inst[idx]][this.orchestrationChords.databaseEntries.tech[idx]][note[0].dynamic][1]){
+              
+
             if(this.orchestrationChords.databaseEntries.tgt[idx]){
             targets.push(idx)
           }
@@ -515,12 +524,13 @@ class Score extends Component {
           data.push([this.orchestrationChords.databaseEntries.inst[idx], this.orchestrationChords.databaseEntries.tech[idx], dynamic, n.note+12+this.orchestrationChords.databaseEntries.modify[idx], this.orchestrationChords.databaseEntries.tgt[idx], this.orchestrationChords.databaseEntries.onoff[idx], idx])
             })
           }
-        }}
+        } // range check close }
       }
       catch{
         //Nothing to do here
       }
         })
+        // console.log(data)
         data = data.filter((v,i,a)=> {
           if (v[5]){
             try{

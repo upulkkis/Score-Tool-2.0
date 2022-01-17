@@ -95,7 +95,7 @@ export default function AnalysisDialog(props) {
         newData.push(row)
       }
     })
-
+    setList(list=>list=newData)
     axios.post(baseURL+"modalSlice", newData).then((response) => {
       //console.log(response)
       var result = response.data

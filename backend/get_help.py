@@ -1,3 +1,4 @@
+'''
 import dash_html_components as html
 import dash_admin_components as dac
 
@@ -28,3 +29,4 @@ def help(topic='No help yet :('):
     if topic=='general':
         text= general()
     return html.Div(text)
+'''

@@ -1,12 +1,15 @@
+'''
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_admin_components as dac
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
+'''
 from helpers import constants, hertz_to_microtone
+'''
 import score_component as sc
-
+'''
 
 plot_color="#fffef0"
 paper_color="#fffef0"
@@ -80,6 +83,7 @@ def compare(data, orchestra):
             "fill": 'tozeroy'
             }
         x_axis= constants.threshold[:, 0]
+        '''
         gra = dcc.Graph(figure={'data': [
             go.Scatter(x=x_axis, mode='lines', y=data[0], name='{} curve'.format(i1), line={'color':'sienna'},
                        #hovertemplate='%{y} percent of target peaks masked by orchestration',
@@ -90,6 +94,7 @@ def compare(data, orchestra):
                        fill='tozeroy',),
                        #fillcolor='moccasin'),
             trace1, trace2], 'layout': layout2d}, config=fig_config,)  # , config=fig_config)
+        '''
         gra = {'data': [trace00, trace01, trace1, trace2], 'layout': layout2d}
         #gra =html.Div(['Peaks and masking graph comparison', gra], )
         #mfcc_fig = go.Figure(data=[mfcc_vector1_trace, mfcc_vector2_trace], layout=fig_layout)
@@ -107,7 +112,7 @@ def compare(data, orchestra):
 
     i1, t1, d1, n1 = data[0][0], data[0][1], data[0][2], data[0][3]
     i2, t2, d2, n2 = data[1][0], data[1][1], data[1][2], data[1][3]
-    print(data)
+    # print(data)
     i1_peaks = orchestra[i1][t1][d1][n1]['peaks']
     i1_masks = orchestra[i1][t1][d1][n1]['masking_curve']
     i1_mfcc = orchestra[i1][t1][d1][n1]['mfcc']
@@ -150,6 +155,7 @@ def compare(data, orchestra):
     i1_ann[loudest['one_idx']] = 'loudest'
     i2_ann[loudest['two_idx']] = 'loudest'
 
+    '''
     i1_score = html.Div([html.Div('Overtones of {}, loudest partial = red'.format(i1), style={'color':'black', 'height':20}),
         sc.Orchestration(notes=i1_notes, instruments=i1_ann, target=[loudest['one_idx']], width=200)], style={'backgroundColor':'#eed',
                                                                                             'display':'inline-block'})
@@ -158,7 +164,9 @@ def compare(data, orchestra):
                                                                                             'display': 'inline-block'})
     score_centroids = html.Div([html.Div('Spectral centroids of {} and {}'.format(i1, i2), style={'color':'black', 'height':20}),
         sc.Orchestration(notes=[i1_cent, i2_cent], instruments=[i1, i2], target=[], width=100)], style={'backgroundColor':'#eed',
-                                                                                      'display': 'inline-block'})
+
+                                                                                   'display': 'inline-block'})
+                                                                                   '''
     i1_score = {"notes": i1_notes, "instruments": i1_ann, "target":[loudest["one_idx"]]}
     i2_score = {"notes": i2_notes, "instruments": i2_ann, "target":[loudest["two_idx"]]}
     centroids = {"notes":[i1_cent, i2_cent], "instruments":[i1, i2], "target":[]}

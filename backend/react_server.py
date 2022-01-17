@@ -17,12 +17,12 @@ import timbre_search
 from setDB import setDB
 
 #instrument_data_path='N:/Score-Tool iowa samples/out'
-#instrument_data_path = 'c:/sample_database'
-instrument_data_path='/home/uljas/sample_library'
+instrument_data_path = 'c:/sample_database'
+#instrument_data_path='/home/uljas/sample_library'
 #instrument_data_path='/Users/admin-upu10438/sample_library/sample_library'
 #ir_data_path='N:/Score-Tool iowa samples'
-#ir_data_path = 'c:/sample_database/musatalo'
-ir_data_path='/home/uljas/sample_library/musatalo'
+ir_data_path = 'c:/sample_database/musatalo'
+#ir_data_path='/home/uljas/sample_library/musatalo'
 #ir_data_path='/Users/admin-upu10438/sample_library/sample_library/musatalo'
 
 app = Flask(__name__)
@@ -438,7 +438,7 @@ def load_piece(piece, file):
 def calculate_masking_slice():
     new_data = str(request.data, 'utf-8')
     new_data = json.loads(new_data)
-    print(new_data)
+    # print(new_data)
     result = masking_slice.get_slice(new_data, orchestra, multisclice=True)
     # print(result)
     return json.dumps(result, cls=NumpyEncoder)

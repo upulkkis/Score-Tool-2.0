@@ -1,14 +1,16 @@
+'''
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_admin_components as dac
 from dash.dependencies import Input, Output, State, ALL
 import plotly.graph_objs as go
+'''
 from helpers import constants, hertz_to_microtone
-import score_component as sc
+# import score_component as sc
 import pickle
-import dash
-from dash.exceptions import PreventUpdate
+# import dash
+# from dash.exceptions import PreventUpdate
 import pretty_midi
 import search_the_like
 import numpy as np
@@ -93,6 +95,7 @@ def search(app, orchestra):
     quick_selections = ['all_sustaining', 'only_strings', 'only_percussion', 'only_voices']
     pitch_classes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     octaves = [1, 2, 3, 4, 5, 6, 7, 8]
+    '''
     search_box = html.Div([
         dbc.FormGroup(
             [
@@ -223,7 +226,7 @@ def search(app, orchestra):
     def inst_input_callback(value):
         techs = [{'label': tech, 'value': tech} for tech in set([tec for key in orchestra.keys() for tec in orchestra[key].keys() if key in value])]
         return techs
-
+    '''
 
 def press_search(orchestra, search_sources, method, inst_search, tech_search, dyn_search, pitch_class_search, octave_search, overlap):
 
@@ -359,6 +362,7 @@ def press_search(orchestra, search_sources, method, inst_search, tech_search, dy
         orchfile
         ]
     return rslt
+    '''
     rslt= html.Div([html.Div([
                     html.H2('The matching instrument is: {} {} {} {}'.format(match_parts[0], match_parts[1], match_parts[2], pretty_midi.note_number_to_name(int(match_parts[3])))),
                         html.Div('search source(s) only'),
@@ -491,6 +495,7 @@ def press_search(orchestra, search_sources, method, inst_search, tech_search, dy
             ]
         )
         return outer
+    
 
     def compare_maskings(data, mfcc, peaks, i1, i2):
         fig_config = {
@@ -568,6 +573,7 @@ def press_search(orchestra, search_sources, method, inst_search, tech_search, dy
 
 
     return html.Div([start_box, result_box])
+    '''
 
 #app.layout = search(app, orchestra)
 

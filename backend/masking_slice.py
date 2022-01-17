@@ -1,3 +1,4 @@
+'''
 import dash_daq as daq
 import dash_html_components as html
 import dash_core_components as dcc
@@ -7,6 +8,7 @@ from dash.dependencies import Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
 import dash
 import plotly.graph_objs as go
+'''
 import numpy as np
 import math
 import combine_peaks
@@ -65,7 +67,7 @@ def get_and_cut_sample(inst, inst_range):
     data[-fadeamount:] = data[-fadeamount:] * np.flip(fade)
 
     # Omit set DB for now
-    # data = setDB(inst[0], inst[1], inst[2], inst[3], inst_range, data)
+    data = setDB(inst[0], inst[1], inst[2], inst[3], inst_range, data)
 
     data = np.concatenate((np.zeros(startpos), data), axis=None)
     return data
@@ -763,8 +765,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         if masking_percent>100: #can't go over 100 percent
             masking_percent = 100
 
-    def inline(graph):
-        return html.Div(graph, style={'display':'inline-block'})
+    #def inline(graph):
+    #    return html.Div(graph, style={'display':'inline-block'})
 
     if orchestration['centroid']>(target['centroid']+200):
         brightness="The orchestration is brighter than target."
@@ -792,10 +794,12 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         if len(masking_order)>2:
             masker += " The third heaviest masker is {} playing {}.".format(masking_order[2][0], masking_order[2][2])
 
+    '''
     fig1 = go.Figure(data=[trace1, trace3, trace2, vertical_line, hearing_threshold, trace3, orchestration_formant, stem_trace, mixer_bands_1], layout=fig_layout)     #Removing spectrum increase screen update, so, this is out: spec_trace
     fig2 = go.Figure(data=[trace4], layout=fig_layout2)
     fig3 = go.Figure(data=[trace5], layout=fig_layout3)
     distance= go.Figure(data=[distance], layout=dark_layout)
+    '''
     #print(mfcc_vector_trace1)
     # mfcc_fig = go.Figure(data=[mfcc_vector_trace1, mfcc_vector_trace2], layout=fig_layout4)
 
@@ -809,9 +813,10 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     import timbre_glyph as mels
     mfcc_fig = mels.make_glyph(orchestration['mfcc'],target['mfcc'], plot_color, paper_color, orchestration_glyph_data)
     #mfcc_fig = []
-    audibility= go.Figure(data=audibility, layout=audibility_layout)
+    # audibility= go.Figure(data=audibility, layout=audibility_layout)
     #fig = go.Figure(data=[go.Scatter(x=orchestration['masking_locs'], y=orchestration['masking_threshold'])], layout=fig_layout)
 
+    '''
     def make_box(content, width):
         return dac.Box([dac.BoxBody(content)],width=width)
 
@@ -837,6 +842,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     centroid_graph = make_box(html.Div(className='bar1', children=[
         html.Div([dcc.Graph(id='centroid-graph{}'.format(custom_id), figure=fig2, config=fig_config, style={'height':240})]),
     ]),12),
+    '''
 
     #This is made-up value, distances are approx up to 250 (new database = 8000)
     #mfcc_distance_value = mfcc_distance / 250 * 100
@@ -850,6 +856,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #if multisclice:
     #    return [masking_percent, osmd_indexes]
 
+    '''
     distance_graph = html.Div(className='bar2', children=[
          #html.Div([dcc.Graph(id='distance-graph', figure=distance, config=fig_config)]),
          daq.GraduatedBar(vertical=True, value=mfcc_distance_value, max=100, step=1, id='distance-graph{}'.format(custom_id),
@@ -858,9 +865,12 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                          label={'label': 'Target timbre distance from orchestration',
                                 'style': {'color': 'white'}})
      ]),
+    '''
 
     #hom_val = (2-var_coeff)/2*100
     hom_val = (6-var_coeff)/6*100
+
+    '''
     var_coeff_graph = html.Div(className='bar3', children=[
                              #html.Div([dcc.Graph(id='varcoeff-graph', figure=fig3, config=fig_config)]),
                             daq.GraduatedBar(vertical=True, value=hom_val, max=100, step=1, style={'color':'black', 'textAlign':'center'},showCurrentValue=True, color={"gradient":True,"ranges":{"grey":[0,50], "green":[50,100]}},label={'label':'Homogeneity % of orchestration', 'style':{'color':'white'}})
@@ -884,6 +894,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #     dbc.Col(chord.listening_module.module(app, list_copy, custom_id))
     # ])
     ]
+    '''
+
 
     centroid_notes = []
     centroid_markings = []

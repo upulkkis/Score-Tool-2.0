@@ -542,15 +542,17 @@ class Score extends Component {
         })
         const tgtColor = (val) => {
           let col = "rgba(0,255,0,0.3)"
+          //console.log(val)
           if(val>=75){
-            const mod= 1 - ((val-74.9)/50)
-            col = `rgba(${Math.round(255*mod)},0,0,0.7)`
-          } else if (val>=50){
-            const mod= 1 - ((val-54.9)/25)
-            col = `rgba(255,${Math.round(255*mod)},0,0.5)`
-          }else if (val>=25){
-            const mod= (val-24.9)/25
-            col = `rgba(${Math.round(255*mod)},255,0,0.5)`
+            const mod= 1 - ((val-74.9)/25)
+            col = `rgba(255,${Math.round(255*mod)},0,0.7)`
+          } else if (val>=25){
+            const mod= (val-24.9)/50
+            col = `rgba(${100+Math.round(125*mod)},255,0,${0.5+(0.2*mod)})`
+          }else{
+            const mod= val/25
+            // col = `rgba(${Math.round(255*mod)},255,0,0.5)`
+            col = `rgba(${Math.round(100*mod)}, 255,0,${0.2+(0.3*mod)})`
           }
           return col
         }
@@ -564,11 +566,13 @@ class Score extends Component {
           var measureNumber = Thnote.parentStaffEntry.verticalContainerParent.parentMeasure.measureNumber
           const xposition = this.orchestrationChords.xpos[verticals.absoluteTimestamp.realValue]-1
           var GraphicalMusicPage = this.osmd.graphic.MusicPages[0]
+          let masking_value_opacity = 0.3
           if(result){
             if(true){ //was: if(result[0]), but leads to skip if target is fully audible
               if(this.state.includeGraphs){
               this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = new Array(107).fill(-20);
               }
+          
               if(tgtPresent){
           targets.map(tgt=>{
             var StaffY = this.osmd.graphic.musicSheet.sourceMeasures[measureNumber-1].verticalMeasureList[tgt].boundingBox.absolutePosition.y+2
@@ -580,6 +584,9 @@ class Score extends Component {
             this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
               col, 4)    
           })
+
+          masking_value_opacity = 0.1+((result[0]/100)*0.9)
+
           if(this.state.includeGraphs){
           this.threeDdata.target[verticals.AbsoluteTimestamp.realValue] = result[5][1]
           }
@@ -603,15 +610,18 @@ class Score extends Component {
                 const endPointF2D = new PointF2D(xposition+2, StaffY); //{x: xpos, y: ypos}
                 let col = []
                 if(i===0){
-                  col = "rgba(255,51,255,0.5)"
+                  // col = "rgba(255,51,255,0.5)"
+                  col = `rgba(255,0,0,${masking_value_opacity})`
                   this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
                     col, 4)   
                 }else if(i===1){
-                  col = "rgba(255,153,51,0.5)" 
+                  //col = "rgba(255,153,51,0.5)" 
+                  col = `rgba(255,255,0,${masking_value_opacity})`
                   this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
                     col, 4)  
                 }else if(i===2){
-                  col = "rgba(51,153,355,0.5)"
+                  //col = "rgba(51,153,355,0.5)"
+                  col = `rgba(51,153,255,${masking_value_opacity})`
                   this.osmd.Drawer.DrawOverlayLine(startPointF2D, endPointF2D, GraphicalMusicPage,
                     col, 4)  
                 } 
@@ -1132,11 +1142,11 @@ function mid2note (midi) {
 {this.state.calculatingState}
 {this.state.calculIndications && <><Tooltip title={<Helps help="Colors"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
   <Typography style={{display:"inline"}}>Score colors: 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(120,0,0,0.7) , rgba(255,0,0,0.5))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.5) , rgba(255,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 
-  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> audible</div> 
-  <div style={{backgroundColor: "rgba(255,51,255,0.5)", display:"inline"}}> heaviest masker</div>
-  <div style={{backgroundColor: "rgba(255,153,51,0.5)", display:"inline"}}> 2nd masker</div>
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,0,0,0.7) , rgba(255,255,0,0.7))`, display:"inline", marginInline: 2}}> Tgt masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(255,255,0,0.7) , rgba(100,255,0,0.5))`, display:"inline", marginInline: 2}}> nearly masked</div> 
+  <div style={{backgroundImage: `linear-gradient(to right, rgba(100,255,0,0.5) , rgba(0,255,0,0.3))`, display:"inline", marginInline: 2}}> audible</div> 
+  <div style={{backgroundColor: "rgba(255,0,0,0.5)", display:"inline"}}> heaviest masker</div>
+  <div style={{backgroundColor: "rgba(255,255,0,0.5)", display:"inline"}}> 2nd masker</div>
   <div style={{backgroundColor: "rgba(51,153,255,0.5)", display:"inline"}}> 3rd masker </div>
   </Typography>
   </Tooltip>

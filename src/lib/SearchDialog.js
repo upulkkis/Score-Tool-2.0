@@ -67,7 +67,7 @@ export default function SearchDialog(props) {
 
   const [open, setOpen] = React.useState(false);
     const [state, setState] = React.useState({
-      selected: null,
+      selected: '',
       instList: [],
       searchInstruments: woodwinds.concat(brass).concat(strings),
       searchTechs: ["normal"],
@@ -102,7 +102,7 @@ export default function SearchDialog(props) {
         return null
       }
       else{
-        return JSON.parse(localStorage.getItem("orchestrations")).map(item => <MenuItem value={item.id}>{item.name}</MenuItem>)
+        return JSON.parse(localStorage.getItem("orchestrations")).map(item => <MenuItem key={item} value={item.id}>{item.name}</MenuItem>)
       }
     }
 
@@ -478,6 +478,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {woodwinds.map((ww,i)=>
                   <FormControlLabel
+                  key={`${ww},${i}`}
                   label={ww}
                   control={<Checkbox checked={state.searchInstruments.includes(ww)} size="small" onChange={(evt)=>handleCheck(i,ww,evt)} />}
                 />
@@ -489,6 +490,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {brass.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchInstruments.includes(itm)} size="small" onChange={(evt)=>handleCheck(i,itm,evt)} />}
                 />
@@ -500,6 +502,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {strings.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchInstruments.includes(itm)} size="small" onChange={(evt)=>handleCheck(i,itm,evt)} />}
                 />
@@ -511,6 +514,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {perc.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchInstruments.includes(itm)} size="small" onChange={(evt)=>handleCheck(i,itm,evt)} />}
                 />
@@ -522,6 +526,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {various.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchInstruments.includes(itm)} onChange={(evt)=>handleCheck(i,itm,evt)} />}
                 />
@@ -547,6 +552,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {state.availableTechs.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchTechs.includes(itm)} size="small" onChange={(evt)=>handleTech(i,itm,evt)} />}
                 />
@@ -562,6 +568,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {DYN.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchDyn.includes(itm)} size="small" onChange={(evt)=>handleDyn(i,itm,evt)} />}
                 />
@@ -577,6 +584,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {CHROMATIC.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchPitch.includes(itm)} size="small" onChange={(evt)=>handlePitch(i,itm,evt)} />}
                 />
@@ -592,6 +600,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {OCT.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchOct.includes(itm)} size="small" onChange={(evt)=>handleOct(i,itm,evt)} />}
                 />
@@ -607,6 +616,7 @@ export default function SearchDialog(props) {
           <Box sx={{ display: 'inline'}}>
           {METHOD.map((itm,i)=>
                   <FormControlLabel
+                  key={`${itm},${i}`}
                   label={itm}
                   control={<Checkbox checked={state.searchMethod.includes(itm)} size="small" onChange={(evt)=>handleMethod(i,itm,evt)} />}
                 />
@@ -620,7 +630,7 @@ export default function SearchDialog(props) {
     label="Overlappin partials for peaks"
     onChange={handleOverlap}
   >
-    {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(val=><MenuItem value={val}>{val}</MenuItem>)}
+    {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(val=><MenuItem key={`partials,${val}`} value={val}>{val}</MenuItem>)}
   </Select>
 </FormControl>
           </Box>

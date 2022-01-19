@@ -63,6 +63,27 @@ export default function Graphs(props) {
     return (
         <div>
 
+<Grid
+          style={{marginTop:0.5, marginInline:0}}
+          container
+          direction="row"
+          justifyContent="left"
+          alignItems="left"
+          spacing={0.5}>
+  <Grid item xs={12} md={12}>
+  <Tooltip followCursor title={<Helps help="MaskCurve"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
+    <Item>
+    <Plot
+            data={graphData}
+            layout={{...graphLay, width:window.innerWidth-50, margin:{l:0, r:0}}}
+            config={figConfig}
+            
+        />
+    </Item>
+    </Tooltip>
+</Grid>
+</Grid>
+
         <Grid
                   style={{marginTop:0.5}}
           container
@@ -157,26 +178,7 @@ export default function Graphs(props) {
     </Grid>
   </Grid>
 
-  <Grid
-          style={{marginTop:0.5, marginInline:0}}
-          container
-          direction="row"
-          justifyContent="left"
-          alignItems="left"
-          spacing={0.5}>
-  <Grid item xs={12} md={12}>
-  <Tooltip followCursor title={<Helps help="MaskCurve"/>} disableTouchListener={!props.help} disableHoverListener={!props.help} sx={{zIndex:99999}}>
-    <Item>
-    <Plot
-            data={graphData}
-            layout={{...graphLay, width:window.innerWidth-50, margin:{l:0, r:0}}}
-            config={figConfig}
-            
-        />
-    </Item>
-    </Tooltip>
-</Grid>
-</Grid>
+
           
 
           <Grid

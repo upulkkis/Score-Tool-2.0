@@ -372,7 +372,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         nonzero_indexes = np.nonzero(idx_above)[0] # Returns tuple, take index [0]
         for i in range(len(nonzeros_loc)):
             idx = (np.abs(orchestration['masking_locs'] - nonzeros_loc[i])).argmin() #Find the nearest masking index for peak
-            low_range = idx-1 # Check three indexes under target peak EDIT: CHANGE TO 1
+            low_range = idx-2 # Check three indexes under target peak EDIT: CHANGE TO 1
             high_range = idx+1 # Check two indexes above target peak EDIT: CHANGE TO 1
             if idx <4:
                 low_range = idx
@@ -495,9 +495,10 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     # Following function compares orchestration from two steps lower to one step higher the highest masking value against the target:
     def compare_target_to_orchestration(orch_msking, tgt_msking, peak_index_list):
         sum=0
+        weight = 1
         for idx in peak_index_list:
             highest=orch_msking[idx]
-            if idx>0:
+            if idx>2:
                 if orch_msking[idx-1]>highest:
                     highest=orch_msking[idx-1]
                     if idx > 1:
@@ -506,7 +507,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 if orch_msking[idx+1]>highest:
                     highest = orch_msking[idx + 1]
             difference = highest-tgt_msking[idx]
-            sum = sum+difference
+            sum = (sum+difference)*weight
+            weight -= 0.2 #Weight the loudest peaks, reduce weight by 0.2 on every step
         return sum
 
     def find_nearest(array, value): # FInd nearest value of numpy array
@@ -518,14 +520,15 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     if True:
         for i in range(len(masking_lists[0])):
             #!! Find the 15 (changed to 30) loudest peaks for target, subtract them from orchestration:
-            tgt_peaks = heapq.nlargest(30, range(len(target['masking_threshold'])), key=target['masking_threshold'].__getitem__)
+            tgt_peaks = heapq.nlargest(5, range(len(target['masking_threshold'])), key=target['masking_threshold'].__getitem__)
+            print(tgt_peaks)
             pks = find_peaks(target['masking_threshold'], 15) #
             min_idx=0
             if min_notes[1]<120:
                 min_herz = pretty_midi.note_number_to_hz(min_notes[1])*0.9 # Take tenth off to make sure it finds all
                 min_idx = find_nearest(constants.threshold[:,0], min_herz)
             #print(target['masking_threshold'])
-            tgt_peaks = [pk for pk in list(pks[0]) if pk>=min_idx]
+            # tgt_peaks = [pk for pk in list(pks[0]) if pk>=min_idx]
             if not tgt_peaks:
                 tgt_peaks = list(pks[0])
             if not tgt:

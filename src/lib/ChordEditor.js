@@ -31,7 +31,7 @@ const theme = createTheme({
   }
 }
 })
-console.log(address)
+// console.log(address)
 const baseURL = address;
 //const baseURL = "http://127.0.0.1:5000/";
 

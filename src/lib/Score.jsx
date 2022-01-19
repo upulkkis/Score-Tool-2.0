@@ -811,7 +811,7 @@ class Score extends Component {
                 autoWidth
                 label="instr."
               >
-                {instruments.map(inst => <MenuItem value={inst}>{inst}</MenuItem>)}
+                {instruments.map((inst, i) => <MenuItem key={`${inst},,,,,${i}`} value={inst}>{inst}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -832,7 +832,7 @@ class Score extends Component {
                 autoWidth
                 label="tech."
               >
-                {techs.map(tech => <MenuItem value={tech}>{tech}</MenuItem>)}
+                {techs.map((tech, i) => <MenuItem key={`${tech},,,,,${i}`} value={tech}>{tech}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -853,7 +853,7 @@ class Score extends Component {
                 autoWidth
                 label="dyn."
               >
-                {dyns.map(dyn => <MenuItem value={dyn}>{dyn}</MenuItem>)}
+                {dyns.map((dyn, i) => <MenuItem key={`${dyn},,,,,${i}`} value={dyn}>{dyn}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -873,7 +873,7 @@ class Score extends Component {
                 autoWidth
                 label="trans."
               >
-                {dyns.map(dyn => <MenuItem value={dyn}>{dyn}</MenuItem>)}
+                {dyns.map((dyn, i) => <MenuItem key={`${dyn},,,,,${i}`} value={dyn}>{dyn}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -1070,6 +1070,7 @@ function mid2note (midi) {
       <AppBar color="neutral" style={{overflow:"auto", marginTop:30}}>
         <Container maxWidth="xl" style={{overflow:"auto"}}>
       <Item style={{textAlign: "center", justifyContent: "center", alignItems: "center", alignContent: "center", marginLeft: "auto", marginRight: "auto"}}>
+        <div>
         <Accordion expanded={this.state.expanded} onChange={handleAccChange} style={{backgroundColor: "#f9fff0"}}>
         <Tooltip title={<Helps help="ShowHide"/>}  disableTouchListener={!this.props.help} disableHoverListener={!this.props.help} sx={{zIndex:99999}}>
         <AccordionSummary
@@ -1106,6 +1107,7 @@ function mid2note (midi) {
 {this.state.instNames.map((instName, idx)=> {
     if(this.state.hasNotes[idx]){
     return <InstSelect
+    key={`${instName},,,,,${idx}`}
     idx={idx}       
     instName={instName}
     scoreNames= {this.state.scoreNames[idx]}
@@ -1152,6 +1154,7 @@ function mid2note (midi) {
   </Tooltip>
 </>
     }
+    </div>
 </Item>
 
         </Container>

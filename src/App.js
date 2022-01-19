@@ -65,7 +65,7 @@ class App extends Component {
   }
   componentDidMount(){
     const items = JSON.parse(localStorage.getItem("orchestrations"))
-    console.log(items)
+    // console.log(items)
     //localStorage.setItem("orchestrations", JSON.stringify([]))
     if(items===null){
       localStorage.setItem("orchestrations", JSON.stringify([]) )
@@ -226,7 +226,7 @@ class App extends Component {
     const Scores = () =>{
       const availableScores = ["test_score2.xml", "sonority.xml"]
       return(
-        availableScores.map(s=><MenuItem value={s}>{s}</MenuItem>)
+        availableScores.map(s=><MenuItem key={s} value={s}>{s}</MenuItem>)
       )
     }
 
@@ -278,7 +278,7 @@ class App extends Component {
         <TextField
           label="from bar"
           id="outlined-size-small"
-          defaultValue={0}
+          //defaultValue={0}
           size="small"
           value={this.state.from}
           onChange={e=>this.setState(state=>state.from = e.target.value)}
@@ -286,7 +286,7 @@ class App extends Component {
         <TextField
           label="to bar"
           id="outlined-size-small"
-          defaultValue={0}
+          //defaultValue={0}
           size="small"
           value={this.state.to}
           onChange={e=>this.setState(state=>state.to = e.target.value)}
@@ -409,7 +409,7 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
               <Select
                 labelId="score-select"
                 id={"score-select"+1}
-                value={this.state.selected}
+                value={''}//this.state.selected}
                 onChange={handleScore}
                 autoWidth
                 label="score"

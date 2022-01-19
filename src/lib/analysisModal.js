@@ -95,7 +95,11 @@ export default function AnalysisDialog(props) {
         newData.push(row)
       }
     })
-    setList(list=>list=newData)
+
+    // console.log(tempList)
+    // console.log(list)
+
+    // setList(list=>list=newData)
     axios.post(baseURL+"modalSlice", newData).then((response) => {
       //console.log(response)
       var result = response.data
@@ -107,13 +111,14 @@ export default function AnalysisDialog(props) {
         Colors.push('')
         descriptions.push('')
       })
-
+      // console.log(Colors)
       
 
       // Rather complex pattern no fetch right index for color when an instrument is turned off
       result.data[3].map((val,i)=>{
         if(i===0){
           const indx0 = newData[val][6] // get the index of the instrument
+          // console.log(props.data[1])
           props.data[1].map((r,indx)=>{
             if(r[6]===indx0){    //compare the index to the original list of instruments (props.data[1])
               Colors[indx]='red'
@@ -242,7 +247,7 @@ export default function AnalysisDialog(props) {
             <td>On/Off</td>
             <td>Transpose +- oct.</td>
           </tr>
-          { list.map((lst, idx)=><InstModify help={props.help} onChange={instmod} idx={idx} row={lst} color={''}/>)
+          { list.map((lst, idx)=><InstModify key={lst} help={props.help} onChange={instmod} idx={idx} row={lst} color={''}/>)
           }
           </tbody>
           </table>
@@ -250,7 +255,7 @@ export default function AnalysisDialog(props) {
           <table style={{margin: "auto",display: 'inline'}}>
             <tbody>
             <tr><td>maskers</td></tr>
-          {color.map((col,i)=><tr><td style={{backgroundColor:col, borderRadius: 10, padding: 4, textAlign: "center", margin:4}}>{list[i][0]}{" "}{mid2note(list[i][3])}{" "+description[i]}</td></tr>)}
+          {color.map((col,i)=><tr><td key={`${i},${col}`} style={{backgroundColor:col, borderRadius: 10, padding: 4, textAlign: "center", margin:4}}>{list[i][0]}{" "}{mid2note(list[i][3])}{" "+description[i]}</td></tr>)}
           </tbody>
           </table>
           </Tooltip>

@@ -40,7 +40,7 @@ export default function MyNavbar(props) {
     };
   
     const handleCloseNavMenu = (e) => {
-      console.log(e)
+      // console.log(e)
       if(e==="Help"){
         props.help(!help)
         setHelp((state)=>state=!help)
@@ -100,9 +100,9 @@ export default function MyNavbar(props) {
                 }}
               >
                 {pages.map((page) => (
-                  <Tooltip title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
+                  <Tooltip key={page} title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
                   <MenuItem key={page} onClick={(e)=>handleCloseNavMenu(page, e)}>
-                    <Typography textAlign="center">{page}</Typography>
+                    <Typography key={page} textAlign="center">{page}</Typography>
                   </MenuItem>
                   </Tooltip>
                 ))}
@@ -119,7 +119,7 @@ export default function MyNavbar(props) {
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
-                <Tooltip title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
+                <Tooltip key={page} title={<Helps help={page}/>} disableHoverListener={!help} disableTouchListener={!help}>
                 <Button
                   key={page}
                   onClick={(e)=>handleCloseNavMenu(page, e)}

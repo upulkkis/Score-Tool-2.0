@@ -116,7 +116,7 @@ export default function AddInstCompare(props){
                 autoWidth
                 label="instr."
               >
-                {instruments.map(inst => <MenuItem value={inst}>{inst}</MenuItem>)}
+                {instruments.map((inst,i) => <MenuItem key={`${inst},${i}`} value={inst}>{inst}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -196,7 +196,7 @@ export default function AddInstCompare(props){
                 autoWidth
                 label="tech."
               >
-                {techs.map(tech => <MenuItem value={tech}>{tech}</MenuItem>)}
+                {techs.map((tech, i) => <MenuItem key={`${tech},${i}`} value={tech}>{tech}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -217,7 +217,7 @@ export default function AddInstCompare(props){
                 autoWidth
                 label="dyn."
               >
-                {dyns.map(dyn => <MenuItem value={dyn}>{dyn}</MenuItem>)}
+                {dyns.map((dyn, i) => <MenuItem key={`${dyn},${i}`} value={dyn}>{dyn}</MenuItem>)}
               </Select>
             </FormControl>
           </div>
@@ -237,7 +237,7 @@ export default function AddInstCompare(props){
                 autoWidth
                 label="trans."
               >
-                {dyns.map(dyn => <MenuItem value={dyn}>{dyn}</MenuItem>)}
+                {dyns.map((dyn, i) => <MenuItem key={`${dyn},${i}`} value={dyn}>{dyn}</MenuItem>)}
               </Select>
             </FormControl>
           </div>

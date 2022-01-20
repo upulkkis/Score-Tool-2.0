@@ -359,6 +359,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         target['peaks'], target['peak_locs'] = remove_too_low_frequencies(target['peaks'], target['peak_locs'])
 
     idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    idx_below = target['peaks'] < np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     peaks_above_masking = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     # print(target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold']))
     # print(np.count_nonzero(peaks_above_masking>9))
@@ -384,50 +385,60 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 peaks_above_masking[nonzero_indexes[i]] = -1
                 idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
 
+        heavy_mask_weight = 0 #Set a coefficient for heavy mask on upper partials
+        if all(peaks_above_masking[idx_below]<-15): #if all masked peaks are masked more than 15db
+            heavy_mask_weight = 15
+        elif all(peaks_above_masking[idx_below]<-10): #if all masked peaks are masked more than 10db
+            heavy_mask_weight = 10
+        elif all(peaks_above_masking[idx_below]<-5): #if all masked peaks are masked more than 5db
+            heavy_mask_weight = 5
         percent = 100
         if np.count_nonzero(idx_above == True) == 0:
             return 100
         else:
             # percent = 20
             percent = 100 - ( 100 * (np.count_nonzero(idx_above == True) / len(idx_above)) )
-
+            percent += heavy_mask_weight
+        #print(peaks_above_masking)
+        #print(percent)
         #If there are at least two componenets over 15db above masking threshold:
         if np.count_nonzero(peaks_above_masking>15)>=1:
             if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 15) >= 2:
-                return percent*0.1 # 5+(percent*0.3)
-            return 5+(percent*0.1) # 10+(percent*0.4)
+                return percent*0.2#*heavy_mask_weight # 5+(percent*0.3)
+            return (5+heavy_mask_weight+(percent*0.2))#*heavy_mask_weight # 10+(percent*0.4)
 
         #If there are at least two componenets over 10db above masking threshold:
         if np.count_nonzero(peaks_above_masking>10)>=1:
             if np.count_nonzero(peaks_above_masking>10)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 10) >= 2:
-                return percent*0.2 # 30+(percent*0.3)
-            return 5+(percent*0.2) #50+(percent*0.4)
+                return percent*0.4#*heavy_mask_weight # 30+(percent*0.3)
+            return (5+heavy_mask_weight+(percent*0.4))#*heavy_mask_weight #50+(percent*0.4)
 
         #if there are at least three components over 6db above masking threshold:
         if np.count_nonzero(peaks_above_masking>6)>=1:
             if np.count_nonzero(peaks_above_masking>6)==len(peaks_above_masking):
                 return 10
             if np.count_nonzero(peaks_above_masking > 6) >= 2:
-                return percent*0.3 # 35 + (percent * 0.5)
-            return 5+(percent*0.3) # 40 + (percent * 0.3)
+                return percent*0.6#*heavy_mask_weight # 35 + (percent * 0.5)
+            return (5+heavy_mask_weight+(percent*0.6))#*heavy_mask_weight # 40 + (percent * 0.3)
 
         #if there are at least three components over 0db above masking threshold:
         if np.count_nonzero(peaks_above_masking>0)>=1:
             if np.count_nonzero(peaks_above_masking>0)==len(peaks_above_masking):
-                return 60 #If all peaks are above, but barely
+                return 60#*heavy_mask_weight #If all peaks are above, but barely
             if np.count_nonzero(peaks_above_masking > 0) >= 2:
-                return 70 + (percent * 0.3)
-            return 80 + (percent * 0.2)
+                return percent * 0.8#*heavy_mask_weight
+            return (5 + heavy_mask_weight+ (percent * 0.8))#*heavy_mask_weight
 
 
         if np.count_nonzero(idx_above == True) == 0:
             masking_percent = 100
         else:
             masking_percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
+            masking_percent *= heavy_mask_weight
         return masking_percent
 
         '''  OLD VERSION!!!
@@ -520,20 +531,26 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     if True:
         for i in range(len(masking_lists[0])):
             #!! Find the 15 (changed to 30) loudest peaks for target, subtract them from orchestration:
-            tgt_peaks = heapq.nlargest(5, range(len(target['masking_threshold'])), key=target['masking_threshold'].__getitem__)
-            print(tgt_peaks)
-            pks = find_peaks(target['masking_threshold'], 15) #
-            min_idx=0
-            if min_notes[1]<120:
-                min_herz = pretty_midi.note_number_to_hz(min_notes[1])*0.9 # Take tenth off to make sure it finds all
-                min_idx = find_nearest(constants.threshold[:,0], min_herz)
+            # tgt_peaks = heapq.nlargest(5, range(len(target['masking_threshold'])), key=target['masking_threshold'].__getitem__)
+            tgt_loudest_peak_idxs = heapq.nlargest(5, range(len(target['peaks'])),
+                                       key=target['peaks'].__getitem__)
+            peaks_on_masking_curve = [find_nearest(constants.threshold[:,0], peak) for peak in np.array(target['peak_locs'])[tgt_loudest_peak_idxs]]
+            comparable_target_curve = np.array(constants.threshold[:,2])
+            comparable_target_curve[peaks_on_masking_curve] = np.array(target['peaks'])[tgt_loudest_peak_idxs]
+            # print(tgt_peaks)
+            # pks = find_peaks(target['masking_threshold'], 15) #
+            # min_idx=0
+            # if min_notes[1]<120:
+            #     min_herz = pretty_midi.note_number_to_hz(min_notes[1])*0.9 # Take tenth off to make sure it finds all
+            #     min_idx = find_nearest(constants.threshold[:,0], min_herz)
             #print(target['masking_threshold'])
             # tgt_peaks = [pk for pk in list(pks[0]) if pk>=min_idx]
-            if not tgt_peaks:
-                tgt_peaks = list(pks[0])
+            # if not tgt_peaks:
+            #    tgt_peaks = list(pks[0])
             if not tgt:
-                target['masking_threshold'] = constants.threshold[:,2]
-                tgt_peaks = [v for v in range(45)]
+                comparable_target_curve = constants.threshold[:,2]
+                # tgt_peaks = [v for v in range(45)]
+                peaks_on_masking_curve = [v for v in range(45)]
             #print(target['masking_threshold'][tgt_peaks])
             #print(tgt_peaks)
             #print(target['peaks'])
@@ -543,7 +560,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             #print(compare_target_to_orchestration(masking_lists[0][i], np.array(target['masking_threshold']), tgt_peaks))
 
             #Following function compares orchestration from two steps lower to one step higher the highest masking value against the target:
-            masking_lists[0][i] = compare_target_to_orchestration(masking_lists[0][i], np.array(target['masking_threshold']), tgt_peaks)
+            # masking_lists[0][i] = compare_target_to_orchestration(masking_lists[0][i], np.array(target['masking_threshold']), tgt_peaks)
+            masking_lists[0][i] = compare_target_to_orchestration(masking_lists[0][i], comparable_target_curve, peaks_on_masking_curve)
 
             #masking_lists[0][i] = np.subtract(masking_lists[0][i][tgt_peaks], np.array(target['masking_threshold'])[tgt_peaks]) #Old way: just subrtact the difference on the same spot
             #print(masking_lists[0][i])

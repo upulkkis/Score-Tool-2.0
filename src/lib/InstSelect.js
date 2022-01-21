@@ -147,7 +147,7 @@ export default function InstSelect(props){
                 autoWidth
                 label="trans."
               >
-                {dyns.map((dyn, i) => <MenuItem key={`${dyn},,,${i}`} value={dyn}>{dyn}</MenuItem>)}
+                {dyns.map((dyn, i) => <MenuItem key={`${dyn},,,,${i}`} value={dyn}>{dyn}</MenuItem>)}
               </Select>
             </FormControl>
           </div>

@@ -355,12 +355,21 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 new_locs.append(old_locs[i])
         return new_peaks, new_locs
 
-    if any(x < 35 for x in target['peak_locs']):    #Frequency peaks under 35hz are concidered as mistake
+    if any(x < 35 for x in target['peak_locs']):    #Frequency peaks under 35hz are concidered as artifact
         target['peaks'], target['peak_locs'] = remove_too_low_frequencies(target['peaks'], target['peak_locs'])
 
-    idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
-    idx_below = target['peaks'] < np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
-    peaks_above_masking = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    # Get only the 7 loudest partials into calculations
+    idx_of_loudest_partials = heapq.nlargest(7, range(len(target['peaks'])), key=target['peaks'].__getitem__)
+    loudest_peaks = np.array(target['peaks'])[idx_of_loudest_partials]
+    loudest_peak_locs = np.array(target['peak_locs'])[idx_of_loudest_partials]
+    #print(loudest_peaks)
+    #print(loudest_peak_locs)
+    # idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    idx_above = loudest_peaks > np.interp(loudest_peak_locs, orchestration['masking_locs'], orchestration['masking_threshold'])
+    # idx_below = target['peaks'] < np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    idx_below = loudest_peaks < np.interp(loudest_peak_locs, orchestration['masking_locs'], orchestration['masking_threshold'])
+    # peaks_above_masking = target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    peaks_above_masking = loudest_peaks - np.interp(loudest_peak_locs, orchestration['masking_locs'], orchestration['masking_threshold'])
     # print(target['peaks'] - np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold']))
     # print(np.count_nonzero(peaks_above_masking>9))
     # print(peaks_above_masking)
@@ -368,8 +377,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     def calculate_masking_percent(peaks_above):
 
         # Check the critical band area for louder peaks:
-        nonzeros_loc = np.array(target['peak_locs'])[idx_above]
-        nonzeros_pks = np.array(target['peaks'])[idx_above]
+        nonzeros_loc = loudest_peak_locs[idx_above]
+        nonzeros_pks = loudest_peaks[idx_above]
         nonzero_indexes = np.nonzero(idx_above)[0] # Returns tuple, take index [0]
         for i in range(len(nonzeros_loc)):
             idx = (np.abs(orchestration['masking_locs'] - nonzeros_loc[i])).argmin() #Find the nearest masking index for peak
@@ -378,7 +387,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             if idx <4:
                 low_range = idx
             band_max = np.array(orchestration['masking_threshold'])[low_range:high_range].max() #Get maximum around peak
-            peaks_above_masking[nonzero_indexes[i]] = target['peaks'][i]-band_max
+            peaks_above_masking[nonzero_indexes[i]] = loudest_peaks[i]-band_max
             if peaks_above_masking[nonzero_indexes[i]] <= 0: #If current peak is under loca maximum...
                 idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
             if nonzeros_loc[i] >7000: #Do not count peaks over 7kHz
@@ -393,12 +402,13 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         elif all(peaks_above_masking[idx_below]<-5): #if all masked peaks are masked more than 5db
             heavy_mask_weight = 5
         percent = 100
-        if np.count_nonzero(idx_above == True) == 0:
+        if np.count_nonzero(idx_above > -3) == 0:
             return 100
         else:
             # percent = 20
             percent = 100 - ( 100 * (np.count_nonzero(idx_above == True) / len(idx_above)) )
             percent += heavy_mask_weight
+        # print(peaks_above_masking)
         #print(peaks_above_masking)
         #print(percent)
         #If there are at least two componenets over 15db above masking threshold:
@@ -407,7 +417,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 return 0
             if np.count_nonzero(peaks_above_masking > 15) >= 2:
                 return percent*0.2#*heavy_mask_weight # 5+(percent*0.3)
-            return (5+heavy_mask_weight+(percent*0.2))#*heavy_mask_weight # 10+(percent*0.4)
+            return heavy_mask_weight+(percent*0.2)#*heavy_mask_weight # 10+(percent*0.4)
 
         #If there are at least two componenets over 10db above masking threshold:
         if np.count_nonzero(peaks_above_masking>10)>=1:
@@ -415,7 +425,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 return 0
             if np.count_nonzero(peaks_above_masking > 10) >= 2:
                 return percent*0.4#*heavy_mask_weight # 30+(percent*0.3)
-            return (5+heavy_mask_weight+(percent*0.4))#*heavy_mask_weight #50+(percent*0.4)
+            return heavy_mask_weight+(percent*0.4)#*heavy_mask_weight #50+(percent*0.4)
 
         #if there are at least three components over 6db above masking threshold:
         if np.count_nonzero(peaks_above_masking>6)>=1:
@@ -423,22 +433,22 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                 return 10
             if np.count_nonzero(peaks_above_masking > 6) >= 2:
                 return percent*0.6#*heavy_mask_weight # 35 + (percent * 0.5)
-            return (5+heavy_mask_weight+(percent*0.6))#*heavy_mask_weight # 40 + (percent * 0.3)
+            return heavy_mask_weight+(percent*0.6)#*heavy_mask_weight # 40 + (percent * 0.3)
 
-        #if there are at least three components over 0db above masking threshold:
-        if np.count_nonzero(peaks_above_masking>0)>=1:
-            if np.count_nonzero(peaks_above_masking>0)==len(peaks_above_masking):
+        #if there are at least three components over 0db above masking threshold (changed to -2):
+        if np.count_nonzero(peaks_above_masking>-2)>=1:
+            if np.count_nonzero(peaks_above_masking>-2)==len(peaks_above_masking):
                 return 60#*heavy_mask_weight #If all peaks are above, but barely
-            if np.count_nonzero(peaks_above_masking > 0) >= 2:
+            if np.count_nonzero(peaks_above_masking > -2) >= 2:
                 return percent * 0.8#*heavy_mask_weight
-            return (5 + heavy_mask_weight+ (percent * 0.8))#*heavy_mask_weight
+            return heavy_mask_weight+ (percent * 0.8)#*heavy_mask_weight
 
 
         if np.count_nonzero(idx_above == True) == 0:
             masking_percent = 100
-        else:
-            masking_percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
-            masking_percent *= heavy_mask_weight
+        #else:
+        #    masking_percent = 100 - 100 * (np.count_nonzero(idx_above == True) / len(idx_above))
+        #    masking_percent *= heavy_mask_weight
         return masking_percent
 
         '''  OLD VERSION!!!
@@ -492,8 +502,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
 
     indexes_above=0;
-    for i in range(len(idx_above)):
-        if idx_above[i]:
+    idx_above_all = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
+    for i in range(len(idx_above_all)):
+        if idx_above_all[i]:
             color.append(1)
             indexes_above+=1
         else: color.append(0)
@@ -590,8 +601,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     trace1 = {
         "mode": "markers",
         "type": "scatter",
-        "x": target['peak_locs'],
-        "y": target['peaks'],
+        "x": target['peak_locs'].copy(),
+        "y": target['peaks'].copy(),
         "name": "Audible peaks",
         "marker": {'symbol': 'x', 'size': 12, 'color': color, 'colorscale': colorscale, 'line':{'width': 0}}, #Tässä laitetaan eri väriset rastit kuuluvuuden mukaan
         "line": {'color': 'Green', 'width': 5},
@@ -654,7 +665,8 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         "x": ['Target mfcc distance to orch.', 'Orchestration variation coefficient'],
         "y": [np.linalg.norm(orchestration['mfcc'][1:]-target['mfcc'][1:]), var_coeff]
     }
-    mfcc_distance=np.linalg.norm(orchestration['mfcc'][1:]-target['mfcc'][1:])
+    # mfcc_distance=np.linalg.norm(orchestration['mfcc'][1:]-target['mfcc'][1:])
+    mfcc_distance= np.mean( [np.linalg.norm(orc_mfcc[1:]-target['mfcc'][1:]) for orc_mfcc in orch_mfcc_array] )
 
     # print('var_coeff and distance : {} and {}'.format(var_coeff, mfcc_distance))
     distance = {
@@ -781,7 +793,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #effect of centroid
     if target['centroid']<2000 and masking_percent<85:
 
-        masking_add = (2000/target['centroid'])/5 #add masking by certain factor if centroid is under 2khz
+        masking_add = (2000/target['centroid'])/10 #add masking by certain factor if centroid is under 2khz
         masking_percent += (masking_add*100)
         if masking_percent>100: #can't go over 100 percent
             masking_percent = 100
@@ -873,7 +885,10 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         masking_percent+=10 # if target has matching timbre, it hears less
         if masking_percent>100:
             masking_percent=100
-
+    if mfcc_distance_value >70:
+        masking_percent -= 15  # if target has totally different timbre, it hears more
+        if masking_percent<0:
+            masking_percent=0
     #if multisclice:
     #    return [masking_percent, osmd_indexes]
 

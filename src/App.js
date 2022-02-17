@@ -366,9 +366,9 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
         <MyNavbar navClick={navClick} help={helpSel}/>
        <Item>
        <div style={{display: this.state.about}}>
-        <header className="App-header" style={{padding: 10, borderRadius:20}}>
-          <h1 className="App-title" style={{padding: 10, borderRadius:20}}>Score-Tool 2.0</h1>
-          <h1 className="App-title" style={{padding: 10, borderRadius:20}}>Psychoacoustic orchestration tool by Uljas Pulkkis 2021</h1>
+        <header className="App-header" style={{padding: 10, borderRadius:20, alignItems:'center',justifyContent: 'center',  display:'flex'}}>
+          {/*<h1 className="App-title" style={{padding: 10, borderRadius:20}}>Score-Tool 2.0</h1>*/}
+          <a className='nolink' href='https://uljaspulkkis.com'><h1 className="App-title" style={{}}>Psychoacoustic orchestration tool by Uljas Pulkkis</h1></a>
         </header>
       </div>
 {/*}
@@ -439,6 +439,13 @@ Load current file (Warning! Large scores with 200+ bars can freeze the browser)
       {osmd}
       {this.state.osmd}
       </div>
+
+      <div style={{position:'absolute', width:'100%', height:'100%', zIndex:0,overflow:'hidden', display: this.state.about}}>
+                <video autoPlay loop muted src='score-tool_start.mp4' type='video/mp4'
+                style={{width:'100%', height:'100%', marginTop:-90, objectFit:'cover', background: 'black', opacity:1}}/>
+            </div>
+
+
       <div style={{display: this.state.about, textAlign: "left", textJustify: "left", paddingInline: "20vw"}}>
 <AboutScoreTool/>
 <Button size="small" onClick={clearAll} variant="contained" color="warning" startIcon={<Clear/>} style={{padding: 10, margin: 5}}> If you get errors, click here to clear all your orchestration data </Button>

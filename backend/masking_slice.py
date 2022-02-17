@@ -383,17 +383,16 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         for i in range(len(nonzeros_loc)):
             idx = (np.abs(orchestration['masking_locs'] - nonzeros_loc[i])).argmin() #Find the nearest masking index for peak
             low_range = idx-2 # Check three indexes under target peak EDIT: CHANGE TO 1
-            high_range = idx+1 # Check two indexes above target peak EDIT: CHANGE TO 1
-            if idx <4:
-                low_range = idx
+            high_range = idx+2 # Check two indexes above target peak EDIT: CHANGE TO 1 index (index+2)
+            if idx <9:
+                low_range = 0
             band_max = np.array(orchestration['masking_threshold'])[low_range:high_range].max() #Get maximum around peak
-            peaks_above_masking[nonzero_indexes[i]] = loudest_peaks[i]-band_max
+            peaks_above_masking[nonzero_indexes[i]] = loudest_peaks[nonzero_indexes[i]]-band_max #CORRECTED loudest_peaks[i]-band_max to loudest_peaks[nonzero_indexes[i]]-band_max
             if peaks_above_masking[nonzero_indexes[i]] <= 0: #If current peak is under loca maximum...
                 idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
             if nonzeros_loc[i] >7000: #Do not count peaks over 7kHz
                 peaks_above_masking[nonzero_indexes[i]] = -1
                 idx_above[nonzero_indexes[i]] = False  # ...set idx above to False
-
         heavy_mask_weight = 0 #Set a coefficient for heavy mask on upper partials
         if all(peaks_above_masking[idx_below]<-15): #if all masked peaks are masked more than 15db
             heavy_mask_weight = 15
@@ -407,6 +406,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         else:
             # percent = 20
             percent = 100 - ( 100 * (np.count_nonzero(idx_above == True) / len(idx_above)) )
+            #print(percent)
             percent += heavy_mask_weight
         # print(peaks_above_masking)
         #print(peaks_above_masking)
@@ -416,16 +416,16 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             if np.count_nonzero(peaks_above_masking>15)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 15) >= 2:
-                return percent*0.2#*heavy_mask_weight # 5+(percent*0.3)
-            return heavy_mask_weight+(percent*0.2)#*heavy_mask_weight # 10+(percent*0.4)
+                return percent*0.3#*heavy_mask_weight # 5+(percent*0.3)
+            return heavy_mask_weight+(percent*0.3)#*heavy_mask_weight # 10+(percent*0.4)
 
         #If there are at least two componenets over 10db above masking threshold:
         if np.count_nonzero(peaks_above_masking>10)>=1:
             if np.count_nonzero(peaks_above_masking>10)==len(peaks_above_masking):
                 return 0
             if np.count_nonzero(peaks_above_masking > 10) >= 2:
-                return percent*0.4#*heavy_mask_weight # 30+(percent*0.3)
-            return heavy_mask_weight+(percent*0.4)#*heavy_mask_weight #50+(percent*0.4)
+                return percent*0.5#*heavy_mask_weight # 30+(percent*0.3)
+            return heavy_mask_weight+(percent*0.5)#*heavy_mask_weight #50+(percent*0.4)
 
         #if there are at least three components over 6db above masking threshold:
         if np.count_nonzero(peaks_above_masking>6)>=1:

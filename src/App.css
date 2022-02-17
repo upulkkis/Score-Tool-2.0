@@ -35,6 +35,11 @@
     1px 1px 0 #000;
 }
 
+.rippleImg {
+  background-image: url("./waves.png");
+  background-size: 100% 100%;
+}
+
 .Upload {
   color: #fffef0;
   background-color: #dcc4ac;
@@ -52,8 +57,13 @@
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 2em;
 }
+
+.nolink, .nolink:hover, .nolink:visited, .nolink:active {
+  color: inherit;
+  text-decoration: none;
+ }
 
 .App-intro {
   font-size: large;

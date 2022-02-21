@@ -24,6 +24,15 @@ export const assignName = (name) =>{
     if (searchName.toLowerCase().startsWith("natural")){
         searchName="horn"
     }
+    if (searchName.toLowerCase().startsWith("lana,")){
+        searchName="soprano_generic"
+    }
+    if (searchName.toLowerCase().startsWith("allura,")){
+        searchName="soprano_generic"
+    }
+    if (searchName.toLowerCase().startsWith("max,")){
+        searchName="tenor_generic"
+    }
 
     const DBname = extract(searchName, Object.keys(DBinstruments))[0][0]
     return DBname

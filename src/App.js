@@ -224,7 +224,7 @@ class App extends Component {
     ));
     
     const Scores = () =>{
-      const availableScores = ["test_score2.xml", "sonority.xml"]
+      const availableScores = ["test_score2.xml", "all_the_truths_lana_aria bar_1237.mxl", "all_the_truths_duett bar_2669.mxl", "sonority.xml"]
       return(
         availableScores.map(s=><MenuItem key={s} value={s}>{s}</MenuItem>)
       )

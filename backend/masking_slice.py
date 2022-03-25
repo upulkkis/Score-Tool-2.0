@@ -28,6 +28,7 @@ import sort_for_vexflow
 from setDB import setDB
 import alternate_mfcc
 import maskingCurve_peakInput
+import terhardt
 import maskingCurve
 
 import get_fft
@@ -358,12 +359,32 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     if any(x < 35 for x in target['peak_locs']):    #Frequency peaks under 35hz are concidered as artifact
         target['peaks'], target['peak_locs'] = remove_too_low_frequencies(target['peaks'], target['peak_locs'])
 
+    # Het the most significant peaks according to Terhardt's furmula
+    peak_importance_percentage = terhardt.pitch_weights([target['peak_locs'], target['peaks']])
+
+    loudest_peaks = []
+    loudest_peak_locs = []
+    peak_importance = []
+    idx_of_loudest_partials = []
+    for i in range(len(target['peak_locs'])):
+        if peak_importance_percentage[i]>0:
+            loudest_peaks.append(target['peaks'][i])
+            loudest_peak_locs.append(target['peak_locs'][i])
+            peak_importance.append(peak_importance_percentage[i])
+            idx_of_loudest_partials.append(i)
+    loudest_peaks = np.array(loudest_peaks)
+    loudest_peak_locs = np.array(loudest_peak_locs)
+    peak_importance = np.array(peak_importance)
+    idx_of_loudest_partials = np.array(idx_of_loudest_partials)
+
+    ''' This would bypass Terharts formula and take only 7 loudest partials into account
     # Get only the 7 loudest partials into calculations
     idx_of_loudest_partials = heapq.nlargest(7, range(len(target['peaks'])), key=target['peaks'].__getitem__)
     loudest_peaks = np.array(target['peaks'])[idx_of_loudest_partials]
     loudest_peak_locs = np.array(target['peak_locs'])[idx_of_loudest_partials]
-    #print(loudest_peaks)
-    #print(loudest_peak_locs)
+    '''
+
+
     # idx_above = target['peaks'] > np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
     idx_above = loudest_peaks > np.interp(loudest_peak_locs, orchestration['masking_locs'], orchestration['masking_threshold'])
     # idx_below = target['peaks'] < np.interp(target['peak_locs'], orchestration['masking_locs'], orchestration['masking_threshold'])
@@ -378,6 +399,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
         # Check the critical band area for louder peaks:
         nonzeros_loc = loudest_peak_locs[idx_above]
+        print(nonzeros_loc)
         nonzeros_pks = loudest_peaks[idx_above]
         nonzero_indexes = np.nonzero(idx_above)[0] # Returns tuple, take index [0]
         for i in range(len(nonzeros_loc)):
@@ -405,7 +427,12 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             return 100
         else:
             # percent = 20
+            # This is an old way, just calculate how many peaks are over the masking threshold
             percent = 100 - ( 100 * (np.count_nonzero(idx_above == True) / len(idx_above)) )
+
+            #This is adding percentages according to terhardt:
+            print(peak_importance)
+            percent = 100- np.sum(peak_importance[idx_above])
             #print(percent)
             percent += heavy_mask_weight
         # print(peaks_above_masking)
@@ -790,6 +817,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
     #New masking percent function:
     masking_percent = calculate_masking_percent(peaks_above_masking)
+    print(masking_percent)
     #effect of centroid
     if target['centroid']<2000 and masking_percent<85:
 
@@ -797,6 +825,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         masking_percent += (masking_add*100)
         if masking_percent>100: #can't go over 100 percent
             masking_percent = 100
+
 
     #def inline(graph):
     #    return html.Div(graph, style={'display':'inline-block'})

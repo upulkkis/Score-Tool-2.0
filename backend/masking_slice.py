@@ -28,7 +28,7 @@ import sort_for_vexflow
 from setDB import setDB
 import alternate_mfcc
 import maskingCurve_peakInput
-import terhardt
+import helpers.terhardt
 import maskingCurve
 
 import get_fft
@@ -96,6 +96,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         masking_curves_t = []
         orch_mfcc_array=np.array(np.zeros(12))
         targ_mfcc_array = np.array(np.zeros(12))
+        orchestration_peak_array = []
         min_orch_note=120
         min_target_note=120
         t_cents=[]
@@ -120,6 +121,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
                             orch_sample=orch_sample+get_and_cut_sample(instrument, list(orchestra[instrument[0]][instrument[1]][instrument[2]].keys()))
                         o_cents.append(orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['centroid'])
                         pks = orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks']
+                        orchestration_peak_array.append(pks)
                         peaks_o = combine_peaks.combine_peaks(peaks_o, [pks[0], pks[1]])#orchestra[instrument[0]][instrument[1]][instrument[2]][instrument[3]]['peaks'])
                         masking_curves_o.append(maskingCurve_peakInput.maskingCurve(S, pks))
                         #Make a list of orchestration instrument indexes for masking calculation:
@@ -168,11 +170,11 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             targ_mfcc = alternate_mfcc.alternate_mfcc(target_sample)
             t_cents = spectral_centroid(target_sample)#np.mean(t_cents)
 
-        return sums, min_notes, orch_mfcc_array, [peaks_o, peaks_t], [orch_mfcc, targ_mfcc], [o_cents, t_cents], [masking_curves_o, masking_curves_t], orchestration_indexes, orchestration_instrument_names, original_osmd_indexes
+        return sums, min_notes, orch_mfcc_array, [peaks_o, peaks_t, orchestration_peak_array], [orch_mfcc, targ_mfcc], [o_cents, t_cents], [masking_curves_o, masking_curves_t], orchestration_indexes, orchestration_instrument_names, original_osmd_indexes
 
 
 
-    def get_features(data, peaks, min_note, mfccs, cents):
+    def get_features(data, peaks, min_note, mfccs, cents, o_peak_array):
             result=dict()
             S=np.ones(dummy_fft_size)+70
             result["spectrum"]=S
@@ -194,6 +196,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             #locs, peaks = findPeaks.peaks(S, min_note)
             result['peak_locs']=peaks[0]
             result['peaks']=peaks[1]
+            result['peak_array']=o_peak_array
             #print("lpc calculated")
             return result
 
@@ -202,11 +205,11 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     #print(masking_lists[0])
     #print(masking_lists[1])
 
-    orchestration = get_features(sums[0], peaks[0], min_notes[0], mean_mffcs[0], mean_cents[0])
+    orchestration = get_features(sums[0], peaks[0], min_notes[0], mean_mffcs[0], mean_cents[0], peaks[2])
     tgt=True
     if mean_cents[1] == []: tgt = False
     if tgt:
-        target = get_features(sums[1], peaks[1], min_notes[1], mean_mffcs[1], mean_cents[1])
+        target = get_features(sums[1], peaks[1], min_notes[1], mean_mffcs[1], mean_cents[1], [[],[]])
     else:
         result = dict()
         result['masking_locs']= constants.threshold[:, 0]
@@ -368,7 +371,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     idx_of_loudest_partials = []
     for i in range(len(target['peak_locs'])):
         if peak_importance_percentage[i]>0:
-            loudest_peaks.append(target['peaks'][i]+3) ### ADDED +3 TO CLEAR BORDER CASES!
+            loudest_peaks.append(target['peaks'][i]) ### ADDED +3 TO CLEAR BORDER CASES!
             loudest_peak_locs.append(target['peak_locs'][i])
             peak_importance.append(peak_importance_percentage[i])
             idx_of_loudest_partials.append(i)
@@ -376,6 +379,30 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     loudest_peak_locs = np.array(loudest_peak_locs)
     peak_importance = np.array(peak_importance)
     idx_of_loudest_partials = np.array(idx_of_loudest_partials)
+
+    #print(terhardt.pitch_weights([orchestration['peak_locs'], orchestration['peaks']]))
+    #print(orchestration['peak_locs'])
+    prominence = []
+    for i in range(len(orchestration['peak_array'])):
+        # calculate A-weight corrections for the orchestration array
+        hearing_threshold_adjustment = [terhardt.hear_thres(ind_freq/1000) for ind_freq in orchestration['peak_array'][i][0]]
+        #Do the a-weighting
+        adjusted_spl_values = [0 if element1 - element2 < 0 else element1 - element2 for (element1, element2) in zip(orchestration['peak_array'][i][1], hearing_threshold_adjustment)]
+        #Calculate Terhardt's pitch weight array
+        orchestration_pitch_weights = terhardt.pitch_weights_array(orchestration['peak_array'][i])
+        weighted_spl_values = [el1*el2 for (el1, el2) in zip (adjusted_spl_values, orchestration_pitch_weights)]
+        #Calculate terhardt's spectral dominance
+        spectral_dominance = terhardt.dbsum(terhardt.peak_weights(orchestration['peak_array'][i][0], weighted_spl_values))
+        #Add values to list
+        prominence.append([orchestration_instrument_names[i], spectral_dominance])
+    print('PEAK WEIGHT:')
+    print(terhardt.dbsum(terhardt.peak_weights(target['peak_locs'], target['peaks'])))
+    print(prominence)
+
+    #print('orchestration:')
+    #print(terhardt.pitch_weights_sum([orchestration['peak_locs'], orchestration['peaks']]))
+    #print('target:')
+    #print(terhardt.pitch_weights_sum([target['peak_locs'], target['peaks']]))
 
     ''' This would bypass Terharts formula and take only 7 loudest partials into account
     # Get only the 7 loudest partials into calculations
@@ -430,7 +457,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
             # percent = 100 - ( 100 * (np.count_nonzero(idx_above == True) / len(idx_above)) )
 
             #This is adding percentages according to terhardt:
-            print(peak_importance[idx_above])
+            #print(peak_importance[idx_above])
             percent = 100- np.sum(peak_importance[idx_above])
             #print(percent)
             percent += heavy_mask_weight
@@ -816,7 +843,7 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
 
     #New masking percent function:
     masking_percent = calculate_masking_percent(peaks_above_masking)
-    print(masking_percent)
+    # print(masking_percent)
     #effect of centroid
     if target['centroid']<2000 and masking_percent<85:
 

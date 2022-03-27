@@ -1,5 +1,5 @@
 
-const test = false
+const test = true
 
 let RestApi = "https://rest.score-tool.com/";
 

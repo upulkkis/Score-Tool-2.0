@@ -28,8 +28,9 @@ import sort_for_vexflow
 from setDB import setDB
 import alternate_mfcc
 import maskingCurve_peakInput
-import helpers.terhardt
+import helpers.terhardt as terhardt
 import maskingCurve
+from helpers.virtual_pitch import calculate_virtual_pitch
 
 import get_fft
 import make_slice_notation
@@ -395,9 +396,22 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
         spectral_dominance = terhardt.dbsum(terhardt.peak_weights(orchestration['peak_array'][i][0], weighted_spl_values))
         #Add values to list
         prominence.append([orchestration_instrument_names[i], spectral_dominance])
-    print('PEAK WEIGHT:')
-    print(terhardt.dbsum(terhardt.peak_weights(target['peak_locs'], target['peaks'])))
-    print(prominence)
+
+    #print('PEAK WEIGHT:')
+    #print(terhardt.dbsum(terhardt.peak_weights(target['peak_locs'], target['peaks'])))
+    #print(prominence)
+    #print('Virtual pitch:')
+
+    ####################
+    ##  CALCULATE VIRTUAL PITCH
+    ####################
+
+    vir_p = calculate_virtual_pitch(orchestration['peak_locs'], orchestration['peaks'])
+    vir_p = vir_p[1] #Ignore real pitches, just take the virtual ones
+    vir_p = vir_p[0], vir_p[2], vir_p[4], vir_p[6], vir_p[8] #Take the 5 most prominent
+    #vir_p = [[vir_p[0], vir_p[2], vir_p[4], vir_p[6], vir_p[8]], [vir_p[1], vir_p[3], vir_p[5]]]
+    #print(vir_p)
+    #print([[hertz_to_microtone.convert(v), pretty_midi.hz_to_note_number(v)] for v in vir_p[0]])
 
     #print('orchestration:')
     #print(terhardt.pitch_weights_sum([orchestration['peak_locs'], orchestration['peaks']]))
@@ -996,6 +1010,10 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     if target['centroid']:
         centroid_markings.append('Target {:.1f}Hz'.format(float(target['centroid'])))
         centroid_notes.append(target['centroid'])
+    for i in range(len(vir_p)):
+        centroid_markings.append('Virtual pitch no.{}: {:.1f}Hz'.format(i+1, float(vir_p[i])))
+        centroid_notes.append(vir_p[i])
+
 
     centroid_notes, centroid_markings, tgts_dummy, highs, dummy_sort_idx = sort_for_vexflow.sort_notes(centroid_notes,
                                                                                                        centroid_markings,

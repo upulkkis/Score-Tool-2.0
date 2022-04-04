@@ -1,7 +1,7 @@
 import numpy as np
 from math import inf, pow, atan, log10, exp, sqrt, floor
 
-def ptp2svp(freq,spl):
+def calculate_virtual_pitch(freq,spl):
 
     # input
     # freq in Hz
@@ -56,12 +56,12 @@ def ptp2svp(freq,spl):
     ptp['count'] = len(freq)-1 #0;
     ptpsubcoincidence=len(freq)-1;
 
-    # ptp=sortptp(ptp);
-    # ptp=compfreqlimit(ptp);
+    ptp=sortptp(ptp);
+    ptp=compfreqlimit(ptp);
     spp=createspp(spp,ptp,SPMAX);
     # print(ptp)
     #dumpSPP(spp);
-
+    #print(spp)
     [vpp,spp]=subcoincidence(vpp,spp,minweight,VPMAX);
     #dumpVPP(vpp);
     #print(vpp)
@@ -124,25 +124,25 @@ for j=1:cbp['count']
 end
 end
 
-
-function ptp=sortptp(ptp)
-temp=[ptp['freq'] ptp['spl']];
-temp=sortrows(temp,1);
-ptp['freq']=temp(:,1);
-ptp['spl']=temp(:,2);
-end
-
-function ptp=compfreqlimit(ptp)
-if (ptp['count'] > 0)
-    i=1;
-    while ((i <= ptp['count']) && (ptp['freq'][i] <= 5.0))
-        i=i+1;
-    end
-    ptp['count']=i-1;
-end
-end
-
 '''
+def sortptp(ptp):
+    temp=np.array([ptp['freq'], ptp['spl']]);
+    temp = temp[:, temp[0].argsort()]
+    temp=temp.transpose()
+    ptp['freq']=temp[:,0];
+    ptp['spl']=temp[:,1];
+    return ptp
+
+
+def compfreqlimit(ptp):
+    if (ptp['count'] > 0):
+        i=0;
+        while ((i <= ptp['count']) and (ptp['freq'][i] <= 5.0)):
+            i=i+1;
+        ptp['count']=i-1;
+    return ptp
+
+
 
 def createspp(spp,ptp,SPMAX):
     i_s=0; #/* index of spp arrays */
@@ -397,15 +397,17 @@ def sortintovp(i, m, vpw,vpp,spp,VPMAX):
     #disp(sprintf('\tHERE E\n'));
     if pc:
         return vpp;
-
+    #print(vpp)
     #disp(sprintf('\tHERE F\n'));
     #/* here comes another, non-coinciding virtual pitch: */
     if (vpp['count'] == VPMAX-1):
         #    disp(sprintf('\tHERE G\n'));
         if (vpw > vpp['weight'][vpp['count']]):
             #        disp(sprintf('\tHERE H\n'));
-            vpp['weight'][vpp['count']+1]=vpw;
-            vpp['nomp'][vpp['count']+1]=vnom;
+            #vpp['weight'][vpp['count']+1]=vpw;
+            vpp['weight'][vpp['count']]=vpw;
+            #vpp['nomp'][vpp['count']+1]=vnom;
+            vpp['nomp'][vpp['count']]=vnom;
             #if(shiftflag)
             #    #            disp(sprintf('\tHERE I\n'));
             #    vpp['trup'](vpp['count']+1)=truvp(vnom, i, m);
@@ -524,5 +526,6 @@ def signum(n):
     return sn
 
 
-print(ptp2svp([100,200,300,400, 500, 600, 700], [70,70,70,70, 70, 70, 70]))
-print(ptp2svp([400,800,1200,1600, 2000, 2400, 2800], [70,70,70,70, 70, 70, 70]))
+# print(ptp2svp([100,200,300,400, 500, 600, 700], [70,70,70,70, 70, 70, 70]))
+# print(ptp2svp([400,800,1200,1600, 2000, 2400, 2800], [70,70,70,70, 70, 70, 70]))
+#print(ptp2svp([200,400,600,800],[60,75,68,56])[1])

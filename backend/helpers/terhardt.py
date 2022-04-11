@@ -62,6 +62,28 @@ def lx(component_list, freq_list, component_number):
     return component_list[component_number] - (
                 10 * log10((db_sum) + pow(10, (hear_thres(freq_list[component_number]) / 10))))
 
+def masking_check(pks1, pks2):
+    orch_db = pks1[1]
+    orch_freq = [f/1000 for f in pks1[0]]
+    tgt_db = pks2[1]
+    tgt_freq = [f/1000 for f in pks2[0]]
+
+    weights = []
+    for i in range(len(tgt_freq)):
+        db_sum = 0
+        for j in range(len(orch_freq)):
+            db_sum = db_sum + pow(10, excitation_Lev(orch_db[j], orch_freq[j], tgt_freq[i]) / 20)
+        db_sum = pow(db_sum, 2)
+        res_db = tgt_db[i]-(
+                10 * log10((db_sum) + pow(10, (hear_thres(tgt_freq[i]) / 10))))
+
+        if(res_db<=0):
+            weights.append(0)
+        else:
+            weights.append( (1-exp(-res_db/15)) * pow((1+(0.07*pow(( (tgt_freq[i]/0.7) - (0.7/tgt_freq[i]) ), 2))), -0.5)) #(1+(0.07*pow(pow(( ((component_frequencies[i])/0.7) - (0.7/(component_frequencies[i])) ), 2), -0.5)) ) )
+    return weights
+
+
 def pitch_weights(pks):
 
     tonal_components = pks[1] # Extract the SPL values of peaks

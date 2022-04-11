@@ -381,6 +381,9 @@ def get_slice(lista, orchestra, custom_id='', initial_chord='', multisclice=Fals
     peak_importance = np.array(peak_importance)
     idx_of_loudest_partials = np.array(idx_of_loudest_partials)
 
+    terhardt_masking = terhardt.masking_check([orchestration['peak_locs'], orchestration['peaks']],[target['peak_locs'], target['peaks']])
+    print(terhardt_masking)
+
     #print(terhardt.pitch_weights([orchestration['peak_locs'], orchestration['peaks']]))
     #print(orchestration['peak_locs'])
     prominence = []
